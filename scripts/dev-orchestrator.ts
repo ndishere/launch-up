@@ -1,12 +1,14 @@
 /**
  * LAUNCH UP - FULL-STACK DEV ORCHESTRATOR
  * Boots all 10 microservices (ports 8004-8013) alongside the Vite frontend (port 3000)
+ * Cross-platform compatible (Windows Node 22+ EINVAL safe)
  */
 
 import { spawn, ChildProcess } from 'node:child_process';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,14 +51,21 @@ function checkPort(port: number): Promise<boolean> {
 async function startService(svc: ServiceSpec) {
   const isRunning = await checkPort(svc.port);
   if (isRunning) {
-    console.log(`[LaunchUp Mesh] ${svc.name} is already running on port ${svc.port}. Skipping spawn.`);
+    console.log(`[LaunchUp Mesh] ${svc.name} is already active on port ${svc.port}.`);
     return;
   }
 
+  const scriptPath = path.resolve(rootDir, svc.entry);
+  const tsxCli = path.resolve(rootDir, 'node_modules/tsx/dist/cli.mjs');
+  const spawnArgs = fs.existsSync(tsxCli)
+    ? [tsxCli, scriptPath]
+    : ['--experimental-strip-types', scriptPath];
+
   const child = spawn(
     process.execPath,
-    ['--experimental-strip-types', path.resolve(rootDir, svc.entry)],
+    spawnArgs,
     {
+      cwd: rootDir,
       env: {
         ...process.env,
         PORT: String(svc.port),
@@ -64,22 +73,26 @@ async function startService(svc: ServiceSpec) {
         LOG_LEVEL: 'warn',
       },
       stdio: ['ignore', 'pipe', 'pipe'],
+      shell: false,
     }
   );
 
   child.stdout?.on('data', (data) => {
     const msg = data.toString().trim();
     if (msg.includes('listening on port')) {
-      console.log(`  âœ” [Port ${svc.port}] ${svc.name} LIVE`);
+      console.log(`  ✔ [Port ${svc.port}] ${svc.name} LIVE`);
     }
   });
 
   child.stderr?.on('data', (data) => {
-    // Only log critical errors
     const err = data.toString().trim();
     if (err.includes('Error') && !err.includes('experimental')) {
-      console.warn(`  âš  [Port ${svc.port}] ${svc.name}: ${err.slice(0, 120)}`);
+      console.warn(`  ⚠ [Port ${svc.port}] ${svc.name}: ${err.slice(0, 120)}`);
     }
+  });
+
+  child.on('error', (err) => {
+    console.warn(`  ⚠ Failed to spawn ${svc.name}: ${err.message}`);
   });
 
   processes.push(child);
@@ -87,11 +100,30 @@ async function startService(svc: ServiceSpec) {
 
 function startVite() {
   console.log('\n[LaunchUp UI] Spawning Vite development server on port 3000...');
-  const viteCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  const viteProcess = spawn(viteCmd, ['vite', '--port=3000', '--host=0.0.0.0'], {
-    cwd: rootDir,
-    stdio: 'inherit',
+  const viteEntry = path.resolve(rootDir, 'node_modules/vite/bin/vite.js');
+
+  let viteProcess: ChildProcess;
+
+  if (fs.existsSync(viteEntry)) {
+    // Invoke node directly with vite.js entrypoint (avoids Windows .cmd EINVAL error completely)
+    viteProcess = spawn(process.execPath, [viteEntry, '--port=3000', '--host=0.0.0.0'], {
+      cwd: rootDir,
+      stdio: 'inherit',
+    });
+  } else {
+    // Fallback: spawn npx via shell
+    const viteCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    viteProcess = spawn(viteCmd, ['vite', '--port=3000', '--host=0.0.0.0'], {
+      cwd: rootDir,
+      stdio: 'inherit',
+      shell: true,
+    });
+  }
+
+  viteProcess.on('error', (err) => {
+    console.error('[LaunchUp UI] Failed to spawn Vite server:', err);
   });
+
   processes.push(viteProcess);
 }
 
@@ -101,7 +133,7 @@ function cleanup() {
     try {
       if (proc.pid) {
         if (process.platform === 'win32') {
-          spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t']);
+          spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { shell: true });
         } else {
           proc.kill('SIGTERM');
         }
@@ -115,9 +147,9 @@ process.on('SIGINT', cleanup);
 process.on('SIGTERM', cleanup);
 
 async function main() {
-  console.log('â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—');
-  console.log('â•‘  LAUNCH UP - FULL-STACK CONTROL PLANE MESH ORCHESTRATOR   â•‘');
-  console.log('â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•');
+  console.log('╔══════════════════════════════════════════════════════════════╗');
+  console.log('║  LAUNCH UP - FULL-STACK CONTROL PLANE MESH ORCHESTRATOR   ║');
+  console.log('╚══════════════════════════════════════════════════════════════╝');
   console.log('\nBooting 10 Microservices (Ports 8004 - 8013)...');
 
   for (const svc of SERVICES) {

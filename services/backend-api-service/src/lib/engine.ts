@@ -100,12 +100,15 @@ export function detectOpenApiDrift(openApiYaml: string, tables: string[]): {
       continue;
     }
 
-    // Check direct match or singular/plural variants (e.g. orders <-> order)
+    // Check direct match or singular/plural variants (e.g. orders <-> order, project_orders <-> orders)
     const matchesTable =
       tableSet.has(entity) ||
       tableSet.has(entity + 's') ||
       (entity.endsWith('s') && tableSet.has(entity.slice(0, -1))) ||
-      (entity.endsWith('es') && tableSet.has(entity.slice(0, -2)));
+      (entity.endsWith('es') && tableSet.has(entity.slice(0, -2))) ||
+      tableSet.has(`project_${entity}`) ||
+      tableSet.has(`project_${entity}s`) ||
+      (entity.endsWith('s') && tableSet.has(`project_${entity.slice(0, -1)}`));
 
     if (!matchesTable) {
       drifting.push(entity);

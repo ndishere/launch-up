@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1794335283.3651438,
-    "seen": 1794335686.4416468,
-    "ast_hash": "2f8d46617301af30b70a59432f196a6c",
+    "mtime": 1794337151.3521366,
+    "seen": 1794337181.31808,
+    "ast_hash": "23dc4ad143069d3ff227f0149587045f",
     "semantic_hash": ""
   },
   "services/auth-service/drizzle.config.ts": {
@@ -162,8 +162,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/Header.tsx": {
-    "mtime": 1794335617.5420823,
-    "seen": 1794335686.4660747,
+    "mtime": 1794335771.8062336,
+    "seen": 1794337181.3471842,
     "ast_hash": "a7deb342baeefcccbbe14d449c770754",
     "semantic_hash": ""
   },
@@ -222,8 +222,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/AlertsTab.tsx": {
-    "mtime": 1794335523.9281466,
-    "seen": 1794335686.468603,
+    "mtime": 1794335771.9847395,
+    "seen": 1794337181.3514688,
     "ast_hash": "d93c7250a7536b3026eee00b3147b81d",
     "semantic_hash": ""
   },
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/ClientsTab.tsx": {
-    "mtime": 1794335387.968734,
-    "seen": 1794335686.4691684,
+    "mtime": 1794335772.0461428,
+    "seen": 1794337181.3523855,
     "ast_hash": "f365fbba4f60c1221b64f05426d9ba89",
     "semantic_hash": ""
   },
@@ -258,8 +258,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/DeploymentsTab.tsx": {
-    "mtime": 1794335436.1056204,
-    "seen": 1794335686.4697154,
+    "mtime": 1794335772.1077762,
+    "seen": 1794337181.3531919,
     "ast_hash": "127560bd00c32c42c7a9a6b6c0e8821f",
     "semantic_hash": ""
   },
@@ -276,8 +276,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/MarketingEngineTab.tsx": {
-    "mtime": 1794335492.0691648,
-    "seen": 1794335686.4702225,
+    "mtime": 1794335772.1631117,
+    "seen": 1794337181.3540208,
     "ast_hash": "84958df3641b8ecc9a6963346e549fab",
     "semantic_hash": ""
   },
@@ -288,8 +288,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/ProjectsTab.tsx": {
-    "mtime": 1794335572.5107524,
-    "seen": 1794335686.470477,
+    "mtime": 1794335772.2388048,
+    "seen": 1794337181.3544269,
     "ast_hash": "2b5f9f8dc1ab55408314b9d7d195a237",
     "semantic_hash": ""
   },
@@ -312,8 +312,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/TeamTab.tsx": {
-    "mtime": 1794335356.2137487,
-    "seen": 1794335686.4712408,
+    "mtime": 1794335772.3072658,
+    "seen": 1794337181.3557348,
     "ast_hash": "ab50c50a66051cfe0986892f2148e878",
     "semantic_hash": ""
   },
@@ -360,15 +360,15 @@
     "semantic_hash": ""
   },
   "tsconfig.json": {
-    "mtime": 1794335642.0250804,
-    "seen": 1794335686.4795063,
+    "mtime": 1794335772.443754,
+    "seen": 1794337181.3655334,
     "ast_hash": "8ccb193adf5f50981630cd4aab2c7db1",
     "semantic_hash": ""
   },
   "vite.config.ts": {
-    "mtime": 1794335256.090217,
-    "seen": 1794335686.47951,
-    "ast_hash": "1b8418f25d2663ca722b225b9cdcb437",
+    "mtime": 1794336625.3942213,
+    "seen": 1794337181.3655384,
+    "ast_hash": "a94f57bc74c44e5da3aebf57b634bd36",
     "semantic_hash": ""
   },
   "LAUNCH_UP_ROADMAP.html": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794334959.4305356,
-    "seen": 1794335686.4810803,
-    "ast_hash": "a4eeaf5c7f152855137958b6bbe54350",
+    "mtime": 1794335771.6461208,
+    "seen": 1794337181.3689356,
+    "ast_hash": "0fedb73b1a516ec5fe40ea870edb1e46",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "services/backend-api-service/src/lib/engine.ts": {
-    "mtime": 1794332844.9451206,
-    "seen": 1794333066.2738135,
-    "ast_hash": "6abe52c450e295e334c603bb02763366",
+    "mtime": 1794336852.950597,
+    "seen": 1794337181.3240502,
+    "ast_hash": "393b8becb94e439c26a6b2215c8deb32",
     "semantic_hash": ""
   },
   "services/backend-api-service/src/routes/index.ts": {
@@ -990,15 +990,33 @@
     "semantic_hash": ""
   },
   "scripts/dev-orchestrator.ts": {
-    "mtime": 1794335274.274639,
-    "seen": 1794335686.441654,
-    "ast_hash": "f32295c89a2e498285725f661e96f5eb",
+    "mtime": 1794336606.49718,
+    "seen": 1794337181.3180857,
+    "ast_hash": "79d94f6f840070dc4d5e3c5581ce5b5b",
     "semantic_hash": ""
   },
   "src/services/api.ts": {
     "mtime": 1794335230.5689552,
     "seen": 1794335686.472806,
     "ast_hash": "1e82ee180ccfa9e8e2558c2f64afedef",
+    "semantic_hash": ""
+  },
+  "scripts/run-all-tests.mjs": {
+    "mtime": 1794336935.4342847,
+    "seen": 1794337181.3180892,
+    "ast_hash": "25bb03b0c5664890c95857ea19f51de2",
+    "semantic_hash": ""
+  },
+  "services/lead-pitch-service/src/server.ts": {
+    "mtime": 1794336506.4470098,
+    "seen": 1794337181.3320913,
+    "ast_hash": "adb4085356a9e014918b7ede31fd47fe",
+    "semantic_hash": ""
+  },
+  "tests/e2e/agency-full-lifecycle.system.test.ts": {
+    "mtime": 1794336894.1044908,
+    "seen": 1794337181.3598735,
+    "ast_hash": "95d0925768a91727b317d7f20e754cd5",
     "semantic_hash": ""
   }
 }

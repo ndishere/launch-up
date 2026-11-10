@@ -54,7 +54,7 @@
   "52": "compilerOptions",
   "53": "marketing-engine-service/package.json",
   "54": "web-builder-service/src/lib/engine.ts",
-  "55": "ref_node_assert",
+  "55": "lead-pitch-service/src/lib/engine.ts",
   "56": "sre-healing-service",
   "57": "compilerOptions",
   "58": "mobile-app-service",
@@ -75,6 +75,13 @@
   "73": "vite.config.ts",
   "74": "scripts",
   "75": "ba-intake-service",
-  "76": "lead-pitch-service",
-  "77": "@types/canvas-confetti@^1.9.0"
+  "76": "agency-full-lifecycle.system.test.ts",
+  "77": "marketing-engine-service/src/lib/engine.ts",
+  "78": "package.json",
+  "79": "lead-pitch-service/src/routes/index.ts",
+  "80": "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE",
+  "81": "backend-api-service",
+  "82": "governance-service",
+  "83": "GovernanceMesh",
+  "84": "2. Module-by-Module JSON Input/Output Contracts"
 }
