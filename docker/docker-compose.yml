@@ -243,6 +243,29 @@ services:
       timeout: 5s
       retries: 3
 
+  lead-pitch-service:
+    build:
+      context: ../services/lead-pitch-service
+      dockerfile: Dockerfile
+      target: dev
+    container_name: launchup-lead-pitch
+    restart: unless-stopped
+    environment:
+      PORT: 8005
+      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+    ports:
+      - "8005:8005"
+    volumes:
+      - ../services/lead-pitch-service/src:/app/src:ro
+    networks:
+      - launchup_app
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8005/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
   # ─────────────────────────────────────────────────────
   #  FRONTEND
   # ─────────────────────────────────────────────────────
