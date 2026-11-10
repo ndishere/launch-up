@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-10)
 
 ## Corpus Check
-- 143 files · ~101,106 words
+- 151 files · ~103,884 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 16 file(s) not represented in the graph (top: (none) 11, .example 1, .lock 1)
+- Unclassified: 17 file(s) not represented in the graph (top: (none) 12, .example 1, .lock 1)
 
 ## Summary
-- 1479 nodes · 2608 edges · 67 communities (65 shown, 2 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 34 edges (avg confidence: 0.91)
+- 1561 nodes · 2764 edges · 73 communities (71 shown, 2 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9a624637`
+- Built from commit: `96050d39`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -80,8 +80,14 @@
 - backend-api-service
 - LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
 - ba-intake-service
-- governance-service
+- whatsapp-service/src/lib/engine.ts
 - ref_fastify_cors
+- whatsapp-service/package.json
+- compilerOptions
+- auth-service
+- marketing-engine-service
+- qa-secops-service
+- web-builder-service
 
 ## God Nodes (most connected - your core abstractions)
 1. `useApp()` - 59 edges
@@ -90,10 +96,10 @@
 4. `AppLayout()` - 32 edges
 5. `AppContextType` - 24 edges
 6. `ScreenAnalyticsHeader()` - 21 edges
-7. `services` - 18 edges
-8. `test` - 16 edges
-9. `interval` - 16 edges
-10. `timeout` - 16 edges
+7. `services` - 19 edges
+8. `test` - 17 edges
+9. `interval` - 17 edges
+10. `timeout` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
 - ``MOD-02`: BA Intake & Scope Synthesizer` --references--> `Mod02IntakeRequest`  [INFERRED]
@@ -110,15 +116,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (67 total, 2 thin omitted)
+## Communities (73 total, 2 thin omitted)
 
 ### Community 0 - "App.tsx"
 Cohesion: 0.06
 Nodes (93): lucide-react, react, App(), AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, Header() (+85 more)
 
 ### Community 1 - "environment"
-Cohesion: 0.12
-Nodes (33): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+25 more)
+Cohesion: 0.23
+Nodes (23): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+15 more)
 
 ### Community 2 - "ba-intake-service/src/lib/engine.ts"
 Cohesion: 0.16
@@ -194,7 +200,7 @@ Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet
 
 ### Community 20 - "interval"
 Cohesion: 0.06
-Nodes (59): healthcheck, healthcheck, healthcheck, healthcheck, MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, POSTGRES_DB, POSTGRES_PASSWORD (+51 more)
+Nodes (60): healthcheck, healthcheck, healthcheck, healthcheck, MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, POSTGRES_DB, POSTGRES_PASSWORD (+52 more)
 
 ### Community 21 - "compilerOptions"
 Cohesion: 0.14
@@ -222,11 +228,11 @@ Nodes (8): config, EnvConfig, envSchema, closeDb(), db, pool, app, shutdown()
 
 ### Community 27 - "services"
 Cohesion: 0.12
-Nodes (16): name, container_name, networks, ports, restart, volumes, name, name (+8 more)
+Nodes (16): name, name, name, name, services, whatsapp-service, volumes, kafka_data (+8 more)
 
 ### Community 28 - "lead-pitch-service/src/lib/engine.ts"
-Cohesion: 0.12
-Nodes (25): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-01`: Lead Discovery & Canva Pitch Engine, `MOD-08`: WhatsApp Marketing & CRM RAG Engine, `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, auditDigitalGaps(), autofillCanvaProposal() (+17 more)
+Cohesion: 0.17
+Nodes (20): `MOD-01`: Lead Discovery & Canva Pitch Engine, auditDigitalGaps(), autofillCanvaProposal(), checkDncSuppression(), processLeadDiscovery(), resolveCompliance(), leadPitchRoutes(), leadRequestSchema (+12 more)
 
 ### Community 29 - "LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE"
 Cohesion: 0.25
@@ -265,8 +271,8 @@ Cohesion: 0.22
 Nodes (9): VITE_API_BASE_URL, web-admin, container_name, depends_on, environment, networks, ports, restart (+1 more)
 
 ### Community 40 - "context"
-Cohesion: 0.33
-Nodes (15): build, build, build, context, dockerfile, target, build, build (+7 more)
+Cohesion: 0.32
+Nodes (16): build, build, build, context, dockerfile, target, build, build (+8 more)
 
 ### Community 41 - "qa-secops-service/package.json"
 Cohesion: 0.08
@@ -282,7 +288,7 @@ Nodes (6): container_name, networks, ports, restart, volumes, lead-pitch-service
 
 ### Community 44 - "auth-service"
 Cohesion: 0.17
-Nodes (16): condition, container_name, depends_on, networks, ports, restart, volumes, depends_on (+8 more)
+Nodes (16): condition, depends_on, depends_on, auth-service, postgres, redis, container_name, depends_on (+8 more)
 
 ### Community 45 - "qa-secops-service/src/lib/engine.ts"
 Cohesion: 0.18
@@ -337,8 +343,8 @@ Cohesion: 0.14
 Nodes (13): compilerOptions, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, outDir (+5 more)
 
 ### Community 58 - "mobile-app-service"
-Cohesion: 0.29
-Nodes (7): container_name, environment, networks, ports, restart, volumes, mobile-app-service
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, mobile-app-service
 
 ### Community 59 - "project-service"
 Cohesion: 0.33
@@ -364,33 +370,57 @@ Nodes (5): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDA
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, ba-intake-service
 
-### Community 65 - "governance-service"
-Cohesion: 0.33
-Nodes (6): container_name, networks, ports, restart, volumes, governance-service
+### Community 65 - "whatsapp-service/src/lib/engine.ts"
+Cohesion: 0.15
+Nodes (21): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-08`: WhatsApp Marketing & CRM RAG Engine, `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent() (+13 more)
 
 ### Community 66 - "ref_fastify_cors"
 Cohesion: 0.50
 Nodes (3): marketingRoutes(), buildApp(), PORT
 
+### Community 67 - "whatsapp-service/package.json"
+Cohesion: 0.08
+Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
+
+### Community 68 - "compilerOptions"
+Cohesion: 0.13
+Nodes (14): compilerOptions, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, outDir (+6 more)
+
+### Community 69 - "auth-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, auth-service
+
+### Community 70 - "marketing-engine-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, marketing-engine-service
+
+### Community 71 - "qa-secops-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
+
+### Community 72 - "web-builder-service"
+Cohesion: 0.33
+Nodes (6): web-builder-service, container_name, networks, ports, restart, volumes
+
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 609 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 641 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `services` connect `services` to `ba-intake-service`, `governance-service`, `environment`, `web-admin`, `services`, `auth-service`, `client-service`, `interval`, `environment`, `mobile-app-service`, `project-service`, `backend-api-service`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `services` connect `services` to `ba-intake-service`, `auth-service`, `marketing-engine-service`, `qa-secops-service`, `web-admin`, `web-builder-service`, `services`, `auth-service`, `client-service`, `interval`, `environment`, `mobile-app-service`, `project-service`, `backend-api-service`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `App.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.060198643410852716 - nodes in this community are weakly interconnected._
 - **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Should `environment` be split into smaller, more focused modules?**
-  _Cohesion score 0.11931818181818182 - nodes in this community are weakly interconnected._
-- **Why does `2. Module-by-Module JSON Input/Output Contracts` connect `lead-pitch-service/src/lib/engine.ts` to `mobile-app-service/src/lib/engine.ts`, `ba-intake-service/src/lib/engine.ts`, `qa-secops-service/src/lib/engine.ts`, `backend-api-service/src/lib/engine.ts`, `web-builder-service/src/lib/engine.ts`, `ref_node_test`, `governance-service/src/routes/index.ts`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.050505050505050504 - nodes in this community are weakly interconnected._
+- **Why does `2. Module-by-Module JSON Input/Output Contracts` connect `whatsapp-service/src/lib/engine.ts` to `mobile-app-service/src/lib/engine.ts`, `ba-intake-service/src/lib/engine.ts`, `qa-secops-service/src/lib/engine.ts`, `backend-api-service/src/lib/engine.ts`, `web-builder-service/src/lib/engine.ts`, `ref_node_test`, `lead-pitch-service/src/lib/engine.ts`, `governance-service/src/routes/index.ts`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Should `auth-service/package.json` be split into smaller, more focused modules?**
+  _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._

@@ -406,6 +406,31 @@ services:
       timeout: 5s
       retries: 3
 
+  whatsapp-service:
+    build:
+      context: ../services/whatsapp-service
+      dockerfile: Dockerfile
+      target: dev
+    container_name: launchup-whatsapp
+    restart: unless-stopped
+    environment:
+      PORT: 8012
+      DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+    ports:
+      - "8012:8012"
+    volumes:
+      - ../services/whatsapp-service/src:/app/src:ro
+    networks:
+      - launchup_app
+      - launchup_data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8012/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
   # ─────────────────────────────────────────────────────
   #  FRONTEND
   # ─────────────────────────────────────────────────────

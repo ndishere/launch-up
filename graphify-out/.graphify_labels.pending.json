@@ -64,6 +64,12 @@
   "62": "backend-api-service",
   "63": "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE",
   "64": "ba-intake-service",
-  "65": "governance-service",
-  "66": "ref_fastify_cors"
+  "65": "whatsapp-service/src/lib/engine.ts",
+  "66": "ref_fastify_cors",
+  "67": "whatsapp-service/package.json",
+  "68": "compilerOptions",
+  "69": "auth-service",
+  "70": "marketing-engine-service",
+  "71": "qa-secops-service",
+  "72": "web-builder-service"
 }

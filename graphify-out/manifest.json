@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794334033.6539102,
-    "seen": 1794334171.230319,
-    "ast_hash": "48901d8936420aeeea301aef0b321519",
+    "mtime": 1794334469.777585,
+    "seen": 1794334505.643428,
+    "ast_hash": "10f385b47a768d2fdb612fc48391e8a8",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -891,6 +891,54 @@
     "mtime": 1794333937.2134702,
     "seen": 1794334171.2715929,
     "ast_hash": "68a4b3457e4e9826802c86a0df203e1b",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/package.json": {
+    "mtime": 1794334247.2686903,
+    "seen": 1794334505.6734438,
+    "ast_hash": "7ba04e6ec2ac03d12f009b6dd89d170a",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/src/lib/engine.ts": {
+    "mtime": 1794334373.2879887,
+    "seen": 1794334505.6734478,
+    "ast_hash": "e8aef2c7d88fe6ee652d00def9820c43",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/src/routes/index.ts": {
+    "mtime": 1794334406.9971373,
+    "seen": 1794334505.6734507,
+    "ast_hash": "189721da52814f64a348e031b4590c15",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/src/server.ts": {
+    "mtime": 1794334411.9854195,
+    "seen": 1794334505.6734533,
+    "ast_hash": "d1ccafe20baeb43aa0c1b267a2b56ae1",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/src/types/index.ts": {
+    "mtime": 1794334362.7480714,
+    "seen": 1794334505.6734557,
+    "ast_hash": "27bf35bc78b665f594041b74849c2b86",
+    "semantic_hash": ""
+  },
+  "services/whatsapp-service/tsconfig.json": {
+    "mtime": 1794334251.3249936,
+    "seen": 1794334505.6734576,
+    "ast_hash": "f0ca1f852a8e84d9c5df39efb208e951",
+    "semantic_hash": ""
+  },
+  "tests/whatsapp-service/mod08.integration.test.ts": {
+    "mtime": 1794334443.9517558,
+    "seen": 1794334505.6909206,
+    "ast_hash": "4a14fa3345eef8ce31ac56a6de42731e",
+    "semantic_hash": ""
+  },
+  "tests/whatsapp-service/mod08.unit.test.ts": {
+    "mtime": 1794334295.0382864,
+    "seen": 1794334505.690925,
+    "ast_hash": "a41fa878ebf32846da805bfe4cf0caff",
     "semantic_hash": ""
   }
 }
