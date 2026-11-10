@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-10)
 
 ## Corpus Check
-- 135 files · ~98,981 words
+- 143 files · ~101,106 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 15 file(s) not represented in the graph (top: (none) 10, .example 1, .lock 1)
+- Unclassified: 16 file(s) not represented in the graph (top: (none) 11, .example 1, .lock 1)
 
 ## Summary
-- 1402 nodes · 2471 edges · 62 communities (60 shown, 2 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 31 edges (avg confidence: 0.91)
+- 1479 nodes · 2608 edges · 67 communities (65 shown, 2 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 34 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b7c150da`
+- Built from commit: `9a624637`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,7 +43,7 @@
 - networks
 - environment
 - auth-service/src/server.ts
-- volumes
+- services
 - lead-pitch-service/src/lib/engine.ts
 - LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE
 - 1. Module-by-Module Positive, Negative & Rare Test Cases
@@ -68,15 +68,20 @@
 - mod10.unit.test.ts
 - governance-service/src/middleware/authenticate.ts
 - compilerOptions
-- minio
-- postgres
-- gateway
-- redis
-- qa-secops-service
+- marketing-engine-service/package.json
+- web-builder-service/src/lib/engine.ts
+- ref_node_test
+- ref_node_assert
+- compilerOptions
+- mobile-app-service
 - project-service
-- web-builder-service
+- mod10.system.test.ts
 - compilerOptions
 - backend-api-service
+- LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
+- ba-intake-service
+- governance-service
+- ref_fastify_cors
 
 ## God Nodes (most connected - your core abstractions)
 1. `useApp()` - 59 edges
@@ -85,38 +90,38 @@
 4. `AppLayout()` - 32 edges
 5. `AppContextType` - 24 edges
 6. `ScreenAnalyticsHeader()` - 21 edges
-7. `services` - 17 edges
-8. `compilerOptions` - 16 edges
-9. `test` - 15 edges
-10. `interval` - 15 edges
+7. `services` - 18 edges
+8. `test` - 16 edges
+9. `interval` - 16 edges
+10. `timeout` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
 - ``MOD-02`: BA Intake & Scope Synthesizer` --references--> `Mod02IntakeRequest`  [INFERRED]
   contracts/module_input_output_contracts.md → services/ba-intake-service/src/types/index.ts
 - ``MOD-02`: BA Intake & Scope Synthesizer` --references--> `Mod02IntakeResponse`  [INFERRED]
   contracts/module_input_output_contracts.md → services/ba-intake-service/src/types/index.ts
-- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `Mod05BackendBuildRequest`  [INFERRED]
-  checkpoint_handoff_state.md → services/backend-api-service/src/types/index.ts
 - ``MOD-05`: Backend API & Row-Level Security (RLS) Engine` --references--> `Mod05BackendBuildRequest`  [INFERRED]
   contracts/module_input_output_contracts.md → services/backend-api-service/src/types/index.ts
-- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `Mod05BackendBuildResponse`  [INFERRED]
-  checkpoint_handoff_state.md → services/backend-api-service/src/types/index.ts
+- ``MOD-05`: Backend API & Row-Level Security (RLS) Engine` --references--> `Mod05BackendBuildResponse`  [INFERRED]
+  contracts/module_input_output_contracts.md → services/backend-api-service/src/types/index.ts
+- ``MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core` --references--> `Mod10AuthRequest`  [INFERRED]
+  contracts/module_input_output_contracts.md → services/governance-service/src/lib/verify_permission.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (62 total, 2 thin omitted)
+## Communities (67 total, 2 thin omitted)
 
 ### Community 0 - "App.tsx"
 Cohesion: 0.06
 Nodes (93): lucide-react, react, App(), AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, Header() (+85 more)
 
 ### Community 1 - "environment"
-Cohesion: 0.24
-Nodes (21): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+13 more)
+Cohesion: 0.12
+Nodes (33): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+25 more)
 
 ### Community 2 - "ba-intake-service/src/lib/engine.ts"
-Cohesion: 0.15
+Cohesion: 0.16
 Nodes (22): `MOD-02`: BA Intake & Scope Synthesizer, detectSemanticConflicts(), generateOpenApiYaml(), generateSqlMigration(), processBaIntake(), resolveComplianceFlags(), synthesizePrd(), VALID_COUNTRIES (+14 more)
 
 ### Community 3 - "package.json"
@@ -188,8 +193,8 @@ Cohesion: 0.08
 Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
 
 ### Community 20 - "interval"
-Cohesion: 0.33
-Nodes (20): healthcheck, healthcheck, healthcheck, healthcheck, healthcheck, healthcheck, interval, retries (+12 more)
+Cohesion: 0.06
+Nodes (59): healthcheck, healthcheck, healthcheck, healthcheck, MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, POSTGRES_DB, POSTGRES_PASSWORD (+51 more)
 
 ### Community 21 - "compilerOptions"
 Cohesion: 0.14
@@ -215,13 +220,13 @@ Nodes (19): ALLOW_PLAINTEXT_LISTENER, KAFKA_CFG_ADVERTISED_LISTENERS, KAFKA_CFG_
 Cohesion: 0.22
 Nodes (8): config, EnvConfig, envSchema, closeDb(), db, pool, app, shutdown()
 
-### Community 27 - "volumes"
-Cohesion: 0.09
-Nodes (22): container_name, networks, ports, restart, volumes, name, name, container_name (+14 more)
+### Community 27 - "services"
+Cohesion: 0.12
+Nodes (16): name, container_name, networks, ports, restart, volumes, name, name (+8 more)
 
 ### Community 28 - "lead-pitch-service/src/lib/engine.ts"
 Cohesion: 0.12
-Nodes (26): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-01`: Lead Discovery & Canva Pitch Engine, `MOD-07`: Canva Pro Digital Marketing Engine, `MOD-08`: WhatsApp Marketing & CRM RAG Engine, `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, auditDigitalGaps() (+18 more)
+Nodes (25): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-01`: Lead Discovery & Canva Pitch Engine, `MOD-08`: WhatsApp Marketing & CRM RAG Engine, `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, auditDigitalGaps(), autofillCanvaProposal() (+17 more)
 
 ### Community 29 - "LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE"
 Cohesion: 0.25
@@ -236,8 +241,8 @@ Cohesion: 0.10
 Nodes (26): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, detectCircularTenancy(), BudgetExceededError, CircularTenancyError, GATE_STAGES, Mod10AuthRequest, Mod10AuthResponse, RbacDeniedError (+18 more)
 
 ### Community 32 - "mobile-app-service/src/lib/engine.ts"
-Cohesion: 0.05
-Nodes (52): `MOD-03`: Responsive Web & Landing Page Builder, `MOD-04`: Android Mobile App Builder, checkPlayPolicyDataSafety(), DANGEROUS_PERMISSION_MAP, JAVA_KEYWORDS, processAndroidBuild(), VALID_GOLDEN_TEMPLATES, validatePackageName() (+44 more)
+Cohesion: 0.15
+Nodes (21): `MOD-04`: Android Mobile App Builder, checkPlayPolicyDataSafety(), DANGEROUS_PERMISSION_MAP, JAVA_KEYWORDS, processAndroidBuild(), VALID_GOLDEN_TEMPLATES, validatePackageName(), androidBuildRequestSchema (+13 more)
 
 ### Community 33 - "LAUNCH UP — SETUP GUIDE & EXACT STARTER PROMPT FOR CODING AI MODELS"
 Cohesion: 0.50
@@ -260,8 +265,8 @@ Cohesion: 0.22
 Nodes (9): VITE_API_BASE_URL, web-admin, container_name, depends_on, environment, networks, ports, restart (+1 more)
 
 ### Community 40 - "context"
-Cohesion: 0.35
-Nodes (14): build, build, build, context, dockerfile, target, build, build (+6 more)
+Cohesion: 0.33
+Nodes (15): build, build, build, context, dockerfile, target, build, build (+7 more)
 
 ### Community 41 - "qa-secops-service/package.json"
 Cohesion: 0.08
@@ -276,8 +281,8 @@ Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, lead-pitch-service
 
 ### Community 44 - "auth-service"
-Cohesion: 0.11
-Nodes (22): condition, container_name, depends_on, networks, ports, restart, volumes, depends_on (+14 more)
+Cohesion: 0.17
+Nodes (16): condition, container_name, depends_on, networks, ports, restart, volumes, depends_on (+8 more)
 
 ### Community 45 - "qa-secops-service/src/lib/engine.ts"
 Cohesion: 0.18
@@ -288,8 +293,8 @@ Cohesion: 0.08
 Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
 
 ### Community 47 - "backend-api-service/src/lib/engine.ts"
-Cohesion: 0.14
-Nodes (24): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:, `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS (+16 more)
+Cohesion: 0.20
+Nodes (18): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+10 more)
 
 ### Community 48 - "compilerOptions"
 Cohesion: 0.14
@@ -311,33 +316,37 @@ Nodes (11): config, EnvConfig, envSchema, closeDb(), db, pool, fastify, FastifyR
 Cohesion: 0.14
 Nodes (13): compilerOptions, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, outDir (+5 more)
 
-### Community 53 - "minio"
+### Community 53 - "marketing-engine-service/package.json"
+Cohesion: 0.08
+Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
+
+### Community 54 - "web-builder-service/src/lib/engine.ts"
+Cohesion: 0.17
+Nodes (19): `MOD-03`: Responsive Web & Landing Page Builder, BuildOptions, checkCookieConsent(), processWebBuild(), VALID_GOLDEN_TEMPLATES, verifyViewports(), fileDeltaSchema, webBuilderRoutes() (+11 more)
+
+### Community 55 - "ref_node_test"
+Cohesion: 0.24
+Nodes (13): 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), `MOD-07`: Canva Pro Digital Marketing Engine, generatePlatformPost(), PLATFORM_ROTATION, processMarketingCampaign(), marketingRequestSchema, CalendarItem, CanvaRateLimitError (+5 more)
+
+### Community 56 - "ref_node_assert"
 Cohesion: 0.18
-Nodes (11): MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, command, container_name, environment, image, networks, ports (+3 more)
+Nodes (8): createGovernanceHttpServer(), dbStore, signToken(), RFC-7519, verifyToken(), createPerfServer(), perfStore, signToken()
 
-### Community 54 - "postgres"
-Cohesion: 0.18
-Nodes (11): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, container_name, environment, image, networks, ports (+3 more)
+### Community 57 - "compilerOptions"
+Cohesion: 0.14
+Nodes (13): compilerOptions, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, outDir (+5 more)
 
-### Community 55 - "gateway"
-Cohesion: 0.25
-Nodes (8): container_name, depends_on, image, networks, ports, restart, volumes, gateway
-
-### Community 56 - "redis"
-Cohesion: 0.25
-Nodes (8): command, container_name, image, networks, ports, restart, volumes, redis
-
-### Community 57 - "qa-secops-service"
-Cohesion: 0.33
-Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
+### Community 58 - "mobile-app-service"
+Cohesion: 0.29
+Nodes (7): container_name, environment, networks, ports, restart, volumes, mobile-app-service
 
 ### Community 59 - "project-service"
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, project-service
 
-### Community 60 - "web-builder-service"
-Cohesion: 0.33
-Nodes (6): web-builder-service, container_name, networks, ports, restart, volumes
+### Community 60 - "mod10.system.test.ts"
+Cohesion: 0.38
+Nodes (4): signToken(), startSystemE2EServer(), systemStore, verifyToken()
 
 ### Community 61 - "compilerOptions"
 Cohesion: 0.14
@@ -347,15 +356,31 @@ Nodes (13): compilerOptions, declaration, esModuleInterop, forceConsistentCasing
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, backend-api-service
 
+### Community 63 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
+Cohesion: 0.33
+Nodes (5): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:
+
+### Community 64 - "ba-intake-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, ba-intake-service
+
+### Community 65 - "governance-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, governance-service
+
+### Community 66 - "ref_fastify_cors"
+Cohesion: 0.50
+Nodes (3): marketingRoutes(), buildApp(), PORT
+
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 580 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 609 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `services` connect `volumes` to `web-admin`, `services`, `auth-service`, `client-service`, `minio`, `postgres`, `gateway`, `redis`, `environment`, `project-service`, `web-builder-service`, `backend-api-service`, `qa-secops-service`?**
+- **Why does `services` connect `services` to `ba-intake-service`, `governance-service`, `environment`, `web-admin`, `services`, `auth-service`, `client-service`, `interval`, `environment`, `mobile-app-service`, `project-service`, `backend-api-service`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
@@ -363,9 +388,9 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.060198643410852716 - nodes in this community are weakly interconnected._
 - **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **Should `environment` be split into smaller, more focused modules?**
+  _Cohesion score 0.11931818181818182 - nodes in this community are weakly interconnected._
+- **Why does `2. Module-by-Module JSON Input/Output Contracts` connect `lead-pitch-service/src/lib/engine.ts` to `mobile-app-service/src/lib/engine.ts`, `ba-intake-service/src/lib/engine.ts`, `qa-secops-service/src/lib/engine.ts`, `backend-api-service/src/lib/engine.ts`, `web-builder-service/src/lib/engine.ts`, `ref_node_test`, `governance-service/src/routes/index.ts`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.050505050505050504 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `App.tsx` to `package.json`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **Should `auth-service/package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._
