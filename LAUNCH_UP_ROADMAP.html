@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Launch Up: a practical learning curriculum, Docker architecture, 6–12 month execution roadmap, and researched local AI strategy.">
+<title>Launch Up — Learn, Build, Scale</title>
+<style>
+:root{--paper:#f5f4ef;--white:#fff;--ink:#172a34;--muted:#526570;--line:#d7dfdf;--accent:#ab411e;--green:#155e52;--soft:#e7f0ec;--nav:248px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:28px}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 "Segoe UI",Arial,sans-serif}a{color:var(--green);text-underline-offset:3px}a:hover{color:var(--accent)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.skip{position:fixed;top:-80px;left:20px;background:white;padding:12px;z-index:10}.skip:focus{top:10px}
+aside{position:fixed;inset:0 auto 0 0;width:var(--nav);padding:32px 24px;border-right:1px solid var(--line);background:var(--white);overflow-y:auto}
+.brand{font-weight:800;font-size:22px;letter-spacing:-1px}.brand span{color:var(--accent)}.edition{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:6px 0 30px}
+nav a{display:block;text-decoration:none;color:var(--muted);font-size:13px;line-height:1.4;padding:9px 0;border-bottom:1px solid #edf0ef}nav a:hover{color:var(--accent)}nav a b{display:inline-block;width:26px;color:var(--accent);font-size:11px}
+.aside-note{font-size:12px;color:var(--muted);margin-top:26px}.print{width:100%;padding:9px 12px;border:1px solid var(--ink);background:var(--white);border-radius:6px;margin-top:16px}
+main{margin-left:var(--nav);max-width:1320px;padding:40px 56px 72px}.meta{display:flex;justify-content:space-between;gap:15px;font-size:11px;text-transform:uppercase;letter-spacing:1.6px;color:var(--muted)}
+.hero{padding:46px 0 36px;border-bottom:2px solid var(--ink)}.eyebrow,.section-number{text-transform:uppercase;letter-spacing:2px;font-size:11px;color:var(--accent);font-weight:800}.hero h1{font-size:clamp(46px,6vw,82px);line-height:1.02;letter-spacing:-3px;margin:18px 0 24px;font-weight:750}.hero h1 em{font-style:normal;color:var(--green)}.lead{font-size:20px;line-height:1.65;max-width:790px}.hero-bottom{display:grid;grid-template-columns:repeat(3,1fr);margin-top:32px;border-top:1px solid var(--line)}.hero-bottom div{padding:17px 16px 0 0}.hero-bottom strong{display:block;font-size:22px}.hero-bottom span{font-size:12px;color:var(--muted)}
+section{padding:45px 0 18px;border-bottom:1px solid var(--line)}h2{font-size:31px;line-height:1.2;letter-spacing:-.8px;margin:10px 0 22px}h3{font-size:20px;margin:25px 0 8px;line-height:1.35}p{margin:12px 0}ul,ol{padding-left:23px}li{padding:3px 0}strong{font-weight:700}.muted,small{color:var(--muted)}small{font-size:12px}.note{padding:18px 22px;border-left:4px solid var(--green);background:var(--soft);margin:22px 0}.note.warn{border-color:var(--accent);background:#f9eee5}.note p{margin:3px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.card{border:1px solid var(--line);background:var(--white);border-radius:10px;padding:22px}.card h3{margin-top:0}.card p:last-child{margin-bottom:0}
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:8px;background:white}table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.6;min-width:580px}th,td{padding:14px 16px;vertical-align:top;text-align:left;border-bottom:1px solid var(--line)}th{font-size:11px;letter-spacing:.8px;text-transform:uppercase;background:#eaf0ee;color:#324f51}tr:last-child td{border-bottom:0}td:first-child{font-weight:650}code,pre{font-family:Consolas,"Courier New",monospace}code{font-size:.88em;background:#e8eeeb;padding:2px 5px;border-radius:3px}pre{background:var(--ink);color:#ecf3ef;white-space:pre-wrap;overflow-wrap:anywhere;padding:23px;border-radius:8px;font-size:12px;line-height:1.7}pre code{background:none;padding:0;font-size:inherit;color:inherit}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}.flow div{border-top:3px solid var(--green);background:white;padding:16px;font-size:13px}.flow b{display:block;margin-bottom:6px}.flow span{font-size:11px;color:var(--muted)}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}.pill.green{background:var(--soft);color:var(--green)}.pill.orange{background:#f9eee5;color:#93320f}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.controls button{border:1px solid var(--line);background:white;padding:9px 18px;border-radius:5px;color:var(--ink)}.controls button[aria-pressed="true"]{background:var(--ink);color:white;border-color:var(--ink)}.horizon{padding:20px 24px;background:var(--ink);color:white;border-radius:8px}.horizon h3{margin:0 0 6px;color:white}.horizon p{margin:5px 0}.horizon small{color:#c6d9d4}
+.month{display:grid;grid-template-columns:80px 1fr;gap:18px;padding:21px 0;border-bottom:1px solid var(--line)}.month:last-child{border:0}.month .num{font-size:30px;line-height:1.1;font-weight:750;color:var(--green)}.month .num small{display:block;font-size:10px;letter-spacing:1px;line-height:2}.month h3{margin:0 0 6px}.month p{margin:5px 0;font-size:14px}.gate{color:var(--green);font-weight:600}
+details{border:1px solid var(--line);border-radius:8px;padding:16px 20px;background:white;margin:14px 0}summary{cursor:pointer;font-weight:700}details p,details li{font-size:14px}.checklist label{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.checklist input{margin-top:7px;width:18px;height:18px;accent-color:var(--green);flex-shrink:0}progress{width:100%;height:10px;accent-color:var(--green)}.sources{columns:2;column-gap:32px;padding-left:20px}.sources li{break-inside:avoid;font-size:12px;margin:0 0 12px}.sources a{overflow-wrap:anywhere}.foot{font-size:12px;color:var(--muted);margin-top:32px}
+@media(min-width:1600px){main{margin-left:calc(var(--nav) + (100vw - 1600px)/2)}}
+@media(max-width:1000px){:root{--nav:205px}aside{padding:24px 18px}main{padding:30px}.flow{grid-template-columns:1fr 1fr}.hero h1{font-size:58px}}
+@media(max-width:720px){aside{position:relative;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:18px 22px}.edition{margin:2px 0 12px}nav{display:flex;gap:14px;overflow-x:auto}nav a{white-space:nowrap;border:0;flex-shrink:0}nav a b{width:auto;margin-right:5px}.aside-note,aside .print{display:none}main{margin:0;padding:25px 20px 45px}.meta{font-size:9px}.hero{padding-top:28px}.hero h1{font-size:52px;letter-spacing:-2px}.lead{font-size:17px}.hero-bottom strong{font-size:18px}.hero-bottom span{font-size:10px}.grid{grid-template-columns:1fr}h2{font-size:27px}.sources{columns:1}.month{grid-template-columns:50px 1fr;gap:12px}.month .num{font-size:24px}pre{padding:16px;font-size:11px}.note{padding:15px}.flow{gap:8px}.flow div{padding:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{aside,.controls,.skip,.no-print{display:none!important}body{background:white;font-size:10pt;color:#000}main{margin:0;padding:0;max-width:none}.hero{padding:15px 0}.hero h1{font-size:42pt}.lead{font-size:13pt}section{padding-top:24px}h2{font-size:22pt;break-after:avoid}h3{break-after:avoid}.card,.note,.month,tr,pre{break-inside:avoid}.table-wrap{overflow:visible}table{min-width:0;font-size:9pt}th,td{padding:8px}.sources{columns:1}pre{background:#f1f3f2;color:#111}.horizon{background:#f1f3f2;color:#111}.horizon h3,.horizon small{color:#111}a{color:#174c42}.hero-bottom{margin-top:15px}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to roadmap</a>
+<aside>
+<div class="brand">Launch Up<span>↗</span></div>
+<div class="edition">Founder’s build guide · v1.0</div>
+<nav aria-label="Document contents">
+<a href="#direction"><b>01</b>Direction &amp; scope</a>
+<a href="#learn"><b>02</b>What to learn</a>
+<a href="#stack"><b>03</b>Stack decisions</a>
+<a href="#architecture"><b>04</b>Docker &amp; distribution</a>
+<a href="#factory"><b>05</b>Templates &amp; quality</a>
+<a href="#execution"><b>06</b>Execution roadmap</a>
+<a href="#liquid"><b>07</b>Liquid AI assessment</a>
+<a href="#efficiency"><b>08</b>Memory &amp; speed research</a>
+<a href="#training"><b>09</b>Training &amp; evaluation</a>
+<a href="#modules"><b>10</b>AI coding handoffs</a>
+<a href="#economics"><b>11</b>Costs &amp; first steps</a>
+<a href="#sources"><b>12</b>Research sources</a>
+</nav>
+<p class="aside-note">Built around 16 GB RAM, an RTX 3050 Laptop GPU with 6 GB VRAM, and a gradual move to shared infrastructure.</p>
+<button class="print" id="print">Print / save as PDF</button>
+</aside>
+<main id="content">
+<div class="meta"><span>Engineering + product + applied AI</span><span>Research checked · 11 October 2026</span></div>
+<header class="hero">
+<div class="eyebrow">A practical path from prototype to production</div>
+<h1>Learn the foundations.<br>Build the system.<br><em>Scale the quality.</em></h1>
+<p class="lead">A 6–12 month roadmap for an AI-operated digital-services platform: reusable software, Docker delivery, concurrent teams, and small models that earn their place through measured results.</p>
+<div class="hero-bottom"><div><strong>12 months</strong><span>Recommended learning + build horizon</span></div><div><strong>2 product families</strong><span>Marketing sites + service-management apps first</span></div><div><strong>1 delivery standard</strong><span>Versioned, tested, containerized artifacts</span></div></div>
+</header>
+<section id="direction">
+<div class="section-number">01 / Direction &amp; scope</div><h2>Build a software factory with a dependable core.</h2>
+<p>Launch Up should translate a business brief into a validated application specification, assemble proven modules, generate only missing capabilities, test the result, and deliver a reproducible release. Your existing React dashboard becomes the operating console. The first revenue product should be a limited set of excellent outcomes, expanded as delivery becomes repeatable.</p>
+<div class="note"><p><strong>Recommendation:</strong> choose the 12-month path if you are learning while building. A six-month result should be a supervised pilot. More time buys testing, template depth, operational reliability, and design refinement; it does not guarantee frontier-model capability.</p></div>
+<p><strong>Planning assumption:</strong> one primary builder working about 20–25 focused hours per week, using coding assistants, with occasional experienced review. That is roughly 1,040–1,300 hours over a year before holidays and interruptions. If starting from zero programming knowledge, allow more time. The schedule is a planning estimate, and acceptance gates determine release readiness.</p>
+<div class="grid"><div class="card"><h3>What the repository already gives you</h3><p>React 19, Vite, TypeScript, Tailwind, 20 tab components, shared modals, domain types, theme tokens, and a broad product vocabulary. Business state is mostly in-memory; deployment, training, and agent actions are simulated.</p></div><div class="card"><h3>What must become real</h3><p>Identity, durable data, asset intake, specifications, template assembly, isolated execution, verification, release management, cost accounting, and team permissions. Existing architecture documents describe intent beyond implemented capabilities.</p></div></div>
+<p class="muted"><small>Repository assessment carried forward from the source review in this conversation. No running-app or build validation is implied. This document is a proposed implementation plan, not a claim that these systems exist.</small></p>
+<p><strong>Initial scope:</strong> business websites and service-company management software. Add more business modules after successful pilots. Android, marketing execution, custom customer models, and complex SaaS architectures enter later service tracks. Every track needs its own acceptance criteria.</p>
+</section>
+<section id="learn">
+<div class="section-number">02 / Learning curriculum</div><h2>Learn by producing the next piece of Launch Up.</h2>
+<p>Do not finish a year of courses before building. Each learning block should end in a small working deliverable. Spend approximately 30% of the early weeks studying, 50% implementing, and 20% testing and documenting. Gradually move time from courses to real failures and improvements.</p>
+<div class="table-wrap"><table><thead><tr><th>Order / window</th><th>Learn</th><th>Build to demonstrate understanding</th></tr></thead><tbody>
+<tr><td>1 · Weeks 1–4</td><td>Git branches/merges; Linux shell; files/permissions; HTTP, DNS, TLS; JavaScript functions, async/await, arrays; semantic HTML and responsive CSS. <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development">MDN</a></td><td>A responsive intake form, manual validation, a Git branch/PR, and an explanation of a browser-to-server request.</td></tr>
+<tr><td>2 · Weeks 3–8</td><td>TypeScript strict types, discriminated unions; React state/effects; accessible forms; CSS tokens; routing; server-state versus UI-state. <a href="https://www.typescriptlang.org/docs/handbook/intro.html">TypeScript</a> · <a href="https://react.dev/learn">React</a></td><td>One existing tab connected to an API, including loading, empty, error, permission-denied, and success states.</td></tr>
+<tr><td>3 · Weeks 6–12</td><td>Node/Express; REST; validation; SQL joins/indexes/transactions; schema migrations; authentication, authorization, tenancy.</td><td>Persistent organizations, members, clients, and projects. A test proves one organization cannot read another’s data.</td></tr>
+<tr><td>4 · Weeks 9–16</td><td>Docker images versus containers; multi-stage builds; Compose; volumes/networks; health checks; environment configuration; CI/CD and secrets.</td><td>A clean machine starts a sample client project from a documented container delivery bundle. <a href="https://docs.docker.com/compose/">Docker Compose</a></td></tr>
+<tr><td>5 · Weeks 13–22</td><td>JSON Schema; deterministic generation; module manifests; compatibility; migration planning; unit, integration, and browser tests.</td><td>One AppSpec creates two differently branded businesses from one template without manual source editing. <a href="https://playwright.dev/docs/intro">Playwright</a></td></tr>
+<tr><td>6 · Weeks 18–28</td><td>Durable queues; state machines; idempotency; retries; worker leases; optimistic concurrency; logs/traces; resource budgets.</td><td>Kill a worker mid-job and recover without publishing twice or losing the result.</td></tr>
+<tr><td>7 · Weeks 22–36</td><td>Python basics; tensors, tokenizers, inference versus training; retrieval; dataset splits; SFT, LoRA, quantization, evaluation metrics.</td><td>Compare a small model against a fixed benchmark, then train one adapter only if prompting/retrieval leaves a measurable gap.</td></tr>
+<tr><td>8 · Weeks 30–44</td><td>Distributed workers; container registry; object storage; GPU serving; fair scheduling; observability; backups and restore; signed releases.</td><td>Two workers on separate hosts process independent jobs. Concurrent team edits cannot silently overwrite one another.</td></tr>
+<tr><td>9 · Weeks 40–52</td><td>Incident handling; load testing; UX research; performance profiling; template upgrades; support and unit economics.</td><td>Operate a narrow paid pilot and perform a documented recovery drill, then expand one capability at a time.</td></tr>
+</tbody></table></div>
+<p><strong>Defer until justified:</strong> Kubernetes administration, multi-GPU training, reinforcement learning, custom CUDA kernels, multiple databases, and additional frontend frameworks. Understand their purpose early; implement them only when the current design reaches a measured limit.</p>
+</section>
+<section id="stack">
+<div class="section-number">03 / Technology decisions</div><h2>Keep the stack small and the interfaces explicit.</h2>
+<div class="table-wrap"><table><thead><tr><th>Layer</th><th>Default choice</th><th>Reason / boundary</th></tr></thead><tbody>
+<tr><td>Console &amp; management apps</td><td>React + TypeScript + Vite + Tailwind</td><td>Preserve your prototype. Extract shared tokens, primitives, and page patterns; add URL routing and a server-state cache.</td></tr>
+<tr><td>Public websites</td><td>Astro + shared React components</td><td>Static-first pages for content and search visibility. Build with Docker and offer a small static-server image for delivery.</td></tr>
+<tr><td>API</td><td>Node.js supported LTS + maintained Express</td><td>One TypeScript backend, split into modules. Pin versions and one package-manager lockfile.</td></tr>
+<tr><td>Contracts &amp; storage</td><td>JSON Schema + OpenAPI; PostgreSQL + SQL migrations</td><td>One authoritative schema per boundary; generate types. Store core business relationships relationally; use JSONB for bounded custom metadata.</td></tr>
+<tr><td>Identity</td><td>Better Auth, with explicit application permissions</td><td>Reusable authentication instead of custom crypto. Organization membership alone does not grant project access.</td></tr>
+<tr><td>Durable work</td><td>pg-boss + persisted job-step state</td><td>Use PostgreSQL initially. Keep a queue adapter so a future workflow engine can replace it without changing product modules.</td></tr>
+<tr><td>Assets &amp; images</td><td>S3-compatible object storage + OCI image registry</td><td>Uploads, reports, and model datasets in object storage; application images in registry. Database stores identifiers/digests.</td></tr>
+<tr><td>Local development</td><td>Linux containers via Docker/WSL2 + Compose</td><td>Match production conventions. Limit background services on 16 GB RAM; run heavy tasks sequentially.</td></tr>
+<tr><td>Local inference</td><td>llama.cpp or Ollama, behind one gateway</td><td>Choose one runtime after testing your selected model. Start with one loaded model and one active inference request.</td></tr>
+<tr><td>Training</td><td>Python + PyTorch/Transformers + PEFT; Liquid’s recipes where supported</td><td>Separate environment and pinned model/runtime revisions. Training is an optional subsystem.</td></tr>
+<tr><td>Verification</td><td>Vitest, integration tests, Playwright, accessibility checks</td><td>Business correctness plus visual quality. A model’s self-review never replaces execution evidence.</td></tr>
+<tr><td>Operations</td><td>Structured logs + OpenTelemetry; metrics backend when hosted</td><td>Track request, project, job, artifact, and release IDs end-to-end. Redact sensitive data.</td></tr>
+<tr><td>Later mobile</td><td>React Native + Expo</td><td>Share contracts and selected logic. Android’s delivery artifact is an APK/AAB; Docker provides the build environment, not the installed phone runtime.</td></tr>
+</tbody></table></div>
+<p>Keep Launch Up’s internal management database separate from delivered client application data. Start client management apps with a database/user per deployment where practical; share the physical database server only with deliberate resource and access limits. Dedicated infrastructure is an upgrade option, not an automatic default.</p>
+<p class="muted"><small>These are architecture recommendations, not a claim that every named component is already installed. Learning links and supporting documentation are collected in <a href="#sources">Sources</a>.</small></p>
+</section>
+<section id="architecture">
+<div class="section-number">04 / Docker &amp; distributed execution</div><h2>Portable projects. Independent workers. Shared control.</h2>
+<div class="flow" aria-label="Four architecture responsibilities">
+<div><b>1. Control plane</b><span>Console, API, identity, specifications, budgets, job state</span></div>
+<div><b>2. Worker fleet</b><span>Isolated build/test jobs; temporary workspaces and previews</span></div>
+<div><b>3. Model service</b><span>Local or hosted inference; GPU-aware request queue</span></div>
+<div><b>4. Client runtime</b><span>Released containers and persistent data, independently operated</span></div>
+</div>
+<p><strong>Docker contract for every project:</strong> a multi-stage Dockerfile, local Compose configuration, environment-variable schema, health endpoint, explicit persistent volumes, migration command, lockfile, test command, release manifest, and restore instructions. Deliver source plus an image digest and operational documentation. Keep customer secrets outside images and build arguments.</p>
+<p>Build once and promote the tested image digest through preview, staging, and production. Include dependency inventory and provenance where supported. A container packages runtime dependencies; it does not automatically configure DNS, TLS, email delivery, database backups, or mobile signing. <a href="https://docs.docker.com/build/ci/github-actions/attestations/">Docker attestations</a></p>
+<h3>Isolation must match the trust level</h3>
+<p>Docker is the packaging baseline, but containers share a host kernel. Run ordinary project containers with non-root users, limited capabilities, read-only filesystems where practical, bounded CPU/RAM/disk/PIDs, separate networks, and scoped secrets. Rootless Docker reduces privilege exposure; it is not a complete boundary for hostile builds. <a href="https://docs.docker.com/engine/security/">Docker security</a> · <a href="https://docs.docker.com/engine/security/rootless/">Rootless mode</a></p>
+<p>AI-generated code, repository install scripts, and uploaded templates are untrusted execution. Place their builders on separate disposable worker VMs, with a sandbox runtime such as gVisor where compatible. Never mount the production host’s Docker socket into a client workspace. Keep a trusted build supervisor outside that workspace. Restrict egress and destroy temporary credentials after completion. <a href="https://gvisor.dev/docs/">gVisor</a></p>
+<h3>Design for simultaneous team members now</h3>
+<ul>
+<li><strong>Workspace identity:</strong> organizationId + projectId + jobId + attemptId. Separate clone/worktree, filesystem, network, preview URL, and test database for each job.</li>
+<li><strong>Editing:</strong> every specification has a revision. Updates include the expected revision; stale writes return a conflict. Freeze a revision for each build.</li>
+<li><strong>Source:</strong> task branches and pull requests. Use a merge queue; one migration owner/integrator resolves shared schema changes. Do not let several agents write into the same checkout.</li>
+<li><strong>Scheduling:</strong> workers advertise capabilities such as linux-build, android-build, browser-test, and gpu-inference. Admit jobs only when resources and budget are available.</li>
+<li><strong>Fairness:</strong> per-organization and per-project concurrency limits, fair queues, priority, cancellation, timeout, retry budget, and maximum queued work.</li>
+<li><strong>Recovery:</strong> leases and heartbeats identify abandoned work. A fencing token rejects results from an expired worker. Steps use idempotency keys; external side effects require deduplication and reconciliation.</li>
+<li><strong>Events:</strong> save state plus an outbox event transactionally. Stream persisted events to the UI with sequence IDs so reconnects do not lose progress.</li>
+<li><strong>Releases:</strong> serialize production promotion per project/environment. Approval binds to the spec revision and artifact digest; a changed artifact requires a new decision.</li>
+</ul>
+<div class="note"><p><strong>Distributed computing means distributing jobs first.</strong> Multiple laptops or servers can build different projects. That does not combine their RAM/VRAM into one fast model. Keep model inference centralized or replicated; consider model sharding only for a later, measured need.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Stage</th><th>Deployment shape</th><th>Upgrade trigger</th></tr></thead><tbody>
+<tr><td>Laptop</td><td>Compose control services, one isolated active build, one small model. Stop idle previews.</td><td>Measured RAM pressure or build/inference contention. Do not advertise production availability from the laptop.</td></tr>
+<tr><td>First hosted pilot</td><td>Control-plane host, separately isolated worker host, persistent PostgreSQL/storage, shared registry; optional inference host.</td><td>Paid workload can support hosting, backups, monitoring, and support. Provision ahead of production promises.</td></tr>
+<tr><td>Multi-host workers</td><td>Same worker protocol on several machines, outbound authenticated connections, short-lived credentials, capability queues.</td><td>Queue-wait targets repeatedly missed under representative load.</td></tr>
+<tr><td>Managed cluster, if needed</td><td>Kubernetes Jobs or a managed batch service behind the existing worker adapter; containerd-compatible OCI images.</td><td>Scheduling/availability problems justify the additional operational cost. Kubernetes does not require Docker Engine on nodes.</td></tr>
+</tbody></table></div>
+<p>Compose is the local/single-host composition tool. Cluster scheduling is a different responsibility. Preserve an execution adapter such as <code>submit / cancel / status / logs / artifacts</code> so moving hosts does not rewrite product logic. <a href="https://docs.docker.com/compose/">Compose</a> · <a href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">Kubernetes Jobs</a></p>
+</section>
+<section id="factory">
+<div class="section-number">05 / Reuse &amp; product quality</div><h2>Make modern design repeatable.</h2>
+<p>Use four layers: UI primitives → business modules → product blueprints → custom extensions. Names, labels, fields, and themes are configuration. Scheduling conflicts, inventory reservations, financial rules, and workflow permissions are tested business logic.</p>
+<pre><code>Brief + assets → Requirements → AppSpec@revision
+  → Compatible template/module lock
+  → Deterministic assembly + bounded custom patches
+  → Container build + acceptance/visual/security checks
+  → Preview → approved release digest → monitored deployment</code></pre>
+<p>AppSpec records entities, stable field keys, relationships, pages, roles, row scopes, workflow transitions, theme tokens, integrations, and acceptance criteria. JSON Schema checks shape; semantic validation checks compatibility and business rules. Never execute arbitrary code embedded in configuration.</p>
+<p>A template manifest records version, source digest, stack profile, required modules, supported configuration, licence, migrations, tests, and screenshots. Use curated references and licensed assets to create distinct visual directions. Keep global design tokens separate from page compositions so outputs do not all become the same dashboard with new colours.</p>
+<div class="grid"><div class="card"><h3>Design system work</h3><p>Typography scales, spacing, colour/contrast, grids, reusable layout patterns, light/dark modes, focus states, reduced motion, loading/skeleton states, empty/error states, and readable dense tables. Establish at least three deliberate design directions before selling broad customization.</p></div><div class="card"><h3>Feedback and verification</h3><p>Capture approved screenshots and user tasks. Compare generated pages at multiple widths and with long text, large datasets, missing images, validation errors, and slow networks. Let clients approve actual previews before production promotion.</p></div></div>
+<h3>Release gates for each generated application</h3>
+<ul>
+<li><strong>Correctness:</strong> specified workflows and permission boundaries pass; no known critical defect. Test authorization on the server, not only hidden buttons.</li>
+<li><strong>Responsive behaviour:</strong> exercise 360/390, 768, 1024, and 1440 px widths; no unintended page overflow, clipped actions, or unusable touch targets.</li>
+<li><strong>Accessibility:</strong> target WCAG 2.2 AA; automated checks plus keyboard, focus, screen-reader, and zoom checks. An automated score alone is not conformance.</li>
+<li><strong>Performance:</strong> target field p75 LCP ≤2.5 s, INP ≤200 ms, CLS ≤0.1 for relevant pages. Use lab tests before traffic exists, then measure real users. <a href="https://web.dev/articles/vitals">Core Web Vitals</a></li>
+<li><strong>Operational readiness:</strong> health checks, rollback procedure, database migration compatibility, backup restore evidence, logs, and owner/contact information.</li>
+<li><strong>Supply chain:</strong> scan code/dependencies/images and secrets; triage findings. “Scanner passed” is not proof of zero vulnerabilities.</li>
+</ul>
+<p>Application rollback cannot undo arbitrary database changes. Prefer expand/contract migrations and test old/new application compatibility during rollout. Extract reusable modules only after removing client information, confirming reuse rights, and testing a second business configuration.</p>
+</section>
+<section id="execution">
+<div class="section-number">06 / Execution roadmap</div><h2>Choose a horizon. Preserve the quality gates.</h2>
+<p>The options below change the deliverable scope, not the standard of correctness. The detailed sequence is the recommended 12-month path, measured from your actual start date.</p>
+<div class="controls" role="group" aria-label="Choose planning horizon">
+<button data-months="6" aria-pressed="false">6 months</button><button data-months="8" aria-pressed="false">8 months</button><button data-months="10" aria-pressed="false">10 months</button><button data-months="12" aria-pressed="true">12 months</button>
+</div>
+<div class="horizon" aria-live="polite"><h3 id="h-title">12 months · production foundation</h3><p id="h-scope">Two polished product families, concurrent hosted workers, reliable releases, measured local-model routing, and supervised expansion into one adjacent service.</p><small id="h-limit">Allow time for pilot feedback and recovery drills. Android, marketing, and model training remain separate acceptance tracks.</small></div>
+<div class="month"><div class="num">01<small>FOUNDATIONS</small></div><div><h3>Stabilize the prototype and learn the web core</h3><p>Pin tools and dependencies; document existing mock behaviours; learn Git/TypeScript/HTTP. Establish shared UI tokens, real routes, basic checks, and a clean local startup.</p><p class="gate">Gate: another person can clone, start, and navigate the project using written instructions.</p></div></div>
+<div class="month"><div class="num">02<small>PERSISTENCE</small></div><div><h3>Implement identity, tenancy, and durable records</h3><p>Create API, PostgreSQL migrations, organizations/memberships, client/project CRUD, role checks, and audit events. Wire one complete frontend journey before expanding.</p><p class="gate">Gate: records survive restart; cross-tenant access and unauthorized writes fail.</p></div></div>
+<div class="month"><div class="num">03<small>SPECIFICATION</small></div><div><h3>Make client intake and AppSpec real</h3><p>Business brief, asset uploads, versioned requirements, missing-information workflow, schema validation, and acceptance criteria. Manual spec editing remains available.</p><p class="gate">Gate: three sample businesses produce valid, reviewable specifications with unresolved questions exposed.</p></div></div>
+<div class="month"><div class="num">04<small>FIRST DELIVERY</small></div><div><h3>Ship the first containerized marketing-site pipeline</h3><p>Versioned template, deterministic assembly, Docker build, browser checks, artifact store, preview URL, and delivery bundle. Start with one hosting target.</p><p class="gate">Gate: a fresh environment launches the exact tested release; a failed build never appears successful.</p></div></div>
+<div class="month"><div class="num">05<small>BUSINESS CORE</small></div><div><h3>Build one reusable service-management application</h3><p>Contacts, service jobs, appointments, notes/files, roles, filtering, exports, and configurable forms. Keep core rules in modules and theme/layout settings in the spec.</p><p class="gate">Gate: three distinct service businesses work from one blueprint with no manual core rewrites.</p></div></div>
+<div class="month"><div class="num">06<small>CONTROLLED AI</small></div><div><h3>Add the model gateway and bounded coding jobs</h3><p>Local/cloud adapters, usage ledger, retrieval, structured output, explicit tool permissions, patch proposals, test-and-repair limits. Run first supervised design-partner previews.</p><p class="gate">Gate: unsupported tasks escalate or stop; budgets and cancellation work. This is the six-month pilot scope.</p></div></div>
+<div class="month"><div class="num">07<small>COLLABORATION</small></div><div><h3>Make jobs durable and team work conflict-safe</h3><p>Persist steps, leases, fencing, idempotency, revision checks, branch ownership, and per-tenant quotas. Wire real event streams into Agent Company and Project Canvas.</p><p class="gate">Gate: simultaneous users cannot overwrite specs silently; worker termination does not duplicate a release.</p></div></div>
+<div class="month"><div class="num">08<small>HOSTED PILOT</small></div><div><h3>Move execution to isolated worker hosts</h3><p>Separate control/build environments, registry/storage, backups, scoped credentials, measured queue limits, and client handover documentation. Refine templates through pilot feedback.</p><p class="gate">Gate: two separate workers deliver independent projects; a restore drill succeeds; operating costs are visible.</p></div></div>
+<div class="month"><div class="num">09<small>LOCAL AI</small></div><div><h3>Benchmark Liquid and coding baselines; train selectively</h3><p>Build a held-out dataset and compare task quality, memory, latency, and escalation. Fine-tune one narrow task if justified, then evaluate its quantized version.</p><p class="gate">Gate: the candidate improves cost per accepted task without unacceptable regressions.</p></div></div>
+<div class="month"><div class="num">10<small>QUALITY</small></div><div><h3>Strengthen design, accessibility, and release confidence</h3><p>Curated design directions, visual baselines, browser/device coverage, realistic load tests, module upgrade paths, independent security/design review.</p><p class="gate">Gate: selected product families meet published acceptance targets; unresolved limitations are documented.</p></div></div>
+<div class="month"><div class="num">11<small>CAPACITY</small></div><div><h3>Scale from measurements and add one adjacent service</h3><p>Load-test a provisional five-user/five-project scenario, tune fair scheduling and inference pooling, and add either Android delivery or a bounded automation service.</p><p class="gate">Gate: declared concurrency meets queue/latency budgets; the new service has its own delivery and recovery tests.</p></div></div>
+<div class="month"><div class="num">12<small>OPERATIONS</small></div><div><h3>Launch the stable service and close the learning loop</h3><p>Track delivery margin, defects, support time, template reuse, and model costs. Drill incident recovery, document runbooks, and schedule verified upgrades.</p><p class="gate">Gate: repeatable paid delivery for the supported catalogue. Broader autonomy follows demonstrated reliability.</p></div></div>
+<p class="muted"><small>Six-month scope: months 1–6, supervised. Eight-month scope: add collaboration and hosted pilot. Ten-month scope: add measured local AI and deeper quality work. Twelve-month scope: add capacity testing, one adjacent service, and operational hardening. If a gate fails, reduce scope or move the date.</small></p>
+</section>
+<section id="liquid">
+<div class="section-number">07 / Liquid AI assessment</div><h2>A strong candidate for small, bounded jobs.</h2>
+<p><span class="pill green">Documented capability</span> Liquid’s current catalogue includes LFM2.5-1.2B-Instruct, LFM2.5-2.6B, smaller variants, and larger/MoE models. The 2.6B documentation describes native tool calling and a 128K maximum context. That context limit is a model capability, not a suitable starting configuration for your laptop. <a href="https://www.liquid.ai/models">Model catalogue</a> · <a href="https://docs.liquid.ai/lfm/models/lfm25-2.6b">2.6B documentation</a></p>
+<p>The LFM2 technical report describes a hybrid of gated short convolutions and attention, selected with hardware-aware architecture search. Its training includes large-scale pretraining, distillation, and post-training. These efficiencies are already embodied in released checkpoints: you can adapt a checkpoint without reproducing that foundational training. The older LFM2 report should not be used as a specification for every newer LFM2.5 variant. <a href="https://arxiv.org/abs/2511.23404">LFM2 technical report</a></p>
+<div class="table-wrap"><table><thead><tr><th>Candidate</th><th>Proposed Launch Up role</th><th>Decision test</th></tr></thead><tbody>
+<tr><td>LFM2.5-1.2B-Instruct</td><td>Brief extraction, intent routing, short summaries, compatible-template suggestions</td><td>Correctness against labelled briefs; schema validity; ambiguity detection; latency at short context</td></tr>
+<tr><td>LFM2.5-2.6B</td><td>Richer AppSpec generation and bounded tool-use tasks</td><td>Compare quality and escalation rate with 1.2B; prove tool permissions and memory fit</td></tr>
+<tr><td>Small coding-model baseline</td><td>Limited TypeScript patches and failure explanation</td><td>Compare a licensed coding model with Liquid on identical repository tasks; use tests, not style preference</td></tr>
+<tr><td>Stronger hosted model</td><td>Unfamiliar architecture, difficult debugging, selected design/research work</td><td>Use only when a cheaper route cannot meet acceptance criteria within the budget</td></tr>
+</tbody></table></div>
+<p><strong>Recommendation:</strong> first try a quantized 1.2B instruct checkpoint, then a 2.6B candidate. Benchmark CPU and GPU paths. Begin with batch size one, one active request, 2K–4K context, and a bounded output. Do not load a separate model for every “agent” role.</p>
+<p>Liquid reports fast CPU inference for LFM2.5 on specific devices; its published comparison used 1K input and 100 output tokens. Those measurements do not predict your sustained laptop throughput, multi-user capacity, or repository-level code quality. <a href="https://www.liquid.ai/blog/introducing-lfm2-5-the-next-generation-of-on-device-ai">LFM2.5 release and benchmark conditions</a></p>
+<div class="note warn"><p><strong>Licence detail:</strong> the full LFM licence defines a threshold of US$10 million annual revenue or more, includes controlled entities in its legal-entity definition, and requires a commercial agreement when its commercial-use condition applies. It is not ordinary Apache-2.0. Retain licence/attribution notices and record the exact checkpoint’s licence before redistribution. <a href="https://www.liquid.ai/lfm-license">Full LFM licence</a></p></div>
+<p>Use a gateway so the model can change without altering business modules. Local deployment reduces outside data transfer, but “local” does not guarantee privacy: logs, telemetry, uploaded training examples, and remote fallbacks still need explicit policies.</p>
+</section>
+<section id="efficiency">
+<div class="section-number">08 / Memory &amp; inference research</div><h2>Optimize the bottleneck you actually have.</h2>
+<pre><code>Inference memory ≈ weights + attention KV cache
+                 + recurrent state (for hybrid models)
+                 + activations / runtime workspace + concurrency overhead
+
+Training memory additionally includes gradients, optimizer state,
+saved activations, adapters, and framework overhead.</code></pre>
+<p>At four bits per parameter, raw weights alone are approximately 0.6 GB for 1.2B parameters, 1.3 GB for 2.6B, and 3.5 GB for 7B, using decimal GB. These are arithmetic lower-bound estimates, not observed VRAM requirements. Actual quantized formats add metadata and mixed-precision tensors. A model with few <em>active</em> MoE parameters may still need far more total weight storage.</p>
+<div class="table-wrap"><table><thead><tr><th>Technique</th><th>What it improves</th><th>Adoption decision</th></tr></thead><tbody>
+<tr><td>Short context + retrieval</td><td>Less prompt processing and cache allocation</td><td><span class="pill green">Use first</span> Retrieve only relevant contracts, examples, and files. Measure lost-context failures.</td></tr>
+<tr><td>4/8-bit weight quantization</td><td>Weight storage and often memory bandwidth</td><td><span class="pill green">Baseline</span> Compare quality and end-to-end speed for the chosen runtime; compression is not always a speedup.</td></tr>
+<tr><td>KV-cache quantization</td><td>Memory that grows with attention context and concurrency</td><td>Use supported formats after baseline; re-evaluate long-context retrieval and structured output.</td></tr>
+<tr><td>LoRA / QLoRA</td><td>Trainable parameter and training-memory requirements</td><td>Use for adaptation after data/evals exist. QLoRA is not an automatic inference-speed improvement. Verify architecture and quantization support.</td></tr>
+<tr><td>Prefix caching</td><td>Repeated prompt prefill</td><td>Useful for stable prefixes where supported; does not remove decoding work. Keep tenant-sensitive cache boundaries explicit.</td></tr>
+<tr><td>Speculative decoding / DSpark</td><td>Decode throughput when draft tokens are accepted</td><td>Benchmark supported target/draft pairs. Extra memory and verification work may outweigh gains on small workloads.</td></tr>
+<tr><td>Continuous batching / paged cache</td><td>Shared-server throughput and cache utilization</td><td>Hosted phase; throughput improvement can trade against per-user latency. Bound concurrency and queue wait.</td></tr>
+<tr><td>Distillation</td><td>Smaller model learns a bounded task from permitted examples</td><td>Evaluate task success, not broad equivalence with the teacher. Dataset rights and accepted outputs matter.</td></tr>
+<tr><td>Pruning / custom architectures</td><td>Potential parameter/compute reduction</td><td><span class="pill orange">Defer</span> Retraining, kernel support, and quality recovery can exceed expected savings.</td></tr>
+</tbody></table></div>
+<p class="muted"><small>Supporting references: <a href="https://huggingface.co/docs/peft/developer_guides/quantization">PEFT quantization</a>, <a href="https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/">vLLM prefix caching</a>, <a href="https://docs.vllm.ai/en/latest/features/speculative_decoding/">speculative decoding</a>. Recommendations above are Launch Up-specific engineering judgments.</small></p>
+<h3>TurboQuant: useful research, with a precise scope</h3>
+<p>Google’s March 2026 article describes vector/KV-cache compression and reports at least 6× KV-memory reduction in its evaluated setting, plus up to 8× acceleration for an attention-logit computation on H100. Those figures are not an 8× end-to-end application speedup or a 6× reduction in all model memory. <a href="https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/">Google Research</a></p>
+<p>The linked paper abstract reports quality neutrality at 3.5 bits per channel and some degradation at 2.5 bits in its experiments; the blog summarizes results differently. Preserve benchmark conditions when comparing claims. Neither source establishes universal losslessness for Launch Up workloads. <a href="https://arxiv.org/abs/2504.19874">TurboQuant paper</a></p>
+<p><span class="pill orange">Integration experiment</span> Current vLLM documentation includes TurboQuant quantization and attention-backend APIs, so it is not accurate to label it “paper only.” However, the sources reviewed do not establish a validated LFM2.5 + RTX 3050 + chosen-runtime combination for this project. Pin a runtime release, confirm architecture/kernel support, and test on your tasks before enabling it. <a href="https://docs.vllm.ai/en/latest/api/vllm/model_executor/layers/quantization/turboquant/">vLLM TurboQuant API</a> · <a href="https://docs.vllm.ai/en/latest/api/vllm/v1/attention/backends/turboquant_attn/">Attention backend</a></p>
+<p>For a short-context hybrid model, the attention cache may be a smaller part of total memory. Therefore my inference is that reducing model size, prompt length, and simultaneous requests may help your laptop more initially. TurboQuant does not compress all recurrent state or eliminate training optimizer/activation memory.</p>
+<h3>Liquid DSpark: a separate speed experiment</h3>
+<p>Liquid’s August 2026 release supplies draft checkpoints for selected LFM2.5 models and describes llama.cpp/SGLang integration. It reports up to 3.18× GPU throughput and 2.87× on-device improvement under its tested conditions. This targets speculative decoding, not the same bottleneck as KV compression. Verify the exact target/draft/runtime pairing and benchmark warm/cold latency, acceptance rate, and memory. <a href="https://www.liquid.ai/blog/lfm2.5-dspark">DSpark release</a></p>
+<div class="note"><p><strong>Experiment order:</strong> baseline → shorter context → weight quantization → supported cache options → DSpark/speculation → batching on a hosted server. Change one variable at a time. Keep TurboQuant behind a feature flag until it improves quality-adjusted results.</p></div>
+</section>
+<section id="training">
+<div class="section-number">09 / Training &amp; evaluation</div><h2>Train a useful specialist, then prove the improvement.</h2>
+<p>Start with requirements-to-AppSpec or template selection. These have structured outputs and clear checks. Avoid training a broad “Astra + Claude + Gemini replacement.” For a small model, excellent performance on a constrained task is a defensible goal; general frontier parity is not an assumption.</p>
+<ol>
+<li><strong>Define the task and rejection cases.</strong> Write examples of supported, ambiguous, conflicting, and unsupported requests. A correct “needs clarification” is a success.</li>
+<li><strong>Create an evaluation set before training.</strong> Start with roughly 100–200 varied examples as an experiment. Reserve unseen businesses and template families; do not put renamed copies of training examples into the test set.</li>
+<li><strong>Establish baselines.</strong> Deterministic rules, prompted small model, and prompted model with retrieved examples. Record schema validity separately from semantic correctness.</li>
+<li><strong>Curate a pilot dataset.</strong> Approximately 500–2,000 carefully checked task examples is a starting experiment, not a guarantee. Store provenance, permissions, schema version, accepted answer, and verifier evidence.</li>
+<li><strong>Train one adapter.</strong> Use a supported SFT/LoRA recipe. Begin with short sequences and small batches; gradient accumulation/checkpointing may trade memory for time. Measure memory in a tiny smoke run before a long job.</li>
+<li><strong>Evaluate before and after quantization.</strong> Include unknown workflows, permission traps, malformed assets, long inputs, and requests outside the supported catalogue.</li>
+<li><strong>Deploy in shadow mode.</strong> Compare proposals without allowing production actions, then canary a limited task. Store model, adapter, prompt, template, and dataset revisions.</li>
+</ol>
+<p>Liquid maintains fine-tuning recipes, including SFT + LoRA and evaluation examples. PEFT documents quantized adapter training generally; do not assume every Liquid architecture, module name, or training backend supports every QLoRA recipe unchanged. Training a GGUF file directly is not the standard adapter-training workflow. <a href="https://github.com/Liquid4All/liquid-finetune">Liquid fine-tuning repository</a> · <a href="https://huggingface.co/docs/peft/developer_guides/quantization">PEFT guide</a></p>
+<h3>Free training is experimental capacity</h3>
+<p>Colab’s free GPU availability and runtime limits vary, and sessions can end. Use interactive notebooks, checkpoint frequently, and persist artifacts you can resume elsewhere. Do not use free notebook sessions as a dependable production inference service or bypass quotas. Training availability cannot be part of a client SLA. <a href="https://research.google.com/colaboratory/faq.html">Colab resource limits</a></p>
+<p>On your laptop, inference is the primary use. A small adapter-training experiment may fit with suitable settings, but no exact capacity is promised. Keep model training, Android builds, browser testing, and inference from competing simultaneously for limited RAM. Rent a bounded GPU session only when the experiment and dataset are ready and a spending cap is set.</p>
+<h3>Measure accepted work, not impressive token rates</h3>
+<div class="table-wrap"><table><thead><tr><th>Measure</th><th>Protocol</th></tr></thead><tbody>
+<tr><td>Task quality</td><td>Semantic correctness, schema validity, acceptance-test pass rate, clarification accuracy, and unsupported-action attempts. Never rely only on a model judge.</td></tr>
+<tr><td>Latency</td><td>Time to first token; total completion time; warm/cold runs; p50/p95. Fix input/output sizes. Record queue time separately.</td></tr>
+<tr><td>Capacity</td><td>Peak RAM/VRAM, runtime/version, quantization, context, concurrency, GPU temperature/throttling, and sustained run duration.</td></tr>
+<tr><td>Economics</td><td>Cost per accepted task, retries, cloud escalation, review minutes, and failure recovery.</td></tr>
+<tr><td>Promotion rule</td><td>Predeclare a quality floor and cost/latency target. Zero observed critical permission violations in the evaluation suite; this is evidence, not proof of universal safety.</td></tr>
+</tbody></table></div>
+<p>For reproducible comparisons, try fixed short and medium contexts (for example 2K and 4K), fixed output caps, and the same dataset. Compare base, adapted, and quantized variants. Report sample counts and uncertainty; small score changes on a small test set may be noise.</p>
+<p><strong>Dataset boundary:</strong> use owned/permitted data and teachers whose agreements allow your intended training. API access does not imply distillation rights. Exclude secrets and client-private code unless explicitly licensed for the purpose. Keep client-specific knowledge in retrieval and record reuse consent separately from service consent.</p>
+</section>
+<section id="modules">
+<div class="section-number">10 / Multi-model implementation</div><h2>Give each coding model a small, complete contract.</h2>
+<p>Use one integration owner for shared schemas, dependencies, and migrations. Independent models can implement bounded modules after contracts exist. Vendor roles should be configuration evaluated on your tasks, not hardcoded assumptions about design or reasoning superiority.</p>
+<div class="table-wrap"><table><thead><tr><th>Module / dependency</th><th>Boundary</th><th>Acceptance evidence</th></tr></thead><tbody>
+<tr><td>Contracts · first</td><td>AppSpec, TemplateManifest, Job, Artifact, Release; API/event schemas</td><td>Versioned fixtures and invalid-input tests</td></tr>
+<tr><td>Identity + intake · contracts</td><td>Organizations, memberships, projects, requirements, assets</td><td>Persistence, validation, tenant-isolation tests</td></tr>
+<tr><td>Registry + assembler · contracts</td><td>Compatible template lock → generated source and manifest</td><td>Deterministic generation; path safety; working sample apps</td></tr>
+<tr><td>Orchestrator + runner · contracts</td><td>Versioned job → isolated execution → stored results</td><td>Restart, retry, cancellation, quota, and stale-worker tests</td></tr>
+<tr><td>Model gateway · contracts</td><td>Typed task request → validated proposal + usage</td><td>Provider fallback policy, redaction, limits, accounting</td></tr>
+<tr><td>Verifier + release · runner</td><td>Artifact digest → reports → controlled promotion</td><td>Real tests, screenshots, health checks, rollback/restore drill</td></tr>
+<tr><td>Learning subsystem · traces</td><td>Permitted accepted examples → dataset → adapter candidate</td><td>Held-out evaluations, lineage, explicit promotion record</td></tr>
+</tbody></table></div>
+<pre><code>apps/console             # existing UI, migrated incrementally
+apps/api                 # modular backend
+apps/worker              # durable work and execution adapters
+packages/contracts       # shared, versioned boundaries
+packages/ui              # tokens, components, layouts
+packages/business        # reusable tested business rules
+packages/assembler       # deterministic generation
+packages/model-gateway   # local + hosted providers
+packages/verification    # application acceptance harness
+templates/               # licensed, versioned blueprints
+training/                # datasets, recipes, eval manifests
+infra/                   # Compose, worker images, deployment
+docs/modules/            # one concise implementation contract each</code></pre>
+<details open><summary>Reusable task packet for any coding assistant</summary><pre><code>Objective: one observable outcome.
+Read: architecture summary, stack policy, module contract,
+      relevant shared types, and acceptance fixtures.
+Own: explicit directories / files.
+Inputs and outputs: exact schemas and version.
+Dependencies: public interfaces only.
+Constraints: tenant scope, budgets, no secrets in client code,
+             no invented success, no silent contract changes.
+Done: implementation + meaningful checks + integration notes.
+Escalate: a contract mismatch, unsupported requirement,
+          or missing authorization for an external action.</code></pre></details>
+<p>Build the application pipeline without AI first using a handwritten AppSpec. Then let models propose that same specification. This isolates model quality from infrastructure bugs and keeps the entire platform usable when a provider is unavailable.</p>
+</section>
+<section id="economics">
+<div class="section-number">11 / Economics &amp; first steps</div><h2>Spend on accepted outcomes.</h2>
+<p>Track three budgets separately: Launch Up’s own development, each client delivery, and ongoing client operation. The last includes hosting, storage, backups, observability, communication services, and support—even when inference has no external API fee.</p>
+<pre><code>Delivery cost = API tokens + local/GPU compute + build/test compute
+              + retries/review + allocated template maintenance
+
+Monthly operating cost = control plane + workers + inference
+                       + database/storage/backups + support
+
+Training break-even tasks = training/setup cost
+                          / net saving per accepted task</code></pre>
+<p>For illustration only: if training/setup costs 100 cost units and saves 0.02 units per accepted task after retries and review, break-even is 5,000 tasks. This is arithmetic, not a provider price estimate. If quality regresses, the saving may disappear.</p>
+<ul>
+<li>Use templates/configuration before model calls. Keep standard CRUD, permissions, calculations, and workflow transitions deterministic.</li>
+<li>Cache reusable build layers and approved artifacts with correct version/tenant boundaries. Expire unused previews.</li>
+<li>Budget model output, retries, and concurrent jobs. A job reaching its budget stops or requests a deliberate extension.</li>
+<li>Separate interactive previews from long training/batch tasks. Shared GPU queues should prioritize the product’s agreed service targets.</li>
+<li>Buy hosting before promising availability. Upgrade hardware only after measured utilization and revenue support the cost.</li>
+</ul>
+<h3>Your first 30 days</h3>
+<p>Use this checklist as a starting workbook. Progress is saved in this browser when local storage is available; it is not synchronized to Launch Up or other teammates.</p>
+<progress id="progress" value="0" max="8" aria-label="First-month tasks completed"></progress><p id="progress-text" class="muted" aria-live="polite">0 of 8 completed</p>
+<div class="checklist">
+<label><input type="checkbox" data-check="scope"><span>Write a one-page supported catalogue: marketing site + service CRM, with explicit exclusions.</span></label>
+<label><input type="checkbox" data-check="setup"><span>Choose one package manager, pin the development environment, and document a fresh-clone startup.</span></label>
+<label><input type="checkbox" data-check="design"><span>Extract typography, colour, spacing, forms, tables, and layout tokens from the current frontend.</span></label>
+<label><input type="checkbox" data-check="crud"><span>Implement one persistent client/project flow with authentication and a tenant-isolation test.</span></label>
+<label><input type="checkbox" data-check="docker"><span>Containerize a sample app with health checks, configuration, persistence, and a documented restart.</span></label>
+<label><input type="checkbox" data-check="spec"><span>Define AppSpec v0.1 and create three manually reviewed business fixtures.</span></label>
+<label><input type="checkbox" data-check="baseline"><span>Benchmark one Liquid candidate locally on a small, fixed task set; record RAM/VRAM and quality.</span></label>
+<label><input type="checkbox" data-check="review"><span>Review the first-month evidence and adjust scope/hours before committing to the next phase.</span></label>
+</div>
+<div class="note"><p><strong>The first milestone to prioritize:</strong> one real business brief becomes a polished, tested, containerized preview. Reliable repetition of that result is the foundation for autonomy, training data, and sustainable scale.</p></div>
+</section>
+<section id="sources">
+<div class="section-number">12 / Sources &amp; decision record</div><h2>Primary references, with practical limits.</h2>
+<p>Research checked on 11 October 2026. Vendor benchmark claims are attributed above; no model, training, or hardware benchmark was executed for this document. Recheck model licences, runtime compatibility, cloud terms, and dependency support before implementation. The roadmap and acceptance gates are recommendations.</p>
+<ol class="sources">
+<li><a href="https://www.liquid.ai/models">Liquid AI model catalogue</a> — current families and runtime routes.</li>
+<li><a href="https://www.liquid.ai/blog/introducing-lfm2-5-the-next-generation-of-on-device-ai">LFM2.5 introduction</a> — capabilities and benchmark conditions.</li>
+<li><a href="https://docs.liquid.ai/lfm/models/lfm25-2.6b">LFM2.5-2.6B documentation</a> — tool use and context specification.</li>
+<li><a href="https://arxiv.org/abs/2511.23404">LFM2 technical report</a> — architecture and training research.</li>
+<li><a href="https://www.liquid.ai/lfm-license">LFM Open License</a> — full conditions; use the checkpoint’s exact licence.</li>
+<li><a href="https://github.com/Liquid4All/liquid-finetune">Liquid fine-tuning recipes</a> — customization and evaluation.</li>
+<li><a href="https://www.liquid.ai/blog/lfm2.5-dspark">Liquid DSpark release</a> — speculative decoding checkpoints and reported results.</li>
+<li><a href="https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/">Google Research: TurboQuant</a> — reported cache and attention-computation results.</li>
+<li><a href="https://arxiv.org/abs/2504.19874">TurboQuant paper</a> — method and evaluated distortion/quality.</li>
+<li><a href="https://docs.vllm.ai/en/latest/api/vllm/model_executor/layers/quantization/turboquant/">vLLM TurboQuant API</a> — implementation reference, not universal compatibility evidence.</li>
+<li><a href="https://docs.vllm.ai/en/latest/features/speculative_decoding/">vLLM speculative decoding</a> · <a href="https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/">prefix caching</a> — serving optimizations.</li>
+<li><a href="https://huggingface.co/docs/peft/developer_guides/quantization">PEFT quantization guide</a> — adapter training with quantized models.</li>
+<li><a href="https://research.google.com/colaboratory/faq.html">Colab FAQ</a> — free compute limits and restrictions.</li>
+<li><a href="https://docs.docker.com/compose/">Docker Compose</a> · <a href="https://docs.docker.com/engine/security/">Engine security</a> · <a href="https://docs.docker.com/engine/security/rootless/">rootless mode</a>.</li>
+<li><a href="https://docs.docker.com/build/ci/github-actions/attestations/">Docker build attestations</a> — SBOM and provenance.</li>
+<li><a href="https://gvisor.dev/docs/">gVisor</a> · <a href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">Kubernetes Jobs</a> — sandbox and future scheduling options.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development">MDN learning path</a> · <a href="https://www.typescriptlang.org/docs/handbook/intro.html">TypeScript Handbook</a> · <a href="https://react.dev/learn">React Learn</a>.</li>
+<li><a href="https://playwright.dev/docs/intro">Playwright</a> · <a href="https://web.dev/articles/vitals">Core Web Vitals</a> — browser verification and performance.</li>
+<li><a href="https://better-auth.com/docs/introduction">Better Auth</a> · <a href="https://github.com/timgit/pg-boss">pg-boss</a> · <a href="https://json-schema.org/overview/what-is-jsonschema">JSON Schema</a> — platform building blocks reviewed in the earlier analysis.</li>
+<li><a href="https://docs.astro.build/en/guides/on-demand-rendering/">Astro rendering</a> · <a href="https://docs.expo.dev/">Expo</a> — website and later mobile profiles.</li>
+</ol>
+</section>
+<footer class="foot">Prepared for Launch Up · Standalone HTML · No external fonts, scripts, trackers, or runtime dependencies. Links require internet access. Planning horizons and budgets are estimates; release readiness is demonstrated by evidence.</footer>
+</main>
+<script>
+(function(){
+const horizons={
+6:["6 months · supervised pilot","Persistent console, validated AppSpec, one marketing template, one service-management blueprint, container builds, previews, and bounded model assistance.","Keep the catalogue narrow. Hosted multi-user scale and fine-tuning are later gates."],
+8:["8 months · hosted team pilot","Add durable jobs, revision-safe collaboration, isolated remote workers, backups, and several supervised client deliveries.","Do not commit to broad autonomy or unlimited concurrency. Measure actual capacity."],
+10:["10 months · quality and local AI","Add evaluated local-model routing, optional task-specific adaptation, polished design directions, and stronger release verification.","Training is conditional on evidence. Keep Android and marketing expansion separate."],
+12:["12 months · production foundation","Two polished product families, concurrent hosted workers, reliable releases, measured local-model routing, and supervised expansion into one adjacent service.","Allow time for pilot feedback and recovery drills. Android, marketing, and model training remain separate acceptance tracks."]
+};
+document.querySelectorAll("[data-months]").forEach(function(button){button.addEventListener("click",function(){
+document.querySelectorAll("[data-months]").forEach(function(b){b.setAttribute("aria-pressed",String(b===button));});
+const entry=horizons[button.dataset.months];
+document.getElementById("h-title").textContent=entry[0];document.getElementById("h-scope").textContent=entry[1];document.getElementById("h-limit").textContent=entry[2];
+});});
+const checks=Array.from(document.querySelectorAll("[data-check]"));
+let saved={};try{saved=JSON.parse(localStorage.getItem("launchup-roadmap-v1")||"{}")||{};}catch(e){}
+function update(){const completed=checks.filter(function(c){return c.checked;}).length;document.getElementById("progress").value=completed;document.getElementById("progress-text").textContent=completed+" of "+checks.length+" completed";}
+checks.forEach(function(check){check.checked=saved[check.dataset.check]===true;check.addEventListener("change",function(){saved[check.dataset.check]=check.checked;try{localStorage.setItem("launchup-roadmap-v1",JSON.stringify(saved));}catch(e){}update();});});update();
+document.getElementById("print").addEventListener("click",function(){window.print();});
+})();
+</script>
+</body>
+</html>

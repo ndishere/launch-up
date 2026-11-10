@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Up — Technology Stack & Engineering Architecture</title>
+  <meta name="description" content="Technical curriculum, architectural breakdown, and topic inventory for the Launch Up platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #0f172a !important; }
+      .card-print { break-inside: avoid; border: 1px solid #e2e8f0 !important; background: #ffffff !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200 selection:bg-indigo-600 selection:text-white">
+
+  <!-- Top Announcement / Breadcrumb Bar -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#0E131F]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              Launch Up
+              <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-800">
+                Tech Specs
+              </span>
+            </span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">Architecture & Curriculum</span>
+          </div>
+        </a>
+
+        <!-- Specs Switcher Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60 text-xs font-semibold">
+          <a href="/tech-stack.html" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white shadow-xs">Tech Stack</a>
+          <a href="/requirements.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Requirements</a>
+          <a href="/system-design.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">System Design</a>
+          <a href="/wireframes.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Wireframes</a>
+        </nav>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <button id="themeToggleBtn" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button onclick="window.print()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print / PDF
+        </button>
+
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-xs shadow-indigo-500/20">
+          <span>Open Application</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+    <!-- Document Header Hero -->
+    <section class="border-b border-slate-200 dark:border-slate-800/80 pb-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/70">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Production Engineering Reference & Curriculum
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Launch Up — Technology Stack & Engineering Topics
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            A comprehensive mapping of all production libraries, programming models, database schemas, and DevOps pipelines powering the Launch Up enterprise client and project orchestration system.
+          </p>
+        </div>
+
+        <!-- Quick Metas -->
+        <div class="flex items-center gap-3 shrink-0 flex-wrap text-xs">
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Architecture</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">Modular Client-Side SPA</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Type System</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">Strict TypeScript 5</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Relational DB</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">PostgreSQL 16 Multi-Tenant</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Filter & Search Bar -->
+    <section class="no-print space-y-4">
+      <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <!-- Filter Tabs -->
+        <div class="inline-flex p-1 bg-slate-200/60 dark:bg-[#111622] rounded-xl border border-slate-200 dark:border-slate-800 overflow-x-auto text-xs font-semibold" id="categoryFilters">
+          <button data-filter="all" class="filter-pill active px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs transition-all whitespace-nowrap">
+            All Technologies (7)
+          </button>
+          <button data-filter="frontend" class="filter-pill px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+            Frontend & UX
+          </button>
+          <button data-filter="types" class="filter-pill px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+            Type System
+          </button>
+          <button data-filter="database" class="filter-pill px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+            Database & Schema
+          </button>
+          <button data-filter="devops" class="filter-pill px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+            DevOps & CI/CD
+          </button>
+          <button data-filter="security" class="filter-pill px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+            Security & Vault
+          </button>
+        </div>
+
+        <!-- Live Search Input -->
+        <div class="relative w-full sm:w-72">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            id="topicSearchInput"
+            type="text"
+            placeholder="Search topics (e.g., hooks, AES, UUID)..."
+            class="w-full pl-9 pr-4 py-1.5 text-xs rounded-xl bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all shadow-2xs"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards Grid -->
+    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- 1. React 18+ -->
+      <article data-category="frontend" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-indigo-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-indigo-600 dark:text-indigo-400 tracking-wider">
+              Core Framework
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              React 18+
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Reactive State, Contexts & Event Interception
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Powers the modular UI with optimized state propagation, controlled wizard steps, and zero-latency global hotkeys.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Custom Context API (AppContext)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Event Capturing Phase ({ capture: true })</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">useMemo Fuzzy Filter</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">useRef Imperative Focus</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Controlled Modals & Wizards</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Pure Functional Components</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Primary File: <code class="font-mono text-indigo-500">src/context/AppContext.tsx</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Production Ready</span>
+        </div>
+      </article>
+
+      <!-- 2. TypeScript 5.x -->
+      <article data-category="types" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-purple-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-purple-600 dark:text-purple-400 tracking-wider">
+              Static Typing
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+              TypeScript 5.x
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Domain Modeling & Algebraic Data Types
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Guarantees compile-time integrity across client records, multi-environment deployments, and permission tiers.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Domain Interfaces (Client, Project)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Discriminated Union Types</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">String Literal Enums</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Generic Component Props</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Strict Null Checks</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Type Narrowing & Guards</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Primary File: <code class="font-mono text-purple-500">src/types/index.ts</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Strict Checked</span>
+        </div>
+      </article>
+
+      <!-- 3. Tailwind CSS v4 -->
+      <article data-category="frontend" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-cyan-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-cyan-600 dark:text-cyan-400 tracking-wider">
+              Styling & Design System
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+              Tailwind CSS v4
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Responsive Bento Grid & Dual-Tone Theming
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Establishes optical hierarchy with mathematical spacing, dark slate containers, and WCAG AA compliant readability.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">12-Column Responsive Grid</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Class-Based Dark Mode</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">High-Contrast Slate Neutrals</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Tabular Numbers (tabular-nums)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Nested Border-Radius Math</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Zero AI-Slop Design</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Primary File: <code class="font-mono text-cyan-500">src/index.css</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Vite Plugin</span>
+        </div>
+      </article>
+
+      <!-- 4. PostgreSQL 16+ -->
+      <article data-category="database" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-emerald-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
+              Data Layer & Persistence
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              PostgreSQL 16+
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Multi-Tenant Relational Schema & Junctions
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Production-ready SQL schema modeling clients, projects, deployments, encrypted vaults, and audit logs.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Many-to-Many Junction (client_projects)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">UUIDv4 (gen_random_uuid)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">JSONB Semi-Structured Columns</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Composite & B-Tree Indexing</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Referential Cascades (ON DELETE CASCADE)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Schema Check Constraints</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Specification: <code class="font-mono text-emerald-500">SystemDesignTab.tsx (DDL)</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">ACID Compliant</span>
+        </div>
+      </article>
+
+      <!-- 5. DevOps & CI/CD -->
+      <article data-category="devops" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-amber-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider">
+              Cloud Infrastructure
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+              Multi-Cloud DevOps
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Build Pipelines, Rollbacks & Git Mirroring
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Unified deployment orchestration managing targets across Vercel Edge, AWS ECS, Google Cloud Run, and VPS.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Multi-Target Cloud Routing</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Live Streaming Build Logs</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">1-Click Zero-Downtime Rollback</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Git Remote S3 Mirroring</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">WAL Point-in-Time DB Backups</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Automated Health Probes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Primary File: <code class="font-mono text-amber-500">src/components/tabs/DeploymentsTab.tsx</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Automated</span>
+        </div>
+      </article>
+
+      <!-- 6. Security & Cryptography -->
+      <article data-category="security" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-rose-500/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-rose-600 dark:text-rose-400 tracking-wider">
+              Cybersecurity
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+              Zero-Trust Vault
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            Envelope Encryption & Access Control
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Safeguards third-party API keys, Stripe webhook secrets, and database credentials with military-grade encryption.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">AES-256-GCM Envelope Encryption</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">96-bit Unique IV per Tenant</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Zero Browser Key Leakage</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">HMAC-SHA256 Webhook Signatures</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">TLS 1.3 Transport Security</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Granular Role-Based Access Control</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Standard: <code class="font-mono text-rose-500">NIST SP 800-38D</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Hardened</span>
+        </div>
+      </article>
+
+      <!-- 7. Data Visualization & Trigonometry -->
+      <article data-category="frontend" class="tech-card card-print bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between hover:border-blue-500/50 transition-colors md:col-span-2">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-[11px] font-mono uppercase font-bold text-blue-600 dark:text-blue-400 tracking-wider">
+              Data Visualization & Math
+            </span>
+            <span class="text-[10px] font-semibold font-mono px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              Custom SVG & Recharts
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            SVG Trigonometry, Donut Gauges & Analytics Curves
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+            Zero-dependency polar trigonometry charts for build distributions paired with Recharts for 7-day marketing curves.
+          </p>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block mb-1.5">Specific Topics & Concepts:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Polar Circumference Math (2πr)</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">strokeDasharray / strokeDashoffset Geometry</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">SVG ViewBox Transformation Matrix</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Responsive Container Dimensions</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Linear Cartesian Interpolation</span>
+                <span class="topic-tag text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Interactive Tooltip Formatter</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Implemented in: <code class="font-mono text-blue-500">DashboardTab.tsx & AnalyticsTab.tsx</code></span>
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">Lightweight & Fast</span>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Architectural Relationships & Interaction Flow -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+          System Interaction Pipeline
+        </h2>
+        <span class="text-xs font-mono text-slate-400">4-Stage Pipeline</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
+          <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center mb-3">1</div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-1">Client Intake</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            Client details ingested via modal wizard into React Context, validating SLA tier and billing MRR.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
+          <div class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center mb-3">2</div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-1">Schema Binding</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            Project linked to client via <code class="font-mono text-indigo-500">client_projects</code> junction table with UUIDv4 keys and RBAC permissions.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
+          <div class="w-7 h-7 rounded-lg bg-amber-600 text-white font-bold flex items-center justify-center mb-3">3</div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-1">Build & Deployment</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            Asynchronous multi-cloud pipeline triggers target build, streaming stdout logs and tracking commit digests.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
+          <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center mb-3">4</div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-1">Telemetry & Vault</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            Credentials encrypted with AES-256-GCM, logs appended to time-series store, and live status broadcasted.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Launch Up Enterprise Architecture v2.4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Launch Up App</a>
+        <span>·</span>
+        <a href="javascript:window.print()" class="hover:text-slate-900 dark:hover:text-white transition-colors">Save as PDF</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Script for Theme Toggle, Category Filter, and Real-time Search -->
+  <script>
+    // 1. Theme Management
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlEl.classList.remove('dark');
+    }
+
+    // 2. Category Filtering & Search
+    const filterButtons = document.querySelectorAll('.filter-pill');
+    const searchInput = document.getElementById('topicSearchInput');
+    const cards = document.querySelectorAll('.tech-card');
+
+    let currentCategory = 'all';
+    let currentQuery = '';
+
+    function applyFilters() {
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const cardText = card.innerText.toLowerCase();
+
+        const matchesCategory = currentCategory === 'all' || cardCategory === currentCategory;
+        const matchesQuery = !currentQuery || cardText.includes(currentQuery);
+
+        if (matchesCategory && matchesQuery) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-indigo-600', 'text-white', 'shadow-xs');
+          b.classList.add('text-slate-600', 'dark:text-slate-400');
+        });
+        btn.classList.add('bg-indigo-600', 'text-white', 'shadow-xs');
+        btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+
+        currentCategory = btn.getAttribute('data-filter');
+        applyFilters();
+      });
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      currentQuery = e.target.value.trim().toLowerCase();
+      applyFilters();
+    });
+  </script>
+</body>
+</html>

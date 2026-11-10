@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Up — Product & Software Requirements Specification (PRD / SRS)</title>
+  <meta name="description" content="Official Product Requirements and Software Requirements Specification for the Launch Up platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #0f172a !important; }
+      .card-print { break-inside: avoid; border: 1px solid #e2e8f0 !important; background: #ffffff !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200 selection:bg-indigo-600 selection:text-white">
+
+  <!-- Unified Documentation Header Bar -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#0E131F]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              Launch Up
+              <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800">
+                PRD / SRS
+              </span>
+            </span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">Software Requirements</span>
+          </div>
+        </a>
+
+        <!-- Specs Switcher Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60 text-xs font-semibold">
+          <a href="/tech-stack.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+          <a href="/requirements.html" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white shadow-xs">Requirements</a>
+          <a href="/system-design.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">System Design</a>
+          <a href="/wireframes.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Wireframes</a>
+        </nav>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <button id="themeToggleBtn" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button onclick="window.print()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print / PDF
+        </button>
+
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-xs shadow-indigo-500/20">
+          <span>Open Application</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+    <!-- Document Hero -->
+    <section class="border-b border-slate-200 dark:border-slate-800/80 pb-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/70">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Version 2.4.0 · Production Specification
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Product & Software Requirements Specification (PRD / SRS)
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Formal functional and non-functional requirements, user personas, role-based access controls, and service-level objectives for the Launch Up platform.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 flex-wrap text-xs">
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Status</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">Approved & Deployed</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Target SLA</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">99.95% Availability</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Executive Summary & Problem Scope -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">1</span>
+        Executive Summary & System Objectives
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-2">The Operational Challenge</h3>
+          <p>
+            Software agencies and incubators face fragmented workflows across separate dashboards: client intake forms, git repositories, multi-cloud hosting providers (AWS, Google Cloud, Vercel), password managers, and billing systems. This leads to operational friction, slow deployment responses, and critical secret leakage risks.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-2">The Launch Up Solution</h3>
+          <p>
+            A unified orchestration cockpit offering instant multi-tenant client onboarding, multi-cloud automated deployments, real-time terminal stdout streaming, 1-click zero-downtime rollbacks, AES-256-GCM secret vault isolation, and continuous git/database disaster recovery.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. User Personas & RBAC Matrix -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center text-xs font-bold">2</span>
+        User Personas & Role-Based Access Control (RBAC)
+      </h2>
+
+      <!-- Personas Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold text-[10px] uppercase font-mono">Super Admin</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Agency Principal / Founder</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Responsible for MRR revenue growth, SLA tier commitments, client contracts, and global infrastructure health.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold text-[10px] uppercase font-mono">DevOps Lead</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Platform & Systems Engineer</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Executes multi-cloud deployments, inspects live terminal logs, initiates rollbacks, and manages git backup mirrors.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] uppercase font-mono">Client Stakeholder</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Product Manager / Sponsor</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Inspects preview build URLs, reviews uptime SLAs, and monitors project release milestone completion.</p>
+        </div>
+      </div>
+
+      <!-- Permissions Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-slate-100 dark:bg-slate-900/80 text-slate-500 font-mono text-[11px] uppercase">
+            <tr>
+              <th class="px-4 py-3 rounded-l-lg">Feature / Domain</th>
+              <th class="px-4 py-3">Super Admin</th>
+              <th class="px-4 py-3">DevOps Lead</th>
+              <th class="px-4 py-3">Client Stakeholder</th>
+              <th class="px-4 py-3 rounded-r-lg">Read-Only Auditor</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+            <tr>
+              <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">Client Management (CRUD)</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-slate-400">View Only</td>
+              <td class="px-4 py-3 text-slate-400">View Assigned</td>
+              <td class="px-4 py-3 text-slate-400">View Only</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">Project Creation & Config</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-slate-400">View Assigned</td>
+              <td class="px-4 py-3 text-slate-400">View Only</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">Deployments & 1-Click Rollbacks</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-indigo-500">Trigger Preview</td>
+              <td class="px-4 py-3 text-slate-400">View Logs Only</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">Vault Secret Decryption (AES-GCM)</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-amber-500 font-medium">Role-Scoped</td>
+              <td class="px-4 py-3 text-rose-500">Denied</td>
+              <td class="px-4 py-3 text-rose-500">Denied</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white">Disaster Sync & Database WAL</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-emerald-600 font-bold">Full Access</td>
+              <td class="px-4 py-3 text-rose-500">Denied</td>
+              <td class="px-4 py-3 text-slate-400">View Status</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. Functional Requirements (FR) Breakdown -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-cyan-600 text-white flex items-center justify-center text-xs font-bold">3</span>
+        Functional Requirements Catalog (FR-01 to FR-06)
+      </h2>
+
+      <div class="space-y-4">
+        <!-- FR-01 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold font-mono text-cyan-600 dark:text-cyan-400">FR-01: Client Onboarding & Lifecycle</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Implemented</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside">
+            <li>Classification of clients into B2B Enterprise and B2C Startup accounts.</li>
+            <li>SLA tier assignment (Tier 1: 99.99%, Tier 2: 99.9%, Tier 3: 99.5%).</li>
+            <li>Real-time Monthly Recurring Revenue (MRR) calculation and multi-project linkage.</li>
+          </ul>
+        </div>
+
+        <!-- FR-02 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold font-mono text-purple-600 dark:text-purple-400">FR-02: Project Orchestration & Repository Binding</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Implemented</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside">
+            <li>Framework selectors (Next.js, React + Vite, Remix, Node.js, Python FastAPI).</li>
+            <li>Git repository binding with branch targeting (<code class="font-mono text-purple-500">main</code>, <code class="font-mono text-purple-500">staging</code>).</li>
+            <li>Health score algorithm (0–100%) tracking commit cadence and deployment pass rate.</li>
+          </ul>
+        </div>
+
+        <!-- FR-03 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold font-mono text-indigo-600 dark:text-indigo-400">FR-03: Multi-Cloud Deployment & 1-Click Rollback</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Implemented</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside">
+            <li>4 cloud targets: AWS ECS (Fargate), Google Cloud Run, Vercel Edge, and VPS.</li>
+            <li>Real-time stdout/stderr build log streaming with phase indicators.</li>
+            <li>Instantaneous 1-click rollback routing traffic back to previous stable release digests.</li>
+          </ul>
+        </div>
+
+        <!-- FR-04 -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold font-mono text-rose-600 dark:text-rose-400">FR-04: Security Vault & Secret Isolation</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Implemented</span>
+          </div>
+          <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside">
+            <li>AES-256-GCM envelope encryption with 96-bit unique IVs per tenant secret.</li>
+            <li>Zero browser key leakage; sensitive secrets sandboxed server-side.</li>
+            <li>HMAC-SHA256 signature verification for external webhooks.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Non-Functional Requirements (NFR) -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">4</span>
+        Non-Functional Requirements (NFR) & Quality Attributes
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <span class="text-[10px] font-mono uppercase text-indigo-500 font-bold">NFR-01: Performance</span>
+          <h3 class="font-bold text-slate-900 dark:text-white my-1 text-sm">60 FPS & &lt; 16ms Latency</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Sub-millisecond filtering with <code class="font-mono text-indigo-400">useMemo</code>. Bundle gzipped size under 180KB.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <span class="text-[10px] font-mono uppercase text-emerald-500 font-bold">NFR-02: Availability</span>
+          <h3 class="font-bold text-slate-900 dark:text-white my-1 text-sm">99.95% Target Uptime</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">RTO under 15 minutes, RPO under 5 minutes via continuous WAL database streams.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <span class="text-[10px] font-mono uppercase text-purple-500 font-bold">NFR-03: Accessibility</span>
+          <h3 class="font-bold text-slate-900 dark:text-white my-1 text-sm">WCAG 2.1 AA Compliant</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Minimum 4.5:1 text contrast ratio, keyboard focus trapping, and hotkey shortcuts.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <span class="text-[10px] font-mono uppercase text-amber-500 font-bold">NFR-04: Compatibility</span>
+          <h3 class="font-bold text-slate-900 dark:text-white my-1 text-sm">Modern Evergreen Browsers</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">Tested across Chrome, Edge, Firefox, and Safari on desktop and tablet screens.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Launch Up PRD & SRS Specification</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/tech-stack.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+        <span>·</span>
+        <a href="/system-design.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">System Design</a>
+        <span>·</span>
+        <a href="/wireframes.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Wireframes</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlEl.classList.remove('dark');
+    }
+  </script>
+</body>
+</html>

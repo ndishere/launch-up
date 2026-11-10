@@ -1,0 +1,6 @@
+{
+  "name": "Launch Up",
+  "description": "Production-grade B2B & B2C platform for client intake, project orchestration, automated cloud deployments, git backups, and subscription lifecycle management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

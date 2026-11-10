@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Up — UI/UX Wireframes & Page Layout Blueprints</title>
+  <meta name="description" content="Official UI/UX Wireframes and Visual Layout Specifications for Launch Up." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #0f172a !important; }
+      .card-print { break-inside: avoid; border: 1px solid #e2e8f0 !important; background: #ffffff !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200 selection:bg-indigo-600 selection:text-white">
+
+  <!-- Unified Documentation Header Bar -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#0E131F]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              Launch Up
+              <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800">
+                Wireframes
+              </span>
+            </span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">Page Layouts & UI Blueprints</span>
+          </div>
+        </a>
+
+        <!-- Specs Switcher Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60 text-xs font-semibold">
+          <a href="/tech-stack.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+          <a href="/requirements.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Requirements</a>
+          <a href="/system-design.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">System Design</a>
+          <a href="/wireframes.html" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white shadow-xs">Wireframes</a>
+        </nav>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <button id="themeToggleBtn" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button onclick="window.print()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print / PDF
+        </button>
+
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-xs shadow-indigo-500/20">
+          <span>Open Application</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+    <!-- Document Hero -->
+    <section class="border-b border-slate-200 dark:border-slate-800/80 pb-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/70">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Version 2.4.0 · Design System & Layout Specs
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            UI/UX Wireframes & Page Layout Blueprints
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Detailed wireframes, element hierarchies, responsive breakpoints, and visual layout blueprints for all views within Launch Up.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 flex-wrap text-xs">
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Layout Style</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">12-Column Bento Grid</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Navigation</span>
+            <span class="font-bold text-indigo-600 dark:text-indigo-400 mt-0.5 block">Persistent Sidebar + Ctrl+K</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Switcher Tabs -->
+    <div class="no-print inline-flex p-1 bg-slate-200/60 dark:bg-[#111622] rounded-xl border border-slate-200 dark:border-slate-800 overflow-x-auto text-xs font-semibold gap-1" id="wireframeTabs">
+      <button data-target="view-dashboard" class="wf-tab active px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow-xs transition-all whitespace-nowrap">
+        1. Overview Dashboard
+      </button>
+      <button data-target="view-projects" class="wf-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+        2. Projects & Modal Wizard
+      </button>
+      <button data-target="view-clients" class="wf-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+        3. Clients Directory
+      </button>
+      <button data-target="view-deployments" class="wf-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+        4. Deployments & Rollback
+      </button>
+      <button data-target="view-command" class="wf-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all whitespace-nowrap">
+        5. Spotlight (Ctrl+K)
+      </button>
+    </div>
+
+    <!-- 1. Dashboard Wireframe -->
+    <section id="view-dashboard" class="wf-section card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Page 1: Overview Command Center (DashboardTab.tsx)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">High-level executive metrics, recent deployment feed, and polar SVG donut build distribution.</p>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-200 dark:border-indigo-800">
+          Route: / (tab: dashboard)
+        </span>
+      </div>
+
+      <!-- ASCII Visual Blueprint -->
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-800">
+<pre>+---------------------------------------------------------------------------------------------------+
+| Overview Dashboard                                                 [Filter ▾]   [+ New Project]   |
++---------------------------------------------------------------------------------------------------+
+| [ $142.8k MRR       ]  [ 38 Active Clients ]  [ 124 Deployments     ]  [ 99.9% Uptime SLA      ]  |
+|   +12.4% vs last mo |    24 Ent / 14 B2C   |    98.2% Success Rate  |    All Systems Normal    |
++------------------------------------------------------------------------+--------------------------+
+|  RECENT DEPLOYMENTS &amp; PIPELINE ACTIVITY                                | BUILD DISTRIBUTION (24h) |
+|  +------------------------------------------------------------------+  |   .---""---.             |
+|  | [✓] launchup-core-api   main (c4a91b)   AWS ECS     42s  [View]  |  |  /   92%    \  ■ Success   |
+|  | [⟳] client-portal-web   feat (8e1f02)   Vercel Edge 18s  [Logs]  |  | |   Passed   | ■ In-Prog   |
+|  | [✓] analytics-worker    main (3d77a1)   Cloud Run   31s  [View]  |  |  \          /  ■ Failed    |
+|  | [✕] payment-gateway     staging (1b2f)  AWS ECS     12s  [Retry] |  |   `---..--'              |
+|  +------------------------------------------------------------------+  +--------------------------+
+|                                                                        | QUICK ACTIONS            |
+|  ACTIVE CLIENT PROJECTS                                                | [&gt;] Run Disaster Sync    |
+|  +------------------------------------------------------------------+  | [&gt;] Rotate Vault Keys    |
+|  | Nexus Corp (Enterprise) - 4 Projects - Health 99% - $18,500/mo   |  | [&gt;] Export CSV Report    |
+|  +------------------------------------------------------------------+  +--------------------------+
+</pre>
+      </div>
+
+      <!-- Component Specs -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <strong class="text-indigo-600 dark:text-indigo-400 block mb-1">Top Metric Bento</strong>
+          4 responsive cards with tabular figures, delta trends, and subtle border radius math.
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <strong class="text-purple-600 dark:text-purple-400 block mb-1">Recent Activity Feed</strong>
+          Streaming deployment updates with duration chips and direct link to terminal logs.
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+          <strong class="text-emerald-600 dark:text-emerald-400 block mb-1">Custom SVG Donut</strong>
+          Polar coordinate rendering (<code class="font-mono">2πr</code>) without external heavy graphing dependencies.
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Projects Wireframe -->
+    <section id="view-projects" class="wf-section card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-5 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Page 2: Projects Portfolio & Modal Wizard (ProjectsTab.tsx)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Framework filtering, bento project cards, and multi-step intake wizard.</p>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 font-semibold border border-purple-200 dark:border-purple-800">
+          Route: / (tab: projects)
+        </span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-800">
+<pre>+---------------------------------------------------------------------------------------------------+
+| Projects Portfolio (18 Total)                                           [Search...] [+ New Project]
+| Filters: [All] [Next.js] [React+Vite] [Cloud Run] [AWS ECS]            Sort: [Most Active ▾]     |
++-----------------------------------+-----------------------------------+---------------------------+
+| nexus-enterprise-portal           | finpulse-trading-engine           | orbit-mobile-gateway      |
+| Client: Nexus Corp [Tier 1]       | Client: FinPulse [Tier 1]         | Client: Orbit Technologies|
+| Health: [ 99% ● ]                 | Health: [ 94% ● ]                 | Health: [ 100% ● ]        |
+| Git: github.com/nexus/portal      | Git: github.com/finpulse/engine   | Git: github.com/orbit/gw  |
+| Branch: main (b3f81e)             | Branch: main (7a14c2)             | Branch: release/v2.1      |
+| Target: AWS ECS (Fargate)         | Target: Google Cloud Run          | Target: Vercel Edge       |
+| Status: [✓ Live]                  | Status: [✓ Live]                  | Status: [✓ Live]          |
+| [View Telemetry]   [Deploy Now]   | [View Telemetry]   [Deploy Now]   | [View Telemetry]  [Deploy]|
++-----------------------------------+-----------------------------------+---------------------------+
+
+[ MODAL OVERLAY: CREATE NEW PROJECT ]
++----------------------------------------------------------------------------------+
+| Create New Project                                                           [X] |
+| Step 1 of 3: General Configuration  [●------○------○]                            |
+| Project Name *                                                                   |
+| [ e.g. Acme Dashboard                                                          ] |
+| Client Association *                             Framework *                     |
+| [ Select Client (Nexus Corp, FinPulse...)   ▾ ]  [ Next.js 14 (App Router)   ▾ ] |
+| [ Cancel ]                                                    [ Next: Git Setup → ]
++----------------------------------------------------------------------------------+
+</pre>
+      </div>
+    </section>
+
+    <!-- 3. Clients Wireframe -->
+    <section id="view-clients" class="wf-section card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-5 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Page 3: Clients Directory & Accounts (ClientsTab.tsx)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Enterprise B2B vs. B2C segmentation, SLA tiers, and MRR rollups.</p>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800">
+          Route: / (tab: clients)
+        </span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-800">
+<pre>+---------------------------------------------------------------------------------------------------+
+| Client Directory &amp; Accounts                                                [+ Onboard Client]     |
++---------------------------------------------------------------------------------------------------+
+| Search: [ Filter client name, tier, or email... ]      Filter: [ All Types ▾ ]  [ All Tiers ▾ ]   |
++---------------------------------------------------------------------------------------------------+
+| CLIENT ORGANISATION   | TYPE | SLA TIER       | PROJECTS | MONTHLY MRR | STATUS   | ACTIONS       |
++-----------------------+------+----------------+----------+-------------+----------+---------------+
+| Nexus Corp            | B2B  | Tier 1 (99.99%)| 4 Active | $18,500.00  | [Active] | [Manage] [···]|
+| FinPulse Systems      | B2B  | Tier 1 (99.99%)| 2 Active | $12,200.00  | [Active] | [Manage] [···]|
+| Orbit Technologies    | B2C  | Tier 2 (99.9%) | 3 Active | $7,400.00   | [Active] | [Manage] [···]|
+| HyperGrowth Labs      | B2C  | Tier 3 (99.5%) | 1 Active | $3,200.00   | [Trial]  | [Manage] [···]|
++-----------------------+------+----------------+----------+-------------+----------+---------------+
+</pre>
+      </div>
+    </section>
+
+    <!-- 4. Deployments Wireframe -->
+    <section id="view-deployments" class="wf-section card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-5 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Page 4: Deployments & Streaming Terminal (DeploymentsTab.tsx)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Live streaming stdout/stderr build console and zero-downtime rollback banner.</p>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800">
+          Route: / (tab: deployments)
+        </span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-800">
+<pre>+---------------------------------------------------------------------------------------------------+
+| Deployments &amp; Pipeline Orchestrator                                                               |
+| Targets: [ All Targets ]  [ AWS ECS ]  [ Cloud Run ]  [ Vercel Edge ]  [ VPS ]                    |
++---------------------------------------------------------------------------------------------------+
+| ACTIVE PIPELINE: launchup-core-api (Target: AWS ECS Fargate)                                      |
+| Environment: [ Production ]   Commit: e9142b ("fix: update jwt expiry")   Duration: 41s          |
++---------------------------------------------------------------------------------------------------+
+| [TERMINAL STREAM: STDOUT / STDERR]                                                   [Copy Logs]  |
+| 10:42:01.104 [INFO]  Cloning repository: git@github.com:launchup/core-api.git...                  |
+| 10:42:03.220 [INFO]  HEAD is now at e9142b fix: update jwt expiry                                 |
+| 10:42:05.412 [INFO]  Executing build script: vite build &amp;&amp; esbuild server.ts --bundle            |
+| 10:42:09.810 [INFO]  Transforming modules... 128 modules bundled in 1.42s                         |
+| 10:42:12.901 [INFO]  Pushing container image to AWS ECR: 434751658557.dkr.ecr.us-east-1...        |
+| 10:42:15.540 [OK]    Task definition registered: launchup-api-task:42                             |
+| 10:42:16.890 [OK]    Health probe 200 OK received at /api/health (12ms)                           |
+| 10:42:17.100 [DONE]  Traffic shift complete. 100% routed to task revision 42                      |
++---------------------------------------------------------------------------------------------------+
+| ROLLBACK CONTROLS (Zero-Downtime Traffic Rerouting)                                               |
+| Current Live: e9142b (Task 42)                                                                    |
+| Previous Stable Releases:                                                                         |
+| • commit a81b04 - "feat: add client vault encryption" (Deployed 3h ago)   [ Revert to a81b04 ]    |
+| • commit 77c2e1 - "chore: optimize postgres junction query" (Yesterday)   [ Revert to 77c2e1 ]    |
++---------------------------------------------------------------------------------------------------+
+</pre>
+      </div>
+    </section>
+
+    <!-- 5. Command Palette Wireframe -->
+    <section id="view-command" class="wf-section card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-5 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Page 5: Spotlight Command Palette (CommandPalette.tsx)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Global keyboard modal triggered via Ctrl+K / ⌘K with capture phase listener.</p>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-200 dark:border-cyan-800">
+          Shortcut: Ctrl+K / ⌘K
+        </span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto border border-slate-800">
+<pre>+----------------------------------------------------------------------------------+
+|  [🔍]  Search clients, projects, deployments, or quick commands...         [ESC] |
++----------------------------------------------------------------------------------+
+|  QUICK ACTIONS                                                                   |
+|  [+] Create New Project                                                  Enter ↵ |
+|  [+] Onboard Client                                                      Enter ↵ |
+|  [⟳] Trigger Global Disaster Backup Sync                                 Enter ↵ |
+|                                                                                  |
+|  MATCHING PROJECTS                                                               |
+|  [📦] nexus-enterprise-portal       Client: Nexus Corp · AWS ECS         Enter ↵ |
+|  [📦] finpulse-trading-engine       Client: FinPulse · Cloud Run         Enter ↵ |
+|                                                                                  |
+|  MATCHING CLIENTS                                                                |
+|  [🏢] Nexus Corp                    Enterprise B2B · $18,500/mo          Enter ↵ |
+|  [🏢] Orbit Technologies            Startup B2C · $7,400/mo              Enter ↵ |
++----------------------------------------------------------------------------------+
+|  Navigation: [↑] [↓] to select  ·  [Enter] to execute  ·  [Esc] to dismiss       |
++----------------------------------------------------------------------------------+
+</pre>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Launch Up UI/UX Wireframe Specifications v2.4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/tech-stack.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+        <span>·</span>
+        <a href="/requirements.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Requirements</a>
+        <span>·</span>
+        <a href="/system-design.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">System Design</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    // Tab switching for Wireframes
+    const tabs = document.querySelectorAll('.wf-tab');
+    const sections = document.querySelectorAll('.wf-section');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => {
+          t.classList.remove('bg-indigo-600', 'text-white', 'shadow-xs');
+          t.classList.add('text-slate-600', 'dark:text-slate-400');
+        });
+        tab.classList.add('bg-indigo-600', 'text-white', 'shadow-xs');
+        tab.classList.remove('text-slate-600', 'dark:text-slate-400');
+
+        const targetId = tab.getAttribute('data-target');
+        sections.forEach(s => {
+          if (s.id === targetId) {
+            s.classList.remove('hidden');
+          } else {
+            s.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlEl.classList.remove('dark');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Up — System Design Document (SDD) & Architecture</title>
+  <meta name="description" content="Official System Design Document and Technical Architecture Blueprint for the Launch Up platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #0f172a !important; }
+      .card-print { break-inside: avoid; border: 1px solid #e2e8f0 !important; background: #ffffff !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0B0F17] text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200 selection:bg-indigo-600 selection:text-white">
+
+  <!-- Unified Documentation Header Bar -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#0E131F]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              Launch Up
+              <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 font-semibold border border-purple-200 dark:border-purple-800">
+                SDD
+              </span>
+            </span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">System Design & Architecture</span>
+          </div>
+        </a>
+
+        <!-- Specs Switcher Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-800/60 text-xs font-semibold">
+          <a href="/tech-stack.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+          <a href="/requirements.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Requirements</a>
+          <a href="/system-design.html" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white shadow-xs">System Design</a>
+          <a href="/wireframes.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Wireframes</a>
+        </nav>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <button id="themeToggleBtn" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button onclick="window.print()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print / PDF
+        </button>
+
+        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors shadow-xs shadow-indigo-500/20">
+          <span>Open Application</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+    <!-- Document Hero -->
+    <section class="border-b border-slate-200 dark:border-slate-800/80 pb-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/70">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Version 2.4.0 · Technical Architecture Blueprint
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            System Design & Architecture Document (SDD)
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Architectural decomposition, multi-tenant relational schema design, envelope encryption cryptography, and multi-cloud deployment orchestration for Launch Up.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 flex-wrap text-xs">
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Engine</span>
+            <span class="font-bold text-slate-900 dark:text-white mt-0.5 block">PostgreSQL 16 Multi-Tenant</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white dark:bg-[#111622] border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <span class="text-slate-400 block text-[10px] uppercase font-mono">Security</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">AES-256-GCM Vault</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. High-Level Architectural Context Diagram -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">1</span>
+          Multi-Tier Distributed Architecture
+        </h2>
+        <span class="text-xs font-mono text-slate-400">Context Flow</span>
+      </div>
+
+      <div class="p-5 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] sm:text-xs overflow-x-auto leading-relaxed border border-slate-800 shadow-inner">
+<pre>+----------------------------------------------------------------------------------------------------+
+|                                    CLIENT TIER (Browser / SPA)                                     |
+|  [ React 18+ App ] &lt;==== Context API (AppContext) ====&gt; [ Command Palette (Ctrl+K) ]               |
+|         |                                                               |                          |
+|  [ Dashboard View ]   [ Projects Tab ]   [ Clients Tab ]   [ Deployments Tab ]  [ System Design ]  |
++----------------------------------------------------------------------------------------------------+
+                                                  |
+                                HTTPS (TLS 1.3) / WebSockets (WSS)
+                                                  v
++----------------------------------------------------------------------------------------------------+
+|                                  APPLICATION &amp; ORCHESTRATION TIER                                 |
+|   [ Client &amp; Project Core ]          [ Deployment Orchestrator ]       [ Security Vault (AES-GCM) ] |
+|   - Multi-tenant logic              - Multi-cloud routing             - 96-bit unique IV           |
+|   - SLA calculations                - Live log streaming              - Master key envelope        |
+|   - Billing MRR sync                - 1-Click Zero Downtime Rollback  - Zero browser leakage       |
++----------------------------------------------------------------------------------------------------+
+              |                                          |                                |
+              v                                          v                                v
++----------------------------+   +------------------------------------+   +--------------------------+
+|      PERSISTENCE TIER      |   |        DEPLOYMENT TARGETS          |   |  DISASTER RECOVERY TIER  |
+|  PostgreSQL 16+ Engine     |   |  [ Vercel Edge ] (SPA / SSR)       |   |  [ S3 Bare Git Mirrors ] |
+|  - client_projects M:N     |   |  [ AWS ECS ] (Fargate Tasks)       |   |  - Automated Push Hooks  |
+|  - JSONB Telemetry Logs    |   |  [ Cloud Run ] (Microservices)     |   |  [ PostgreSQL WAL ]      |
+|  - UUIDv4 / B-Tree Indexes |   |  [ DigitalOcean ] (Dedicated VPS)  |   |  - 30-Day PITR Snapshots |
++----------------------------+   +------------------------------------+   +--------------------------+
+</pre>
+      </div>
+    </section>
+
+    <!-- 2. Database Schema & ERD -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">2</span>
+          Relational Database Design & Entity Relationships (ERD)
+        </h2>
+        <span class="text-xs font-mono text-emerald-500 font-semibold">PostgreSQL 16+</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <!-- clients table -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between font-mono font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-800">
+            <span>launchup_core.clients</span>
+            <span class="text-[10px] text-indigo-500">Parent Entity</span>
+          </div>
+          <ul class="space-y-1 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+            <li><strong class="text-indigo-400">PK id:</strong> UUID (gen_random_uuid)</li>
+            <li><strong>name:</strong> VARCHAR(255)</li>
+            <li><strong>client_type:</strong> B2B | B2C</li>
+            <li><strong>tier:</strong> Tier 1 | 2 | 3</li>
+            <li><strong>monthly_mrr:</strong> NUMERIC(10,2)</li>
+            <li><strong>encrypted_vault:</strong> JSONB</li>
+            <li><strong>created_at:</strong> TIMESTAMPTZ</li>
+          </ul>
+        </div>
+
+        <!-- client_projects junction -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-indigo-300 dark:border-indigo-800/80 space-y-2 relative shadow-xs">
+          <div class="flex items-center justify-between font-mono font-bold text-indigo-600 dark:text-indigo-400 pb-2 border-b border-indigo-200 dark:border-indigo-800">
+            <span>client_projects</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 font-bold">M:N Junction</span>
+          </div>
+          <ul class="space-y-1 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+            <li><strong class="text-indigo-400">PK/FK client_id:</strong> UUID</li>
+            <li><strong class="text-indigo-400">PK/FK project_id:</strong> UUID</li>
+            <li><strong>is_primary:</strong> BOOLEAN</li>
+            <li><strong>revenue_share_pct:</strong> NUMERIC</li>
+            <li><strong>access_permissions:</strong> JSONB</li>
+            <li><strong>created_at:</strong> TIMESTAMPTZ</li>
+          </ul>
+        </div>
+
+        <!-- projects table -->
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between font-mono font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-800">
+            <span>launchup_core.projects</span>
+            <span class="text-[10px] text-purple-500">Managed Project</span>
+          </div>
+          <ul class="space-y-1 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+            <li><strong class="text-purple-400">PK id:</strong> UUID (gen_random_uuid)</li>
+            <li><strong>name:</strong> VARCHAR(255)</li>
+            <li><strong>repository_url:</strong> TEXT</li>
+            <li><strong>framework:</strong> VARCHAR(50)</li>
+            <li><strong>target_cloud:</strong> VARCHAR(50)</li>
+            <li><strong>health_score:</strong> INTEGER (0-100)</li>
+            <li><strong>status:</strong> Active | Maintenance</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Security Architecture: Envelope Encryption -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs font-bold">3</span>
+          Zero-Trust Security & Envelope Encryption
+        </h2>
+        <span class="text-xs font-mono text-rose-500 font-semibold">NIST SP 800-38D</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="text-rose-500 font-mono font-bold text-[10px] uppercase">Phase 1: Ingestion</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Key Generation</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            Data Encryption Key (DEK) is generated in memory. A 96-bit unique cryptographically secure IV is derived specifically for this secret item.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="text-rose-500 font-mono font-bold text-[10px] uppercase">Phase 2: AES-256-GCM</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Authenticated Cipher</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            The plaintext is encrypted with AES-256-GCM yielding ciphertext and a 128-bit integrity authentication tag preventing bit-flipping attacks.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <span class="text-rose-500 font-mono font-bold text-[10px] uppercase">Phase 3: Envelope Wrapping</span>
+          <h3 class="font-bold text-slate-900 dark:text-white text-sm">Zero Client Exposure</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+            The DEK is wrapped with the Key Encryption Key (KEK) stored exclusively in KMS. No decrypted keys are ever transmitted to the frontend browser.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Deployment Engine & 1-Click Rollback -->
+    <section class="card-print bg-white dark:bg-[#111622] rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center text-xs font-bold">4</span>
+          Zero-Downtime Multi-Cloud Rollback Engine
+        </h2>
+        <span class="text-xs font-mono text-amber-500 font-semibold">&lt; 3s Rerouting</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-3">
+        <p>
+          When an anomaly or health degradation is detected on production, the DevOps engineer initiates a 1-click rollback:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-[11px]">
+          <div class="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+            <strong class="text-amber-500 block mb-1">Step 1: Checkpoint Lookup</strong>
+            Fetch prior healthy deployment commit digest from time-series logs.
+          </div>
+          <div class="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+            <strong class="text-amber-500 block mb-1">Step 2: Routing Shift</strong>
+            Swap target ingress (Vercel alias, ECS Task Revision, Cloud Run split).
+          </div>
+          <div class="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+            <strong class="text-emerald-500 block mb-1">Step 3: Health Probe</strong>
+            Validate HTTP 200 OK probe and broadcast system alert resolution.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Launch Up SDD Architecture v2.4</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/tech-stack.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Tech Stack</a>
+        <span>·</span>
+        <a href="/requirements.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Requirements</a>
+        <span>·</span>
+        <a href="/wireframes.html" class="hover:text-slate-900 dark:hover:text-white transition-colors">Wireframes</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    if (localStorage.getItem('theme') === 'light') {
+      htmlEl.classList.remove('dark');
+    }
+  </script>
+</body>
+</html>

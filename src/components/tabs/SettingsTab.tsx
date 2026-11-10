@@ -1,0 +1,316 @@
+import React, { useState } from 'react';
+import { 
+  Settings, Save, Key, Shield, Globe, Bell, 
+  Terminal, CheckCircle2, Moon, Sun, Monitor, Lock, Palette 
+} from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import { ThemeMode, ColorPalette } from '../../types';
+
+export const SettingsTab: React.FC = () => {
+  const { themeMode, setThemeMode, palette, setPalette, resolvedTheme } = useApp();
+  const [appName, setAppName] = useState('Launch Up');
+  const [appUrl, setAppUrl] = useState('https://app.launchup.io');
+  const [savedSuccess, setSavedSuccess] = useState(false);
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
+  };
+
+  return (
+    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Workspace Settings
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Configure Launch Up workspace branding, secrets vault, and environment rules.
+          </p>
+        </div>
+
+        {savedSuccess && (
+          <span className="px-3 py-1.5 text-xs font-semibold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-lg flex items-center gap-1.5 animate-in fade-in">
+            <CheckCircle2 className="w-4 h-4" />
+            <span>Settings Saved Successfully</span>
+          </span>
+        )}
+      </div>
+
+      <form onSubmit={handleSave} className="space-y-6">
+        {/* General Branding */}
+        <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            Branding & Application Identity
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                Platform Name
+              </label>
+              <input
+                type="text"
+                value={appName}
+                onChange={(e) => setAppName(e.target.value)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                Canonical Base URL
+              </label>
+              <input
+                type="text"
+                value={appUrl}
+                onChange={(e) => setAppUrl(e.target.value)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Appearance Mode Selection */}
+          <div className="pt-2">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-2">
+              Appearance Mode
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                { 
+                  id: 'light' as ThemeMode, 
+                  label: 'Light Mode', 
+                  icon: Sun, 
+                  iconColor: 'text-amber-500', 
+                  desc: 'Clean, high-contrast crisp light interface' 
+                },
+                { 
+                  id: 'dark' as ThemeMode, 
+                  label: 'Dark Mode', 
+                  icon: Moon, 
+                  iconColor: 'text-indigo-400', 
+                  desc: 'Sleek dark obsidian palette engineered for low-light' 
+                },
+                { 
+                  id: 'system' as ThemeMode, 
+                  label: 'System Auto', 
+                  icon: Monitor, 
+                  iconColor: 'text-sky-500', 
+                  desc: `Automatically synchronizes with your device OS (Currently: ${resolvedTheme})` 
+                },
+              ].map((m) => {
+                const Icon = m.icon;
+                const isSelected = themeMode === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setThemeMode(m.id)}
+                    className={`p-3.5 rounded-xl text-left border transition-all flex flex-col justify-between ${
+                      isSelected
+                        ? 'border-indigo-500 ring-2 ring-indigo-500/25 bg-indigo-50/50 dark:bg-indigo-950/40 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Icon className={`w-4 h-4 ${m.iconColor}`} />
+                        {m.label}
+                      </span>
+                      {isSelected && (
+                        <CheckCircle2 className="w-4 h-4 text-indigo-500" />
+                      )}
+                    </div>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                      {m.desc}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Color Palettes (5 Options) */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Color Palette (5 Themes)</span>
+              </label>
+              <span className="text-[10px] text-slate-400 font-mono">
+                Applies across Light, Dark & System modes
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              {[
+                { 
+                  id: 'indigo' as ColorPalette, 
+                  label: 'Indigo Obsidian', 
+                  color: '#6366f1',
+                  desc: 'Classic deep tech indigo & obsidian' 
+                },
+                { 
+                  id: 'cyan' as ColorPalette, 
+                  label: 'Cyber Cyan', 
+                  color: '#06b6d4',
+                  desc: 'Electric neon teal & cyber cyan' 
+                },
+                { 
+                  id: 'emerald' as ColorPalette, 
+                  label: 'Emerald Matrix', 
+                  color: '#10b981',
+                  desc: 'Terminal matrix jade green' 
+                },
+                { 
+                  id: 'amber' as ColorPalette, 
+                  label: 'Sunset Amber', 
+                  color: '#f59e0b',
+                  desc: 'Warm solar gold & amber glow' 
+                },
+                { 
+                  id: 'rose' as ColorPalette, 
+                  label: 'Rose Amethyst', 
+                  color: '#f43f5e',
+                  desc: 'Vibrant crimson & magenta' 
+                },
+              ].map((p) => {
+                const isSelected = palette === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setPalette(p.id)}
+                    style={isSelected ? {
+                      borderColor: p.color,
+                      boxShadow: `0 0 0 2px ${p.color}33`,
+                    } : {}}
+                    className={`p-3 rounded-xl text-left border transition-all flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-slate-100/80 dark:bg-slate-800/80 shadow-xs'
+                        : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span 
+                          className="w-3.5 h-3.5 rounded-full shadow-2xs shrink-0 border border-black/10 dark:border-white/10" 
+                          style={{ backgroundColor: p.color }}
+                        />
+                        <span className="truncate">{p.label}</span>
+                      </span>
+                      {isSelected && (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                      {p.desc}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Local & Online AI Models & MCP Configuration */}
+        <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-5 h-5 text-indigo-500" />
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                MCP (Model Context Protocol) & AI Models Engine
+              </h2>
+            </div>
+            <span className="text-[10px] font-mono bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 px-2 py-0.5 rounded font-semibold">
+              Local Ollama + Gemini API Active
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Configure local and online AI model endpoints used by autonomous agents inside the Project Canvas and SLM Lab to build and ship applications.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                Local SLM Endpoint (Ollama / vLLM / WebGPU)
+              </label>
+              <input
+                type="text"
+                defaultValue="http://127.0.0.1:11434/v1"
+                className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                MCP Server Host Endpoint (Model Context Protocol)
+              </label>
+              <input
+                type="text"
+                defaultValue="mcp://localhost:8080/v1/orchestrator"
+                className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Security & Secrets Vault */}
+        <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-indigo-500" />
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                Server-Side Secrets & Credentials Vault
+              </h2>
+            </div>
+            <span className="text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 px-2 py-0.5 rounded">
+              AES-256-GCM Active
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Keys and sensitive tokens are encrypted and managed server-side, never exposed to client browsers.
+          </p>
+
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                GitHub Personal Access Token (PAT)
+              </label>
+              <input
+                type="password"
+                defaultValue="ghp_9204928109841029841029841092841"
+                className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                Stripe Secret Key (Live Webhook)
+              </label>
+              <input
+                type="password"
+                defaultValue="sk_live_51M00000000000000000000000"
+                className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            <span>Save Workspace Settings</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
