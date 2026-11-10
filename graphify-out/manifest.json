@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794334469.777585,
-    "seen": 1794334505.643428,
-    "ast_hash": "10f385b47a768d2fdb612fc48391e8a8",
+    "mtime": 1794334830.3856893,
+    "seen": 1794334862.1114008,
+    "ast_hash": "784da27f48d52dd4676158c7489123cb",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794334152.646162,
-    "seen": 1794334171.2753892,
-    "ast_hash": "f933db64820ccae8697b4424d58c63de",
+    "mtime": 1794334582.9911754,
+    "seen": 1794334862.1592064,
+    "ast_hash": "8cb9102c1c150596fe1e657095bfb753",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -939,6 +939,54 @@
     "mtime": 1794334295.0382864,
     "seen": 1794334505.690925,
     "ast_hash": "a41fa878ebf32846da805bfe4cf0caff",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/package.json": {
+    "mtime": 1794334673.9699545,
+    "seen": 1794334862.1364188,
+    "ast_hash": "0e8c2d18c40c1e6380d8f9f918789462",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/src/lib/engine.ts": {
+    "mtime": 1794334759.5114143,
+    "seen": 1794334862.1364222,
+    "ast_hash": "694a3ae934f0ac77fdc57a8afd8bbf66",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/src/routes/index.ts": {
+    "mtime": 1794334782.8853974,
+    "seen": 1794334862.136425,
+    "ast_hash": "8ee414f26d0c66f445e2fbf37adf3914",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/src/server.ts": {
+    "mtime": 1794334787.7435257,
+    "seen": 1794334862.1364272,
+    "ast_hash": "c9092688ddb594641fc9a84c120dae8f",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/src/types/index.ts": {
+    "mtime": 1794334709.3419394,
+    "seen": 1794334862.136429,
+    "ast_hash": "c2e20b1026c904aa4256fffa6a126924",
+    "semantic_hash": ""
+  },
+  "services/sre-healing-service/tsconfig.json": {
+    "mtime": 1794334693.112594,
+    "seen": 1794334862.1364312,
+    "ast_hash": "f0ca1f852a8e84d9c5df39efb208e951",
+    "semantic_hash": ""
+  },
+  "tests/sre-healing-service/mod09.integration.test.ts": {
+    "mtime": 1794334810.1975193,
+    "seen": 1794334862.1560118,
+    "ast_hash": "ae8ce3266786b6ea745c0281dfff03a1",
+    "semantic_hash": ""
+  },
+  "tests/sre-healing-service/mod09.unit.test.ts": {
+    "mtime": 1794334733.5828788,
+    "seen": 1794334862.1560152,
+    "ast_hash": "8b2778917f7f24cf6b1fd86d43b87030",
     "semantic_hash": ""
   }
 }

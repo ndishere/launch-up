@@ -431,6 +431,29 @@ services:
       timeout: 5s
       retries: 3
 
+  sre-healing-service:
+    build:
+      context: ../services/sre-healing-service
+      dockerfile: Dockerfile
+      target: dev
+    container_name: launchup-sre-healing
+    restart: unless-stopped
+    environment:
+      PORT: 8013
+      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+    ports:
+      - "8013:8013"
+    volumes:
+      - ../services/sre-healing-service/src:/app/src:ro
+    networks:
+      - launchup_app
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8013/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
   # ─────────────────────────────────────────────────────
   #  FRONTEND
   # ─────────────────────────────────────────────────────
