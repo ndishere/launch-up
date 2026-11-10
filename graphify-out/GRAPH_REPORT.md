@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-10)
 
 ## Corpus Check
-- 87 files · ~82,866 words
+- 88 files · ~84,189 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: (none) 4, .example 1, .lock 1)
 
 ## Summary
-- 897 nodes · 1542 edges · 36 communities (34 shown, 2 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.9)
+- 903 nodes · 1551 edges · 41 communities (39 shown, 2 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 12 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fd837c48`
+- Built from commit: `8803c578`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -27,7 +27,7 @@
 - 3. Functional Requirements (FR)
 - environment
 - Launch Up — Comprehensive Technology Stack & Curriculum Guide
-- AppContext.tsx
+- auth-service/src/models/schema.ts
 - compilerOptions
 - compilerOptions
 - client-service/src/routes/index.ts
@@ -42,15 +42,20 @@
 - postgres
 - networks
 - services
+- auth-service/src/server.ts
 - volumes
 - mod10.unit.test.ts
 - LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE
 - 1. Module-by-Module Positive, Negative & Rare Test Cases
 - governance-service/src/routes/index.ts
+- client-service/src/server.ts
 - LAUNCH UP — SETUP GUIDE & EXACT STARTER PROMPT FOR CODING AI MODELS
 - Run and deploy your AI Studio app
 - compilerOptions
+- project-service/src/db.ts
 - gateway
+- web-admin
+- LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
 
 ## God Nodes (most connected - your core abstractions)
 1. `useApp()` - 59 edges
@@ -79,11 +84,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (36 total, 2 thin omitted)
+## Communities (41 total, 2 thin omitted)
 
 ### Community 0 - "App.tsx"
-Cohesion: 0.11
-Nodes (40): lucide-react, react, App(), AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, Header() (+32 more)
+Cohesion: 0.06
+Nodes (93): lucide-react, react, App(), AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, Header() (+85 more)
 
 ### Community 1 - "environment"
 Cohesion: 0.06
@@ -110,8 +115,8 @@ Cohesion: 0.07
 Nodes (36): dependencies, drizzle-orm@^0.39.0, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, jsonwebtoken@^9.0.2, pg@^8.13.0, zod@^3.24.0 (+28 more)
 
 ### Community 7 - "auth-service/src/routes/index.ts"
-Cohesion: 0.08
-Nodes (32): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), fastify (+24 more)
+Cohesion: 0.20
+Nodes (12): authenticate(), fastify, FastifyRequest, JwtPayload, authorize(), authRoutes(), buildTokenPayload(), loginSchema (+4 more)
 
 ### Community 8 - "3. Functional Requirements (FR)"
 Cohesion: 0.10
@@ -125,9 +130,9 @@ Nodes (12): ALLOW_PLAINTEXT_LISTENER, KAFKA_CFG_ADVERTISED_LISTENERS, KAFKA_CFG_
 Cohesion: 0.11
 Nodes (18): 1. Frontend Core & Reactive Architecture, 2. Type System & Software Correctness, 3. Styling, Design Systems & Theming, 4. Data Visualization & Charting, 5. Database Architecture & Systems Engineering, 6. DevOps, Infrastructure & CI/CD Pipelines, 7. Security, Cryptography & Compliance, 8. Build Tools & Runtime Environment (+10 more)
 
-### Community 11 - "AppContext.tsx"
-Cohesion: 0.09
-Nodes (53): NavItem, AppContext, AppContextType, PALETTE_DEFINITIONS, initialAgents, initialAlerts, initialBackups, initialCampaigns (+45 more)
+### Community 11 - "auth-service/src/models/schema.ts"
+Cohesion: 0.15
+Nodes (12): authSchema, organizations, permissions, refreshTokens, rolePermissions, rolePermissionsRelations, roles, rolesRelations (+4 more)
 
 ### Community 12 - "compilerOptions"
 Cohesion: 0.11
@@ -138,8 +143,8 @@ Cohesion: 0.11
 Nodes (17): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+9 more)
 
 ### Community 14 - "client-service/src/routes/index.ts"
-Cohesion: 0.09
-Nodes (25): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), authorize() (+17 more)
+Cohesion: 0.13
+Nodes (17): authenticate(), authorize(), fastify, FastifyRequest, JwtPayload, clientProjects, clientProjectsRelations, clients (+9 more)
 
 ### Community 15 - "compilerOptions"
 Cohesion: 0.12
@@ -158,8 +163,8 @@ Cohesion: 0.13
 Nodes (14): 1. Global Shell & Navigation Framework, 2. Page Wireframe 1: Command Center / Dashboard Tab, 3. Page Wireframe 2: Projects Roster & Creation Modal, 4. Page Wireframe 3: Clients & Accounts Management, 5. Page Wireframe 4: Deployments & Streaming Terminal, 6. Page Wireframe 5: System Design & Documentation Hub, 7. Global Component Wireframe: Spotlight Command Palette (`Ctrl+K`), Launch Up — UI/UX Wireframes & Page Layout Specifications (+6 more)
 
 ### Community 19 - "2. Module-by-Module JSON Input/Output Contracts"
-Cohesion: 0.09
-Nodes (21): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:, 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts (+13 more)
+Cohesion: 0.15
+Nodes (12): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-01`: Lead Discovery & Canva Pitch Engine, `MOD-02`: BA Intake & Scope Synthesizer, `MOD-03`: Responsive Web & Landing Page Builder, `MOD-04`: Android Mobile App Builder, `MOD-05`: Backend API & Row-Level Security (RLS) Engine (+4 more)
 
 ### Community 20 - "interval"
 Cohesion: 0.42
@@ -178,20 +183,24 @@ Cohesion: 0.18
 Nodes (11): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, container_name, environment, image, networks, ports (+3 more)
 
 ### Community 24 - "networks"
-Cohesion: 0.09
-Nodes (20): VITE_API_BASE_URL, driver, name, driver, internal, name, driver, name (+12 more)
+Cohesion: 0.18
+Nodes (11): driver, name, driver, internal, name, driver, name, networks (+3 more)
 
 ### Community 25 - "services"
 Cohesion: 0.25
 Nodes (8): command, container_name, image, networks, ports, restart, volumes, redis
+
+### Community 26 - "auth-service/src/server.ts"
+Cohesion: 0.24
+Nodes (8): config, EnvConfig, envSchema, closeDb(), db, pool, app, shutdown()
 
 ### Community 27 - "volumes"
 Cohesion: 0.22
 Nodes (9): name, name, name, name, volumes, kafka_data, minio_data, postgres_data (+1 more)
 
 ### Community 28 - "mod10.unit.test.ts"
-Cohesion: 0.08
-Nodes (21): RFC-7519, createGovernanceHttpServer(), dbStore, signToken(), verifyToken(), signToken(), startSystemE2EServer(), systemStore (+13 more)
+Cohesion: 0.07
+Nodes (24): RFC-7519, createGovernanceHttpServer(), dbStore, signToken(), verifyToken(), createPerfServer(), perfStore, signToken() (+16 more)
 
 ### Community 29 - "LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE"
 Cohesion: 0.25
@@ -202,8 +211,12 @@ Cohesion: 0.25
 Nodes (7): 1. Module-by-Module Positive, Negative & Rare Test Cases, 2. The 5-Stage Post-Development Automated Testing Pipeline, LAUNCH UP — MASTER TEST-DRIVEN DEVELOPMENT (TDD) MATRIX & 5-STAGE PIPELINE, `MOD-01` & `MOD-02`: Lead Discovery, BA Intake & Legal Compliance Synthesizer, `MOD-03`, `MOD-04` & `MOD-05`: Responsive Web, Android App & Backend Factory, `MOD-06`, `MOD-07`, `MOD-08` & `MOD-09`: QA/SecOps, Canva, WhatsApp & SRE, `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core
 
 ### Community 31 - "governance-service/src/routes/index.ts"
-Cohesion: 0.06
-Nodes (38): config, EnvConfig, envSchema, closeDb(), db, pool, detectCircularTenancy(), BudgetExceededError (+30 more)
+Cohesion: 0.07
+Nodes (37): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, config, EnvConfig, envSchema, closeDb(), db, pool, detectCircularTenancy() (+29 more)
+
+### Community 32 - "client-service/src/server.ts"
+Cohesion: 0.24
+Nodes (8): config, EnvConfig, envSchema, closeDb(), db, pool, app, shutdown()
 
 ### Community 33 - "LAUNCH UP — SETUP GUIDE & EXACT STARTER PROMPT FOR CODING AI MODELS"
 Cohesion: 0.50
@@ -213,9 +226,21 @@ Nodes (3): LAUNCH UP — SETUP GUIDE & EXACT STARTER PROMPT FOR CODING AI MODELS
 Cohesion: 0.11
 Nodes (17): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+9 more)
 
+### Community 37 - "project-service/src/db.ts"
+Cohesion: 0.22
+Nodes (4): config, envSchema, db, pool
+
 ### Community 38 - "gateway"
 Cohesion: 0.25
 Nodes (8): container_name, depends_on, image, networks, ports, restart, volumes, gateway
+
+### Community 39 - "web-admin"
+Cohesion: 0.22
+Nodes (9): VITE_API_BASE_URL, web-admin, container_name, depends_on, environment, networks, ports, restart (+1 more)
+
+### Community 40 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
+Cohesion: 0.29
+Nodes (6): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:
 
 ## Knowledge Gaps
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
@@ -223,15 +248,15 @@ Nodes (8): container_name, depends_on, image, networks, ports, restart, volumes,
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `services` connect `services` to `environment`, `minio`, `gateway`, `postgres`, `networks`, `services`?**
+- **Why does `services` connect `services` to `environment`, `minio`, `gateway`, `web-admin`, `postgres`, `services`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.107981220657277 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.060198643410852716 - nodes in this community are weakly interconnected._
 - **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/routes/index.ts`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Should `environment` be split into smaller, more focused modules?**
   _Cohesion score 0.05764411027568922 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `package.json`?**
+- **Why does `react` connect `App.tsx` to `package.json`?**
   _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.050505050505050504 - nodes in this community are weakly interconnected._

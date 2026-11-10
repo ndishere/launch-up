@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794323310.182344,
-    "seen": 1794323372.1923108,
-    "ast_hash": "8352c27822f109c7a3e63bbc9cc6c8eb",
+    "mtime": 1794324195.8493297,
+    "seen": 1794324541.540945,
+    "ast_hash": "9e7f346c900659215d7934cd52014086",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -555,6 +555,12 @@
     "mtime": 1794323944.4213529,
     "seen": 1794324021.7601514,
     "ast_hash": "acbda6b95cc241af66798b4b8c77ceb0",
+    "semantic_hash": ""
+  },
+  "tests/governance-service/mod10.perf.test.ts": {
+    "mtime": 1794324454.6273313,
+    "seen": 1794324541.5387626,
+    "ast_hash": "edac0c29c26e0af7cbf9510f7adc417a",
     "semantic_hash": ""
   }
 }
