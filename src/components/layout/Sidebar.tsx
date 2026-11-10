@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, FolderKanban, Rocket, LayoutTemplate, 
   Layers, BarChart3, Bell, UserCheck, Settings, Crown, ChevronDown,
   Database, Zap, Bot, Network, Cpu, Megaphone, Radio, GitFork, 
-  SlidersHorizontal, Sparkles
+  SlidersHorizontal, Sparkles, MonitorSmartphone, PenTool, Workflow
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { TabId } from '../../types';
@@ -53,13 +53,17 @@ export const Sidebar: React.FC = () => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'clients', label: 'Clients', icon: Users, badge: clients.length },
     { id: 'projects', label: 'Projects', icon: FolderKanban, badge: projects.length },
+    { id: 'project-builder', label: 'Project Builder', icon: Database, badge: 'ER/API', highlight: true },
+    { id: 'nocode-editor', label: 'No-Code Studio', icon: PenTool, badge: 'FigCraft', highlight: true },
+    { id: 'preview-studio', label: 'Preview Studio', icon: MonitorSmartphone, badge: 'Android', highlight: true },
+    { id: 'n8n-workflows', label: 'n8n Workflows', icon: Workflow, badge: 'Flow', highlight: true },
     { id: 'slm-lab', label: 'SLM Lab', icon: Cpu, badge: 'Edge' },
     { id: 'deployments', label: 'Deployments', icon: Rocket },
     { id: 'templates', label: 'Templates', icon: LayoutTemplate },
     { id: 'connected-apps', label: 'Connected Apps', icon: Layers, badge: 'Plugins' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'team', label: 'Team', icon: UserCheck },
-    { id: 'ams', label: 'AMS (Agent Mgmt)', icon: Bot, badge: 'Swarm', highlight: true },
+    { id: 'ams', label: 'AMS (Agent Mgmt)', icon: Bot, badge: 'Swarm' },
     { id: 'remote-telemetry', label: 'Remote Telemetry', icon: Radio, badge: telemetryPackages.length },
     { id: 'services', label: 'Services', icon: Network, badge: 'FDE' },
     { id: 'workflows', label: 'Workflows', icon: GitFork, badge: 'n8n' },

@@ -6,6 +6,7 @@ import {
   RemoteTelemetryPackage, FDESystemArchitecture,
   TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow
 } from '../types';
+import { FigCraftProjectSchema, DEFAULT_FIGCRAFT_TOKENS } from '../lib/figcraft-adapter';
 import { 
   initialClients, initialProjects, initialAlerts, initialDeployments, 
   initialBackups, initialInvoices, initialTemplates, initialIntegrations, 
@@ -105,6 +106,34 @@ interface AppContextType {
   // Search
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+
+  // FigCraft Design & No-Code Studio State
+  figcraftProject: FigCraftProjectSchema;
+  setFigCraftProject: React.Dispatch<React.SetStateAction<FigCraftProjectSchema>>;
+  activeStudioPlatform: 'web' | 'android';
+  setActiveStudioPlatform: (p: 'web' | 'android') => void;
+  studioCompliance: string[];
+  setStudioCompliance: React.Dispatch<React.SetStateAction<string[]>>;
+  liveTelemetryScores: {
+    performance: number;
+    accessibility: number;
+    bestPractices: number;
+    seo: number;
+    semgrep: number;
+    trivy: number;
+    gitleaks: number;
+    lastAuditedAt: string;
+  };
+  setLiveTelemetryScores: React.Dispatch<React.SetStateAction<{
+    performance: number;
+    accessibility: number;
+    bestPractices: number;
+    seo: number;
+    semgrep: number;
+    trivy: number;
+    gitleaks: number;
+    lastAuditedAt: string;
+  }>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -402,6 +431,78 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isClientPortalModalOpen, setIsClientPortalModalOpen] = useState(false);
   const [activeCanvasProjectId, setActiveCanvasProjectId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // FigCraft & Studio Shared State
+  const [figcraftProject, setFigCraftProject] = useState<FigCraftProjectSchema>({
+    id: 'figcraft-proj-01',
+    projectName: 'OmniRoute Freight & Digital Logistics',
+    tokens: DEFAULT_FIGCRAFT_TOKENS,
+    rootComponents: [
+      {
+        id: 'comp-hero-1',
+        type: 'hero',
+        name: 'Hero Section',
+        props: {
+          badgeText: '⚡ Fastify Microservice Powered',
+          headline: 'Global Logistics Delivered with Precision',
+          subheadline: 'Multi-tenant real-time dispatch with PostgreSQL 16 Row-Level Security and native Android app.',
+          ctaText: 'Explore Platform',
+        },
+        layout: { display: 'flex', direction: 'column', gap: 16, padding: 24 },
+      },
+      {
+        id: 'comp-feat-1',
+        type: 'features',
+        name: 'Key Features Grid',
+        props: {},
+        layout: { display: 'grid', gap: 24, padding: 16 },
+      },
+      {
+        id: 'comp-cookie-1',
+        type: 'cookie-banner',
+        name: 'DPDP / GDPR Consent Banner',
+        props: {},
+        layout: { display: 'flex', direction: 'row', gap: 8 },
+      },
+      {
+        id: 'comp-wa-1',
+        type: 'whatsapp-cta',
+        name: 'WhatsApp Floating Concierge',
+        props: {},
+        layout: { display: 'flex' },
+      },
+      {
+        id: 'comp-delete-1',
+        type: 'account-deletion',
+        name: 'Play Policy Account Deletion',
+        props: {},
+        layout: { display: 'flex', direction: 'column' },
+      },
+    ],
+    metadata: {
+      ga4MeasurementId: 'G-LP82910482',
+      targetPlatforms: ['web', 'android'],
+      complianceFlags: ['DPDP_INDIA', 'GDPR_EU', 'GOOGLE_PLAY_DATA_SAFETY'],
+    },
+  });
+
+  const [activeStudioPlatform, setActiveStudioPlatform] = useState<'web' | 'android'>('web');
+  const [studioCompliance, setStudioCompliance] = useState<string[]>([
+    'DPDP_INDIA',
+    'GDPR_EU',
+    'CCPA_US',
+    'GOOGLE_PLAY_DATA_SAFETY',
+  ]);
+  const [liveTelemetryScores, setLiveTelemetryScores] = useState({
+    performance: 96,
+    accessibility: 98,
+    bestPractices: 95,
+    seo: 98,
+    semgrep: 0,
+    trivy: 0,
+    gitleaks: 0,
+    lastAuditedAt: new Date().toISOString(),
+  });
 
   // Keyboard shortcut listener for Command Palette (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -1044,6 +1145,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveCanvasProjectId,
         searchQuery,
         setSearchQuery,
+        figcraftProject,
+        setFigCraftProject,
+        activeStudioPlatform,
+        setActiveStudioPlatform,
+        studioCompliance,
+        setStudioCompliance,
+        liveTelemetryScores,
+        setLiveTelemetryScores,
       }}
     >
       {children}

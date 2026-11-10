@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1794337151.3521366,
-    "seen": 1794337181.31808,
-    "ast_hash": "23dc4ad143069d3ff227f0149587045f",
+    "mtime": 1794337313.97571,
+    "seen": 1794337966.8161452,
+    "ast_hash": "cc4107741ca950ad8f7744b2e60d7ee9",
     "semantic_hash": ""
   },
   "services/auth-service/drizzle.config.ts": {
@@ -150,9 +150,9 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1791707542.1515126,
-    "seen": 1794321061.5625443,
-    "ast_hash": "40fd64301d796d06432330b3349059c1",
+    "mtime": 1794337782.4438286,
+    "seen": 1794337966.845101,
+    "ast_hash": "6b060996cdb3f7a1c94a4ac28b751b13",
     "semantic_hash": ""
   },
   "src/components/common/ScreenAnalyticsHeader.tsx": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/components/layout/Sidebar.tsx": {
-    "mtime": 1791707542.179736,
-    "seen": 1794321061.5625477,
-    "ast_hash": "200e2d5d66de8cd2a80a85be2ff327ae",
+    "mtime": 1794337538.2547567,
+    "seen": 1794337966.8456366,
+    "ast_hash": "482e138ff9e9ee1b8cf001f9ad798a2d",
     "semantic_hash": ""
   },
   "src/components/modals/AddClientModal.tsx": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "src/context/AppContext.tsx": {
-    "mtime": 1791707542.3741102,
-    "seen": 1794321061.5625908,
-    "ast_hash": "15d055e3dbdafba5b23046c6c45b1f36",
+    "mtime": 1794337832.3401694,
+    "seen": 1794337966.8558815,
+    "ast_hash": "858031c56cbc4e21dc3c6f860616b895",
     "semantic_hash": ""
   },
   "src/data/mockData.ts": {
@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1791707542.3465374,
-    "seen": 1794321061.5625937,
-    "ast_hash": "5a93ab074d27790ca98c7f0d16f36e9d",
+    "mtime": 1794337419.4886708,
+    "seen": 1794337966.856992,
+    "ast_hash": "d3a25d2c0020aace2a536b54a9c4c15d",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -366,8 +366,8 @@
     "semantic_hash": ""
   },
   "vite.config.ts": {
-    "mtime": 1794336625.3942213,
-    "seen": 1794337181.3655384,
+    "mtime": 1794337277.3274333,
+    "seen": 1794337966.8635979,
     "ast_hash": "a94f57bc74c44e5da3aebf57b634bd36",
     "semantic_hash": ""
   },
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794335771.6461208,
-    "seen": 1794337181.3689356,
-    "ast_hash": "0fedb73b1a516ec5fe40ea870edb1e46",
+    "mtime": 1794337276.9947197,
+    "seen": 1794337966.8665276,
+    "ast_hash": "80a66450effa9660c168a64bec02203c",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -756,8 +756,8 @@
     "semantic_hash": ""
   },
   "services/backend-api-service/src/lib/engine.ts": {
-    "mtime": 1794336852.950597,
-    "seen": 1794337181.3240502,
+    "mtime": 1794337277.1484299,
+    "seen": 1794337966.8229573,
     "ast_hash": "393b8becb94e439c26a6b2215c8deb32",
     "semantic_hash": ""
   },
@@ -990,8 +990,8 @@
     "semantic_hash": ""
   },
   "scripts/dev-orchestrator.ts": {
-    "mtime": 1794336606.49718,
-    "seen": 1794337181.3180857,
+    "mtime": 1794337277.058993,
+    "seen": 1794337966.8161504,
     "ast_hash": "79d94f6f840070dc4d5e3c5581ce5b5b",
     "semantic_hash": ""
   },
@@ -1017,6 +1017,42 @@
     "mtime": 1794336894.1044908,
     "seen": 1794337181.3598735,
     "ast_hash": "95d0925768a91727b317d7f20e754cd5",
+    "semantic_hash": ""
+  },
+  "src/components/tabs/N8nWorkflowsTab.tsx": {
+    "mtime": 1794337868.7959902,
+    "seen": 1794337966.8523614,
+    "ast_hash": "f511010834d389a41dbeb2626c308b4f",
+    "semantic_hash": ""
+  },
+  "src/components/tabs/NoCodeEditorTab.tsx": {
+    "mtime": 1794337901.3859384,
+    "seen": 1794337966.8523726,
+    "ast_hash": "e6878c133994b30353c7bcc08c83b9cd",
+    "semantic_hash": ""
+  },
+  "src/components/tabs/PreviewStudioTab.tsx": {
+    "mtime": 1794337912.4425147,
+    "seen": 1794337966.852376,
+    "ast_hash": "e1212b61db2d7aecfe4b9304f76958a8",
+    "semantic_hash": ""
+  },
+  "src/components/tabs/ProjectBuilderTab.tsx": {
+    "mtime": 1794337887.7084155,
+    "seen": 1794337966.8523788,
+    "ast_hash": "a07393d2562a92091d3210a7c5da3da6",
+    "semantic_hash": ""
+  },
+  "src/lib/figcraft-adapter.ts": {
+    "mtime": 1794337408.2387958,
+    "seen": 1794337966.8562286,
+    "ast_hash": "1b050db0f97e9fdf549214974066da94",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1794337314.036143,
+    "seen": 1794337966.8710184,
+    "ast_hash": "79d27e8224d03a8cd262bfd1f5fcde4a",
     "semantic_hash": ""
   }
 }

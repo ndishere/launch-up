@@ -24,6 +24,10 @@ import { SettingsTab } from './components/tabs/SettingsTab';
 import { ProjectCanvasTab } from './components/tabs/ProjectCanvasTab';
 import { ConnectedAppsTab } from './components/tabs/ConnectedAppsTab';
 import { WorkflowsTab } from './components/tabs/WorkflowsTab';
+import { N8nWorkflowsTab } from './components/tabs/N8nWorkflowsTab';
+import { ProjectBuilderTab } from './components/tabs/ProjectBuilderTab';
+import { NoCodeEditorTab } from './components/tabs/NoCodeEditorTab';
+import { PreviewStudioTab } from './components/tabs/PreviewStudioTab';
 
 // Modals & Drawers
 import { CreateProjectModal } from './components/modals/CreateProjectModal';
@@ -68,8 +72,15 @@ const AppLayout: React.FC = () => {
       case 'services':
       case 'fde-systems':
         return <FDESystemsTab />;
+      case 'n8n-workflows':
       case 'workflows':
-        return <WorkflowsTab />;
+        return <N8nWorkflowsTab />;
+      case 'project-builder':
+        return <ProjectBuilderTab />;
+      case 'nocode-editor':
+        return <NoCodeEditorTab />;
+      case 'preview-studio':
+        return <PreviewStudioTab />;
       case 'alerts':
         return <AlertsTab />;
       case 'settings':

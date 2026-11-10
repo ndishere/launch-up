@@ -25,7 +25,11 @@ export type TabId =
   | 'fde-systems'
   | 'marketing-engine'
   | 'telemetry-hub'
-  | 'integrations';
+  | 'integrations'
+  | 'n8n-workflows'
+  | 'project-builder'
+  | 'nocode-editor'
+  | 'preview-studio';
 
 // Stack Presets & Configuration
 export interface TechStackPreset {
