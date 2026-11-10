@@ -550,5 +550,11 @@
     "seen": 1794323271.536925,
     "ast_hash": "ca08cbb1ccdbe3f39c2758366febff2d",
     "semantic_hash": ""
+  },
+  "tests/governance-service/mod10.system.test.ts": {
+    "mtime": 1794323944.4213529,
+    "seen": 1794324021.7601514,
+    "ast_hash": "acbda6b95cc241af66798b4b8c77ceb0",
+    "semantic_hash": ""
   }
 }
