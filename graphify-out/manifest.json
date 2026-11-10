@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794333009.6117861,
-    "seen": 1794333066.2650797,
-    "ast_hash": "aa6e07c3029461a0b10dd1e499bd7487",
+    "mtime": 1794333474.2905278,
+    "seen": 1794333674.6651466,
+    "ast_hash": "7e704ee7be24c86e448d8402391169ae",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794332674.3524313,
-    "seen": 1794333066.3063545,
-    "ast_hash": "2edf10ebb2077c93efc4403154655ee6",
+    "mtime": 1794333226.4603133,
+    "seen": 1794333674.7015991,
+    "ast_hash": "3bc788bb74a681ba5815a30be42f93a5",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -795,6 +795,54 @@
     "mtime": 1794332787.6851957,
     "seen": 1794333066.2990162,
     "ast_hash": "ecccc09f9e2aa5b47ee8720b606bb760",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/package.json": {
+    "mtime": 1794333388.7114034,
+    "seen": 1794333674.6823614,
+    "ast_hash": "3f10810ccf94a95449313bf600548388",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/src/lib/engine.ts": {
+    "mtime": 1794333362.4642391,
+    "seen": 1794333674.6823652,
+    "ast_hash": "3036711332317492badec43cd7171f01",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/src/routes/index.ts": {
+    "mtime": 1794333377.5854805,
+    "seen": 1794333674.6823673,
+    "ast_hash": "e6bed7d13d62cdaa89e0eea14bc30bd7",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/src/server.ts": {
+    "mtime": 1794333383.4878874,
+    "seen": 1794333674.6823692,
+    "ast_hash": "ada600767029d308aacf5c7ae79986ee",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/src/types/index.ts": {
+    "mtime": 1794333327.7004156,
+    "seen": 1794333674.6823714,
+    "ast_hash": "13f4e8234cd36ea6c4f20ed8630451ee",
+    "semantic_hash": ""
+  },
+  "services/qa-secops-service/tsconfig.json": {
+    "mtime": 1794333394.1686025,
+    "seen": 1794333674.682373,
+    "ast_hash": "af91742c24e81c4a6ef1ec2b2997fcc6",
+    "semantic_hash": ""
+  },
+  "tests/qa-secops-service/mod06.integration.test.ts": {
+    "mtime": 1794333421.5028164,
+    "seen": 1794333674.698972,
+    "ast_hash": "d55d7826e6ff64912e3bce684fd24153",
+    "semantic_hash": ""
+  },
+  "tests/qa-secops-service/mod06.unit.test.ts": {
+    "mtime": 1794333348.600391,
+    "seen": 1794333674.6989758,
+    "ast_hash": "f6ed377f4004f7f2d5bea19b12bb6ccd",
     "semantic_hash": ""
   }
 }
