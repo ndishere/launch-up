@@ -40,32 +40,32 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-10T23:02:00+05:30`
+- **Last Updated Timestamp:** `2026-11-10T23:10:00+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `MOD-03` *(Responsive Web & Landing Builder)* -> Queue: `MOD-04` *(Android Mobile App Builder)*
-- **Architecture Alignment:** Fully implemented as `services/web-builder-service` (Node.js 22 / Fastify 5), strictly adhering to all locked schemas in `contracts/module_input_output_contracts.md` (MOD-03).
-- **Current TDD Stage for MOD-03:**
-  - `[x] Stage 0: Test Stubs Generated` — `tests/web-builder-service/mod03.unit.test.ts`, `tests/web-builder-service/mod03.integration.test.ts`
+- **Active Module ID:** `MOD-04` *(Android Mobile App Builder)* -> Queue: `MOD-05` *(Backend API & RLS Engine)*
+- **Architecture Alignment:** Fully implemented as `services/mobile-app-service` (Node.js 22 / Fastify 5), strictly adhering to all locked schemas in `contracts/module_input_output_contracts.md` (MOD-04).
+- **Current TDD Stage for MOD-04:**
+  - `[x] Stage 0: Test Stubs Generated` — `tests/mobile-app-service/mod04.unit.test.ts`, `tests/mobile-app-service/mod04.integration.test.ts`
   - `[x] Stage 1: Unit Tests Passing` — 8/8 PASS (100% pass rate)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 6/6 PASS (100% pass rate)
-  - `[x] Cross-Module Monorepo Regression Passing` — 64/64 PASS across 22 test suites (100% pass rate)
+  - `[x] Cross-Module Monorepo Regression Passing` — 78/78 PASS across 27 test suites (100% pass rate)
 - **Test Execution Summary:**
   - **MOD-10 (Governance Core):** 24/24 tests passed across Unit, Integration, System, and Performance stages.
   - **MOD-01 (Lead Discovery & Pitch Engine):** 13/13 tests passed (8 Unit + 5 Integration/Contract).
   - **MOD-02 (BA Intake & Scope Synthesizer):** 13/13 tests passed (7 Unit + 6 Integration/Contract).
   - **MOD-03 (Responsive Web & Landing Builder):** 14/14 tests passed (8 Unit + 6 Integration/Contract).
-  - **Total Monorepo Tests Passing:** 64/64 passed (0 failures).
-- **Verified MOD-03 Contracts & Deterministic Error Codes:**
-  - `Mod03WebBuildRequest` -> `Mod03WebBuildResponse`: Verified synthesis of `git_commit_sha`, `staging_preview_url`, `viewports_verified` (`["375px", "768px", "1280px", "1920px"]`), `rtl_verified`, `cookie_consent_banner_active`, and `graphify_updated`.
-  - `422 ERR_VIEWPORT_OVERFLOW`: Verified horizontal overflow detection on 375px mobile viewport when arbitrary hardcoded widths/min-widths exceed 375px.
-  - `500 ERR_BUILD_COMPILE`: Verified compiler/template error detection on invalid templates or unclosed JSX syntax.
-  - `504 ERR_SANDBOX_TIMEOUT`: Verified sandbox execution timeout handling and graceful error response.
-  - `RTL & Multilingual Support`: Verified RTL directionality (`dir="rtl"`, logical start/end properties) and German compound word hyphenation/wrapping (`break-words`).
-  - `Cookie Consent Banner`: Verified dynamic activation when `compliance_flags` contains `GDPR_EU` or `DPDP_INDIA`.
+  - **MOD-04 (Android Mobile App Builder):** 14/14 tests passed (8 Unit + 6 Integration/Contract).
+  - **Total Monorepo Tests Passing:** 78/78 passed (0 failures).
+- **Verified MOD-04 Contracts & Deterministic Error Codes:**
+  - `Mod04AndroidBuildRequest` -> `Mod04AndroidBuildResponse`: Verified synthesis of `git_commit_sha`, `signed_apk_url`, `signed_aab_url`, `play_store_data_safety_csv_url`, `in_app_account_deletion_route` (`/settings/delete-account`), `web_account_deletion_url`, and `graphify_updated`.
+  - `422 ERR_PLAY_POLICY_MISSING`: Verified enforcement of Google Play policy — rejects when dangerous permissions (`READ_CONTACTS`, `ACCESS_FINE_LOCATION`, etc.) lack declarations in Data Safety CSV, or when `target_sdk_version < 34`.
+  - `401 ERR_SIGNING_KEY_INVALID`: Verified release signing key authentication and rejection of corrupted/invalid keystore credentials.
+  - `500 ERR_GRADLE_FASTLANE`: Verified rejection of unsupported templates or invalid Java package names (keywords like `default`, syntax like `com.123.app`).
+  - `Mandatory Account Deletion`: Verified in-app route (`/settings/delete-account`) and web URL (`/privacy/delete-account`).
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Target Module:** `MOD-04` *(Android Mobile App Builder)*.
+  - **Target Module:** `MOD-05` *(Backend API & RLS Engine)*.
 - **Known Blockers / Unresolved Errors:**
-  - `None. MOD-03 service implemented with 14/14 passing tests. Monorepo total 64/64 tests passing. Graphify knowledge graph updated to 1155 nodes, 2011 edges, 49 communities.`
+  - `None. MOD-04 service implemented with 14/14 passing tests. Monorepo total 78/78 tests passing. Graphify knowledge graph updated to 1239 nodes, 2161 edges, 61 communities.`
 
 ---
 
@@ -77,7 +77,7 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 | **MOD-01** | Lead Discovery & Canva Pitch Engine | YES | `8/8 (100%)` | `5/5 (100%)` | `N/A` | `N/A` | `PASSED` | `COMPLETE` |
 | **MOD-02** | BA Intake & Scope Synthesizer | YES | `7/7 (100%)` | `6/6 (100%)` | `N/A` | `N/A` | `PASSED` | `COMPLETE` |
 | **MOD-03** | Responsive Web & Landing Builder | YES | `8/8 (100%)` | `6/6 (100%)` | `N/A` | `N/A` | `PASSED` | `COMPLETE` |
-| **MOD-04** | Android Mobile App Builder | YES | `0/10` | `0/6` | `0/4` | `0/2` | `Pending` | `QUEUED` |
+| **MOD-04** | Android Mobile App Builder | YES | `8/8 (100%)` | `6/6 (100%)` | `N/A` | `N/A` | `PASSED` | `COMPLETE` |
 | **MOD-05** | Backend API & RLS Engine | YES | `0/12` | `0/8` | `0/4` | `0/3` | `Pending` | `QUEUED` |
 | **MOD-06** | Autonomous QA & SecOps Verifier | YES | `0/10` | `0/6` | `0/4` | `0/2` | `Pending` | `QUEUED` |
 | **MOD-07** | Canva Pro Digital Marketing Engine | YES | `0/8` | `0/6` | `0/3` | `0/2` | `Pending` | `QUEUED` |

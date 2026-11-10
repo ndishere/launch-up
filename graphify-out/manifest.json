@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794331841.1371107,
-    "seen": 1794331898.902664,
-    "ast_hash": "be337193913c8351ec122993e1dbb7d5",
+    "mtime": 1794332311.355885,
+    "seen": 1794332343.0130928,
+    "ast_hash": "29038259572786b834df932f78737bf4",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794329439.189545,
-    "seen": 1794331898.9324405,
-    "ast_hash": "066350b59c9ab8b1e23134ae4d0519e3",
+    "mtime": 1794331984.7207139,
+    "seen": 1794332343.0607302,
+    "ast_hash": "fc07fdddfc34ab74ba662c4dd5eec298",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -699,6 +699,54 @@
     "mtime": 1794331705.9015367,
     "seen": 1794331898.9299989,
     "ast_hash": "4e1f9fdd68b51c6433a16342669aa88f",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/package.json": {
+    "mtime": 1794332182.9938848,
+    "seen": 1794332343.030193,
+    "ast_hash": "ffa14045986c9ad7bd0d2eec1e2c41fd",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/src/lib/engine.ts": {
+    "mtime": 1794332158.4518447,
+    "seen": 1794332343.0301998,
+    "ast_hash": "5b04afb964aca8aa94c26b5e8838472c",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/src/routes/index.ts": {
+    "mtime": 1794332173.0440161,
+    "seen": 1794332343.0302045,
+    "ast_hash": "28e6075f7f43d3ea968903ff908cc641",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/src/server.ts": {
+    "mtime": 1794332177.959079,
+    "seen": 1794332343.0302088,
+    "ast_hash": "ff88165388d170c0c8ea4e8bcabcd78d",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/src/types/index.ts": {
+    "mtime": 1794332088.364962,
+    "seen": 1794332343.0302124,
+    "ast_hash": "c11a3efdb2ce265d376a60154b2b958c",
+    "semantic_hash": ""
+  },
+  "services/mobile-app-service/tsconfig.json": {
+    "mtime": 1794332189.0968406,
+    "seen": 1794332343.030217,
+    "ast_hash": "af91742c24e81c4a6ef1ec2b2997fcc6",
+    "semantic_hash": ""
+  },
+  "tests/mobile-app-service/mod04.integration.test.ts": {
+    "mtime": 1794332216.5989256,
+    "seen": 1794332343.055713,
+    "ast_hash": "42dbbd3d8037d33546e5ad7837ea6e99",
+    "semantic_hash": ""
+  },
+  "tests/mobile-app-service/mod04.unit.test.ts": {
+    "mtime": 1794332122.1043358,
+    "seen": 1794332343.0557165,
+    "ast_hash": "a01346ef4e63ca69e6aa9e1e0888ca47",
     "semantic_hash": ""
   }
 }
