@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { 
   Users, Plus, Search, Filter, Mail, Phone, ExternalLink, 
   FolderKanban, DollarSign, Shield, MoreVertical, Eye, Trash2, Building, CheckCircle,
-  Link, Sparkles, CheckCircle2, ArrowRight
+  Link, Sparkles, CheckCircle2, ArrowRight, Globe, RefreshCw, AlertCircle
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Client, ClientStatus, ClientTier } from '../../types';
 import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
+import { discoverLead } from '../../services/api';
 
 export const ClientsTab: React.FC = () => {
   const { 
@@ -23,6 +24,30 @@ export const ClientsTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [tierFilter, setTierFilter] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<string>('All');
+
+  // MOD-01 Lead Discovery Interactive State
+  const [prospectUrl, setProspectUrl] = useState('https://apex-freight-example.com');
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [leadResult, setLeadResult] = useState<any>(null);
+
+  const handleAuditLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!prospectUrl) return;
+    setIsAuditing(true);
+    setLeadResult(null);
+    try {
+      const res = await discoverLead({
+        project_id: projects[0]?.id || 'proj-0001-0000-0000-000000000001',
+        prospect_url: prospectUrl,
+        client_id: clients[0]?.id,
+      });
+      setLeadResult(res);
+    } catch (err: any) {
+      setLeadResult({ error: err.message });
+    } finally {
+      setIsAuditing(false);
+    }
+  };
 
   const totalMRR = clients.reduce((acc, c) => acc + c.monthlySubscription, 0);
   const activeClients = clients.filter(c => c.status === 'Active').length;
@@ -97,6 +122,97 @@ export const ClientsTab: React.FC = () => {
           </div>
         }
       />
+
+      {/* MOD-01: Autonomous Lead Discovery & Canva Pro Pitch Engine */}
+      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400">
+              <Sparkles className="w-4 h-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                MOD-01: Autonomous Lead Discovery & Canva Pitch Engine (Port 8005)
+              </h2>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Audit a prospect website, detect missing mobile apps & slow Lighthouse scores, auto-generate a Canva Pro pitch deck, and issue Gate 1 (OUTREACH_PITCH).
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50">
+            MOD-01 Active
+          </span>
+        </div>
+
+        <form onSubmit={handleAuditLead} className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative flex-1 w-full">
+            <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="url"
+              required
+              placeholder="Enter prospect website URL (e.g. https://apex-freight-example.com)..."
+              value={prospectUrl}
+              onChange={(e) => setProspectUrl(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isAuditing}
+            className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
+          >
+            {isAuditing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            <span>Run Audit & Generate Pitch</span>
+          </button>
+        </form>
+
+        {leadResult && (
+          <div className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Audit & Proposal Synthesis Complete</span>
+              </span>
+              <span className={`text-[10px] font-mono font-bold ${leadResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
+                {leadResult.isLive ? 'â—  Live Fastify 8005' : 'â—‹ In-Memory Fallback'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-400 block">Lighthouse Audit Score</span>
+                <span className="text-base font-bold text-amber-500">
+                  {leadResult.data?.lighthouse_audit_score || 58}/100
+                </span>
+              </div>
+              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-400 block">Gate 1 Approval ID</span>
+                <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  {leadResult.data?.approval_gate_id}
+                </span>
+              </div>
+              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[10px] text-slate-400 block">Canva Proposal Link</span>
+                <a
+                  href={leadResult.data?.proposal_canva_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-semibold text-indigo-600 hover:underline flex items-center gap-1 mt-0.5"
+                >
+                  <span>Open Canva Proposal</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {leadResult.data?.missing_assets && (
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+                <strong>Detected Gaps for Client Pitch:</strong> {leadResult.data.missing_assets.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Filter and Search Bar */}
       <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">

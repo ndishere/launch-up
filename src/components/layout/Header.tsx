@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Menu, Search, Bell, Sun, Moon, Monitor, ChevronDown, CheckCircle2, 
-  AlertTriangle, AlertCircle, Info, ExternalLink, Sparkles, Palette 
+  AlertTriangle, AlertCircle, Info, ExternalLink, Sparkles, Palette,
+  Activity, ShieldCheck
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Theme, ThemeMode, ColorPalette } from '../../types';
+import { checkAllServicesHealth } from '../../services/api';
 
 export const Header: React.FC = () => {
   const { 
@@ -26,6 +28,18 @@ export const Header: React.FC = () => {
     setIsCommandPaletteOpen,
     setIsAddClientModalOpen
   } = useApp();
+
+  const [meshStatus, setMeshStatus] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    checkAllServicesHealth().then(setMeshStatus).catch(() => {});
+    const timer = setInterval(() => {
+      checkAllServicesHealth().then(setMeshStatus).catch(() => {});
+    }, 15000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const liveCount = Object.values(meshStatus).filter(Boolean).length;
 
   const [showAlertsDropdown, setShowAlertsDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -61,7 +75,7 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-30 h-16 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#0D111A]/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between transition-colors">
-      {/* Left: Sidebar Toggle */}
+      {/* Left: Sidebar Toggle & Microservices Mesh Pill */}
       <div className="flex items-center gap-3">
         <button
           id="sidebar-toggle-btn"
@@ -71,6 +85,17 @@ export const Header: React.FC = () => {
           aria-label="Toggle Navigation Menu"
         >
           <Menu className="w-5 h-5" />
+        </button>
+
+        <button
+          onClick={() => setCurrentTab('team')}
+          className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          title="Microservices Mesh Control: Click to view Governance Gates & RBAC"
+        >
+          <span className={`w-2 h-2 rounded-full ${liveCount > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+          <span className="font-mono">
+            Mesh: {liveCount > 0 ? `${liveCount}/10 Microservices Live` : 'Control Plane Mesh Ready'}
+          </span>
         </button>
       </div>
 

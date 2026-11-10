@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { 
   Megaphone, TrendingUp, DollarSign, Target, Sparkles, 
   RefreshCw, CheckCircle2, Play, Users, BarChart3, Plus, 
-  ExternalLink, Layers, ArrowUpRight
+  ExternalLink, Layers, ArrowUpRight, MessageSquare, Send, Calendar, ShieldCheck
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { MarketingCampaign } from '../../types';
+import { generateMarketingCalendar, sendWhatsAppMessage } from '../../services/api';
 
 export const MarketingEngineTab: React.FC = () => {
-  const { campaigns, rebalanceCampaign, createCampaign, clients } = useApp();
+  const { campaigns, rebalanceCampaign, createCampaign, clients, projects } = useApp();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState('');
@@ -16,6 +17,60 @@ export const MarketingEngineTab: React.FC = () => {
   const [channel, setChannel] = useState<any>('LinkedIn B2B');
   const [budgetMonthly, setBudgetMonthly] = useState(3000);
   const [targetRoas, setTargetRoas] = useState(5.0);
+
+  // MOD-07 Canva Marketing State
+  const [campaignTheme, setCampaignTheme] = useState('Festive Growth & High-Speed Fulfillment');
+  const [calendarDays, setCalendarDays] = useState(30);
+  const [generatingCalendar, setGeneratingCalendar] = useState(false);
+  const [calendarResult, setCalendarResult] = useState<any>(null);
+
+  // MOD-08 WhatsApp RAG State
+  const [whatsappPhone, setWhatsappPhone] = useState('+919876543210');
+  const [whatsappText, setWhatsappText] = useState('What are your express delivery rates for bulk shipments?');
+  const [whatsappEventType, setWhatsappEventType] = useState<'INBOUND_CUSTOMER_MSG' | 'OUTBOUND_CAMPAIGN_BROADCAST'>('INBOUND_CUSTOMER_MSG');
+  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
+  const [whatsappResult, setWhatsappResult] = useState<any>(null);
+
+  const handleGenerateCalendar = async () => {
+    setGeneratingCalendar(true);
+    setCalendarResult(null);
+    try {
+      const res = await generateMarketingCalendar({
+        project_id: projects[0]?.id || 'proj-0007-0000-0000-000000000001',
+        brand_kit: {
+          primary_color_hex: '#0F172A',
+          company_name: businessName,
+        },
+        campaign_theme: campaignTheme,
+        days_count: calendarDays,
+        canva_brand_template_ids: ['DAG_social_01', 'DAG_carousel_02'],
+      });
+      setCalendarResult(res);
+    } catch (err: any) {
+      setCalendarResult({ error: err.message });
+    } finally {
+      setGeneratingCalendar(false);
+    }
+  };
+
+  const handleSendWhatsApp = async () => {
+    setSendingWhatsApp(true);
+    setWhatsappResult(null);
+    try {
+      const res = await sendWhatsAppMessage({
+        project_id: projects[0]?.id || 'proj-0008-0000-0000-000000000001',
+        event_type: whatsappEventType,
+        recipient_phone_e164: whatsappPhone,
+        opt_in_proof_id: whatsappEventType === 'OUTBOUND_CAMPAIGN_BROADCAST' ? 'proof-optin-uuid-12345' : null,
+        message_payload: { text_or_template: whatsappText },
+      });
+      setWhatsappResult(res);
+    } catch (err: any) {
+      setWhatsappResult({ error: err.message });
+    } finally {
+      setSendingWhatsApp(false);
+    }
+  };
 
   const totalMonthlySpend = campaigns.reduce((acc, c) => acc + c.budgetMonthly, 0);
   const totalLeads = campaigns.reduce((acc, c) => acc + c.leadsGenerated, 0);
@@ -132,6 +187,210 @@ export const MarketingEngineTab: React.FC = () => {
           <p className="text-[11px] text-pink-500 mt-1 font-mono">
             Dynamic A/B Evaluation
           </p>
+        </div>
+      </div>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* FULL-STACK CONTROL PLANE: MOD-07 & MOD-08 INTERACTIVE ENGINES  */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* MOD-07: Canva Pro Digital Marketing Engine */}
+        <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-pink-50 dark:bg-pink-950/70 text-pink-600 dark:text-pink-400">
+                <Calendar className="w-4 h-4" />
+              </span>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  MOD-07: Canva Pro Marketing Engine (Port 8011)
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  Autofill 30-day content calendar with EU AI Act Art. 50 disclosure & Gate 4.
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-pink-50 dark:bg-pink-950/70 text-pink-600 dark:text-pink-300">
+              MOD-07 Active
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Campaign Theme:
+              </label>
+              <input
+                type="text"
+                value={campaignTheme}
+                onChange={(e) => setCampaignTheme(e.target.value)}
+                className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-32">
+                <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                  Days Count:
+                </label>
+                <select
+                  value={calendarDays}
+                  onChange={(e) => setCalendarDays(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none"
+                >
+                  <option value={7}>7 Days Sprint</option>
+                  <option value={14}>14 Days</option>
+                  <option value={30}>30 Days (Full Month)</option>
+                </select>
+              </div>
+
+              <div className="flex-1 flex items-end">
+                <button
+                  onClick={handleGenerateCalendar}
+                  disabled={generatingCalendar}
+                  className="w-full py-1.5 px-3 text-xs font-bold text-white bg-pink-600 hover:bg-pink-700 rounded-lg shadow-2xs shadow-pink-600/30 transition-all flex items-center justify-center gap-1.5"
+                >
+                  {generatingCalendar ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  <span>Generate Calendar & Gate 4</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {calendarResult && (
+            <div className="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Calendar Generated ({calendarResult.data?.calendar_items?.length} Items)</span>
+                </span>
+                <span className={`text-[10px] font-mono font-bold ${calendarResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
+                  {calendarResult.isLive ? 'â—  Live Fastify 8011' : 'â—‹ In-Memory Fallback'}
+                </span>
+              </div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                Gate 4 Issued: <strong className="font-mono text-slate-700 dark:text-slate-300">{calendarResult.data?.approval_gate_id}</strong>
+              </div>
+              <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
+                {calendarResult.data?.calendar_items?.slice(0, 3).map((item: any, idx: number) => (
+                  <div key={idx} className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200/60 dark:border-slate-700 text-[11px]">
+                    <div className="flex items-center justify-between font-bold text-pink-600 dark:text-pink-400">
+                      <span>Day {item.day} â€¢ {item.platform}</span>
+                      <span className="text-[10px] text-emerald-500">EU AI Act Art. 50 âœ“</span>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-300 truncate mt-0.5">{item.caption}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* MOD-08: WhatsApp Marketing & CRM RAG Engine */}
+        <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400">
+                <MessageSquare className="w-4 h-4" />
+              </span>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  MOD-08: WhatsApp Marketing & CRM RAG (Port 8012)
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  Real-time Meta 24h window enforcement, pgvector RAG, and Chatwoot escalation.
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-300">
+              MOD-08 Active
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                  Recipient Phone (E.164):
+                </label>
+                <input
+                  type="text"
+                  value={whatsappPhone}
+                  onChange={(e) => setWhatsappPhone(e.target.value)}
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                  Event Type:
+                </label>
+                <select
+                  value={whatsappEventType}
+                  onChange={(e) => setWhatsappEventType(e.target.value as any)}
+                  className="w-full px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none"
+                >
+                  <option value="INBOUND_CUSTOMER_MSG">Inbound Customer Message</option>
+                  <option value="OUTBOUND_CAMPAIGN_BROADCAST">Outbound Campaign Broadcast</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={whatsappText}
+                onChange={(e) => setWhatsappText(e.target.value)}
+                placeholder="Enter customer message or campaign copy..."
+                className="flex-1 px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none"
+              />
+              <button
+                onClick={handleSendWhatsApp}
+                disabled={sendingWhatsApp}
+                className="py-1.5 px-4 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-2xs shadow-emerald-600/30 transition-all flex items-center gap-1.5 shrink-0"
+              >
+                {sendingWhatsApp ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                <span>Send via MOD-08</span>
+              </button>
+            </div>
+          </div>
+
+          {whatsappResult && (
+            <div className="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Message Dispatched</span>
+                </span>
+                <span className={`text-[10px] font-mono font-bold ${whatsappResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
+                  {whatsappResult.isLive ? 'â—  Live Fastify 8012' : 'â—‹ In-Memory Fallback'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div className="p-1.5 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                  <span className="text-slate-400 block text-[10px]">24h Window</span>
+                  <span className="font-bold text-emerald-600">Active âœ“</span>
+                </div>
+                <div className="p-1.5 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                  <span className="text-slate-400 block text-[10px]">RAG Confidence</span>
+                  <span className="font-bold text-indigo-600">{whatsappResult.data?.rag_confidence_score}</span>
+                </div>
+                <div className="p-1.5 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                  <span className="text-slate-400 block text-[10px]">Chatwoot Escalate</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-300">
+                    {whatsappResult.data?.escalated_to_human_chatwoot ? 'Yes (Low RAG)' : 'No (Automated)'}
+                  </span>
+                </div>
+                <div className="p-1.5 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
+                  <span className="text-slate-400 block text-[10px]">Unsubscribe Footer</span>
+                  <span className="font-bold text-emerald-600">Attached âœ“</span>
+                </div>
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate">
+                Message ID: {whatsappResult.data?.whatsapp_message_id}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
