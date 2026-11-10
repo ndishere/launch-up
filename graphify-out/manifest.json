@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794325068.419642,
-    "seen": 1794325093.4197853,
-    "ast_hash": "6b7f014cd2dfdd667c23576cd29f9681",
+    "mtime": 1794326119.572065,
+    "seen": 1794326421.6707256,
+    "ast_hash": "898521dc6ca8d90a5f711467c1a78e6b",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794324671.4210415,
-    "seen": 1794325093.438388,
-    "ast_hash": "9472cc333105bb6f1262f529ffab33be",
+    "mtime": 1794325214.5077024,
+    "seen": 1794326421.7115598,
+    "ast_hash": "673642eb930583469adffb2bdae22e49",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -558,9 +558,9 @@
     "semantic_hash": ""
   },
   "tests/governance-service/mod10.perf.test.ts": {
-    "mtime": 1794324454.6273313,
-    "seen": 1794324541.5387626,
-    "ast_hash": "edac0c29c26e0af7cbf9510f7adc417a",
+    "mtime": 1794326390.2460697,
+    "seen": 1794326421.705692,
+    "ast_hash": "ee2ffb1b46401e699a9e0880c067552c",
     "semantic_hash": ""
   },
   "services/lead-pitch-service/package.json": {
@@ -603,6 +603,54 @@
     "mtime": 1794324966.2588391,
     "seen": 1794325093.436669,
     "ast_hash": "690a8a5585dafb79fd4d87ca2eb1b0ba",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/package.json": {
+    "mtime": 1794326093.9308116,
+    "seen": 1794326421.676044,
+    "ast_hash": "e6cacb70af41939c8a89ac7b4ec2f5b7",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/src/lib/engine.ts": {
+    "mtime": 1794326203.1332705,
+    "seen": 1794326421.676049,
+    "ast_hash": "48e2ef0276f51f0e30a2152625856e0a",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/src/routes/index.ts": {
+    "mtime": 1794326066.6742713,
+    "seen": 1794326421.6760519,
+    "ast_hash": "caa83911f8ef29d160b4558d3000681f",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/src/server.ts": {
+    "mtime": 1794326072.6428347,
+    "seen": 1794326421.6760547,
+    "ast_hash": "419bb3025c187da588c6be21909e4ede",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/src/types/index.ts": {
+    "mtime": 1794325833.9777546,
+    "seen": 1794326421.6760576,
+    "ast_hash": "f68577af4c14a68ff2f7da247102739b",
+    "semantic_hash": ""
+  },
+  "services/ba-intake-service/tsconfig.json": {
+    "mtime": 1794326100.4751847,
+    "seen": 1794326421.6760604,
+    "ast_hash": "af91742c24e81c4a6ef1ec2b2997fcc6",
+    "semantic_hash": ""
+  },
+  "tests/ba-intake-service/mod02.integration.test.ts": {
+    "mtime": 1794326216.6300137,
+    "seen": 1794326421.705242,
+    "ast_hash": "f09ceb6ab271ec371e831d28cad6762f",
+    "semantic_hash": ""
+  },
+  "tests/ba-intake-service/mod02.unit.test.ts": {
+    "mtime": 1794325877.7250226,
+    "seen": 1794326421.7052467,
+    "ast_hash": "d013fafeee31e6936dfe27804ddd0514",
     "semantic_hash": ""
   }
 }

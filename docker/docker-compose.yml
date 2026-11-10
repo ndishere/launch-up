@@ -266,6 +266,29 @@ services:
       timeout: 5s
       retries: 3
 
+  ba-intake-service:
+    build:
+      context: ../services/ba-intake-service
+      dockerfile: Dockerfile
+      target: dev
+    container_name: launchup-ba-intake
+    restart: unless-stopped
+    environment:
+      PORT: 8006
+      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+    ports:
+      - "8006:8006"
+    volumes:
+      - ../services/ba-intake-service/src:/app/src:ro
+    networks:
+      - launchup_app
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8006/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
   # ─────────────────────────────────────────────────────
   #  FRONTEND
   # ─────────────────────────────────────────────────────
