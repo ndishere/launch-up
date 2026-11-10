@@ -45,9 +45,9 @@
   "43": "services",
   "44": "postgres",
   "45": "auth-service",
-  "46": "ba-intake-service",
-  "47": "client-service",
-  "48": "ba-intake-service/src/server.ts",
+  "46": "backend-api-service/package.json",
+  "47": "backend-api-service/src/lib/engine.ts",
+  "48": "mobile-app-service/src/server.ts",
   "49": "ref_node_assert",
   "50": "mod10.unit.test.ts",
   "51": "governance-service/src/middleware/authenticate.ts",
@@ -59,5 +59,10 @@
   "57": "kafka",
   "58": "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE",
   "59": "project-service",
-  "60": "web-builder-service"
+  "60": "web-builder-service",
+  "61": "compilerOptions",
+  "62": "backend-api-service",
+  "63": "governance-service",
+  "64": "mobile-app-service",
+  "65": "web-builder-service/src/server.ts"
 }

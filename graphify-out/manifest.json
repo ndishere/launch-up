@@ -1,8 +1,8 @@
 {
   "docker/docker-compose.yml": {
-    "mtime": 1794332311.355885,
-    "seen": 1794332343.0130928,
-    "ast_hash": "29038259572786b834df932f78737bf4",
+    "mtime": 1794333009.6117861,
+    "seen": 1794333066.2650797,
+    "ast_hash": "aa6e07c3029461a0b10dd1e499bd7487",
     "semantic_hash": ""
   },
   "metadata.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794331984.7207139,
-    "seen": 1794332343.0607302,
-    "ast_hash": "fc07fdddfc34ab74ba662c4dd5eec298",
+    "mtime": 1794332674.3524313,
+    "seen": 1794333066.3063545,
+    "ast_hash": "2edf10ebb2077c93efc4403154655ee6",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -747,6 +747,54 @@
     "mtime": 1794332122.1043358,
     "seen": 1794332343.0557165,
     "ast_hash": "a01346ef4e63ca69e6aa9e1e0888ca47",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/package.json": {
+    "mtime": 1794332873.7665105,
+    "seen": 1794333066.2738094,
+    "ast_hash": "8b5bfaa69d776f5e85ec010497c35a61",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/src/lib/engine.ts": {
+    "mtime": 1794332844.9451206,
+    "seen": 1794333066.2738135,
+    "ast_hash": "6abe52c450e295e334c603bb02763366",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/src/routes/index.ts": {
+    "mtime": 1794332861.4462802,
+    "seen": 1794333066.2738163,
+    "ast_hash": "2a808a1b89718cb45367d201dc3f793e",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/src/server.ts": {
+    "mtime": 1794332867.9599128,
+    "seen": 1794333066.2738187,
+    "ast_hash": "c4017eb62db58bb95c2ea160ef8adbb2",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/src/types/index.ts": {
+    "mtime": 1794332761.851287,
+    "seen": 1794333066.2738204,
+    "ast_hash": "9815ebcc872d3dca0571823fecaa65a9",
+    "semantic_hash": ""
+  },
+  "services/backend-api-service/tsconfig.json": {
+    "mtime": 1794332887.2995803,
+    "seen": 1794333066.2738228,
+    "ast_hash": "af91742c24e81c4a6ef1ec2b2997fcc6",
+    "semantic_hash": ""
+  },
+  "tests/backend-api-service/mod05.integration.test.ts": {
+    "mtime": 1794332919.0199242,
+    "seen": 1794333066.2990124,
+    "ast_hash": "ac92f5d5b4d3bc84cccd9e041745ed77",
+    "semantic_hash": ""
+  },
+  "tests/backend-api-service/mod05.unit.test.ts": {
+    "mtime": 1794332787.6851957,
+    "seen": 1794333066.2990162,
+    "ast_hash": "ecccc09f9e2aa5b47ee8720b606bb760",
     "semantic_hash": ""
   }
 }
