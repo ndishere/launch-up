@@ -26,7 +26,8 @@ export const Header: React.FC = () => {
     markAlertAsRead,
     setCurrentTab,
     setIsCommandPaletteOpen,
-    setIsAddClientModalOpen
+    setIsAddClientModalOpen,
+    resetDemoState
   } = useApp();
 
   const [meshStatus, setMeshStatus] = useState<Record<string, boolean>>({});
@@ -382,7 +383,7 @@ export const Header: React.FC = () => {
                   <Sparkles className="w-3 h-3" />
                 </button>
               </div>
-              <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-1 border-t border-slate-100 dark:border-slate-800 space-y-0.5">
                 <button
                   onClick={() => {
                     setIsAddClientModalOpen(true);
@@ -391,6 +392,15 @@ export const Header: React.FC = () => {
                   className="w-full text-left px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
                 >
                   + New Client Intake
+                </button>
+                <button
+                  onClick={() => {
+                    resetDemoState();
+                    setShowProfileDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg font-medium"
+                >
+                  Reset Demo State
                 </button>
               </div>
             </div>

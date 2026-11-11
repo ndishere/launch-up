@@ -175,6 +175,12 @@ export function saveGate(gate: GovernanceGateRecord): void {
   } catch {}
 }
 
+export function resetStoredGates(): void {
+  try {
+    localStorage.removeItem(GATE_STORAGE_KEY);
+  } catch {}
+}
+
 export async function decideGate(
   gateId: string,
   decision: 'APPROVED' | 'REJECTED' | 'REVISION_REQUESTED',

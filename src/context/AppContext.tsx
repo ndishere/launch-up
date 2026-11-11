@@ -14,6 +14,117 @@ import {
   initialCampaigns, initialTelemetryPackages, initialFDESystems,
   initialStackPresets, initialConnectedApps, initialRequirementIntakes, initialWorkflows
 } from '../data/mockData';
+import { resetStoredGates } from '../services/api';
+
+const STATE_PREFIX = 'launchup_state_v1_';
+
+function loadPersisted<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(`${STATE_PREFIX}${key}`);
+    if (raw !== null) return JSON.parse(raw) as T;
+  } catch {}
+  return fallback;
+}
+
+function savePersisted(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(`${STATE_PREFIX}${key}`, JSON.stringify(value));
+  } catch {}
+}
+
+export interface ProjectScopeDraft {
+  transcript: string;
+  complianceFlags: Record<string, boolean>;
+  targetModules: Record<string, boolean>;
+  synthesizedOutput: {
+    executiveSummary: string;
+    stories: Array<{ id: string; title: string; criteria: string[]; status: string }>;
+    sqlMigration: string;
+    openapiYaml: string;
+    gateId?: string;
+  } | null;
+  erPositions?: Record<string, { x: number; y: number }>;
+  selectedEndpoint?: string;
+  testPayload?: string;
+}
+
+export interface N8nProjectGraph {
+  selectedTemplateKey: string;
+  nodes: Array<{ id: string; position: { x: number; y: number }; data: Record<string, any> }>;
+  edges: Array<{ id: string; source: string; target: string; label?: string }>;
+  executionLogs: string[];
+}
+
+const DEFAULT_FIGCRAFT_PROJECT: FigCraftProjectSchema = {
+  id: 'figcraft-proj-01',
+  projectName: 'OmniRoute Freight & Digital Logistics',
+  tokens: DEFAULT_FIGCRAFT_TOKENS,
+  rootComponents: [
+    {
+      id: 'comp-hero-1',
+      type: 'hero',
+      name: 'Hero Section',
+      props: {
+        badgeText: 'Fastify Microservice Powered',
+        headline: 'Global Logistics Delivered with Precision',
+        subheadline: 'Multi-tenant real-time dispatch with PostgreSQL 16 Row-Level Security and native Android app.',
+        ctaText: 'Explore Platform',
+      },
+      layout: { display: 'flex', direction: 'column', gap: 16, padding: 24 },
+    },
+    {
+      id: 'comp-feat-1',
+      type: 'features',
+      name: 'Key Features Grid',
+      props: {},
+      layout: { display: 'grid', gap: 24, padding: 16 },
+    },
+    {
+      id: 'comp-cookie-1',
+      type: 'cookie-banner',
+      name: 'DPDP / GDPR Consent Banner',
+      props: {},
+      layout: { display: 'flex', direction: 'row', gap: 8 },
+    },
+    {
+      id: 'comp-wa-1',
+      type: 'whatsapp-cta',
+      name: 'WhatsApp Floating Concierge',
+      props: {},
+      layout: { display: 'flex' },
+    },
+    {
+      id: 'comp-delete-1',
+      type: 'account-deletion',
+      name: 'Play Policy Account Deletion',
+      props: {},
+      layout: { display: 'flex', direction: 'column' },
+    },
+  ],
+  metadata: {
+    ga4MeasurementId: 'G-LP82910482',
+    targetPlatforms: ['web', 'android'],
+    complianceFlags: ['DPDP_INDIA', 'GDPR_EU', 'GOOGLE_PLAY_DATA_SAFETY'],
+  },
+};
+
+const DEFAULT_STUDIO_COMPLIANCE = [
+  'DPDP_INDIA',
+  'GDPR_EU',
+  'CCPA_US',
+  'GOOGLE_PLAY_DATA_SAFETY',
+];
+
+const getDefaultTelemetryScores = () => ({
+  performance: 96,
+  accessibility: 98,
+  bestPractices: 95,
+  seo: 98,
+  semgrep: 0,
+  trivy: 0,
+  gitleaks: 0,
+  lastAuditedAt: new Date().toISOString(),
+});
 
 interface AppContextType {
   themeMode: ThemeMode;
@@ -134,6 +245,13 @@ interface AppContextType {
     gitleaks: number;
     lastAuditedAt: string;
   }>>;
+
+  // Project Builder Scope/ER & n8n Workflows Persistence
+  projectScopes: Record<string, ProjectScopeDraft>;
+  updateProjectScope: (projectId: string, updater: (prev: ProjectScopeDraft | undefined) => ProjectScopeDraft) => void;
+  n8nGraphs: Record<string, N8nProjectGraph>;
+  updateN8nGraph: (projectId: string, graph: N8nProjectGraph) => void;
+  resetDemoState: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -393,31 +511,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const theme: Theme = resolvedTheme;
 
-  const [currentTab, setCurrentTab] = useState<TabId>('dashboard');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState<TabId>(() => loadPersisted<TabId>('currentTab', 'dashboard'));
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() =>
+    loadPersisted<boolean>('sidebarCollapsed', false)
+  );
 
-  // Core entities
-  const [clients, setClients] = useState<Client[]>(initialClients);
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [alerts, setAlerts] = useState<SystemAlert[]>(initialAlerts);
-  const [deployments, setDeployments] = useState<DeploymentLog[]>(initialDeployments);
-  const [backups, setBackups] = useState<BackupRecord[]>(initialBackups);
-  const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
+  // Core entities (persisted in localStorage)
+  const [clients, setClients] = useState<Client[]>(() => loadPersisted('clients', initialClients));
+  const [projects, setProjects] = useState<Project[]>(() => loadPersisted('projects', initialProjects));
+  const [alerts, setAlerts] = useState<SystemAlert[]>(() => loadPersisted('alerts', initialAlerts));
+  const [deployments, setDeployments] = useState<DeploymentLog[]>(() =>
+    loadPersisted('deployments', initialDeployments)
+  );
+  const [backups, setBackups] = useState<BackupRecord[]>(() => loadPersisted('backups', initialBackups));
+  const [invoices, setInvoices] = useState<Invoice[]>(() => loadPersisted('invoices', initialInvoices));
   const [templates] = useState<Template[]>(initialTemplates);
-  const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrations);
+  const [integrations, setIntegrations] = useState<Integration[]>(() =>
+    loadPersisted('integrations', initialIntegrations)
+  );
   const [teamMembers] = useState<TeamMember[]>(initialTeamMembers);
 
-  // Advanced Autonomous Systems State
-  const [agents, setAgents] = useState<AutonomousAgent[]>(initialAgents);
-  const [intakes, setIntakes] = useState<BusinessAutomationIntake[]>(initialIntakes);
-  const [slms, setSLMs] = useState<SLMModel[]>(initialSLMs);
-  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(initialCampaigns);
-  const [telemetryPackages, setTelemetryPackages] = useState<RemoteTelemetryPackage[]>(initialTelemetryPackages);
-  const [fdeSystems, setFDESystems] = useState<FDESystemArchitecture[]>(initialFDESystems);
-  const [stackPresets, setStackPresets] = useState<TechStackPreset[]>(initialStackPresets);
-  const [connectedApps, setConnectedApps] = useState<ConnectedAppPlugin[]>(initialConnectedApps);
-  const [requirementIntakes, setRequirementIntakes] = useState<ClientRequirementIntake[]>(initialRequirementIntakes);
-  const [workflows, setWorkflows] = useState<AutomationWorkflow[]>(initialWorkflows);
+  // Advanced Autonomous Systems State (persisted in localStorage)
+  const [agents, setAgents] = useState<AutonomousAgent[]>(() => loadPersisted('agents', initialAgents));
+  const [intakes, setIntakes] = useState<BusinessAutomationIntake[]>(() =>
+    loadPersisted('intakes', initialIntakes)
+  );
+  const [slms, setSLMs] = useState<SLMModel[]>(() => loadPersisted('slms', initialSLMs));
+  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(() =>
+    loadPersisted('campaigns', initialCampaigns)
+  );
+  const [telemetryPackages, setTelemetryPackages] = useState<RemoteTelemetryPackage[]>(() =>
+    loadPersisted('telemetryPackages', initialTelemetryPackages)
+  );
+  const [fdeSystems, setFDESystems] = useState<FDESystemArchitecture[]>(() =>
+    loadPersisted('fdeSystems', initialFDESystems)
+  );
+  const [stackPresets, setStackPresets] = useState<TechStackPreset[]>(() =>
+    loadPersisted('stackPresets', initialStackPresets)
+  );
+  const [connectedApps, setConnectedApps] = useState<ConnectedAppPlugin[]>(() =>
+    loadPersisted('connectedApps', initialConnectedApps)
+  );
+  const [requirementIntakes, setRequirementIntakes] = useState<ClientRequirementIntake[]>(() =>
+    loadPersisted('requirementIntakes', initialRequirementIntakes)
+  );
+  const [workflows, setWorkflows] = useState<AutomationWorkflow[]>(() =>
+    loadPersisted('workflows', initialWorkflows)
+  );
 
   // Modals & drawers & canvas
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -429,80 +569,144 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isClientPortalModalOpen, setIsClientPortalModalOpen] = useState(false);
-  const [activeCanvasProjectId, setActiveCanvasProjectId] = useState<string | null>(null);
+  const [activeCanvasProjectId, setActiveCanvasProjectId] = useState<string | null>(() =>
+    loadPersisted<string | null>('activeCanvasProjectId', null)
+  );
   const [searchQuery, setSearchQuery] = useState('');
 
-  // FigCraft & Studio Shared State
-  const [figcraftProject, setFigCraftProject] = useState<FigCraftProjectSchema>({
-    id: 'figcraft-proj-01',
-    projectName: 'OmniRoute Freight & Digital Logistics',
-    tokens: DEFAULT_FIGCRAFT_TOKENS,
-    rootComponents: [
-      {
-        id: 'comp-hero-1',
-        type: 'hero',
-        name: 'Hero Section',
-        props: {
-          badgeText: '⚡ Fastify Microservice Powered',
-          headline: 'Global Logistics Delivered with Precision',
-          subheadline: 'Multi-tenant real-time dispatch with PostgreSQL 16 Row-Level Security and native Android app.',
-          ctaText: 'Explore Platform',
-        },
-        layout: { display: 'flex', direction: 'column', gap: 16, padding: 24 },
-      },
-      {
-        id: 'comp-feat-1',
-        type: 'features',
-        name: 'Key Features Grid',
-        props: {},
-        layout: { display: 'grid', gap: 24, padding: 16 },
-      },
-      {
-        id: 'comp-cookie-1',
-        type: 'cookie-banner',
-        name: 'DPDP / GDPR Consent Banner',
-        props: {},
-        layout: { display: 'flex', direction: 'row', gap: 8 },
-      },
-      {
-        id: 'comp-wa-1',
-        type: 'whatsapp-cta',
-        name: 'WhatsApp Floating Concierge',
-        props: {},
-        layout: { display: 'flex' },
-      },
-      {
-        id: 'comp-delete-1',
-        type: 'account-deletion',
-        name: 'Play Policy Account Deletion',
-        props: {},
-        layout: { display: 'flex', direction: 'column' },
-      },
-    ],
-    metadata: {
-      ga4MeasurementId: 'G-LP82910482',
-      targetPlatforms: ['web', 'android'],
-      complianceFlags: ['DPDP_INDIA', 'GDPR_EU', 'GOOGLE_PLAY_DATA_SAFETY'],
-    },
-  });
+  // FigCraft & Studio Shared State (persisted in localStorage)
+  const [figcraftProject, setFigCraftProject] = useState<FigCraftProjectSchema>(() =>
+    loadPersisted('figcraftProject', DEFAULT_FIGCRAFT_PROJECT)
+  );
+  const [activeStudioPlatform, setActiveStudioPlatform] = useState<'web' | 'android'>(() =>
+    loadPersisted<'web' | 'android'>('activeStudioPlatform', 'web')
+  );
+  const [studioCompliance, setStudioCompliance] = useState<string[]>(() =>
+    loadPersisted<string[]>('studioCompliance', DEFAULT_STUDIO_COMPLIANCE)
+  );
+  const [liveTelemetryScores, setLiveTelemetryScores] = useState(() =>
+    loadPersisted('liveTelemetryScores', getDefaultTelemetryScores())
+  );
+  const [projectScopes, setProjectScopes] = useState<Record<string, ProjectScopeDraft>>(() =>
+    loadPersisted<Record<string, ProjectScopeDraft>>('projectScopes', {})
+  );
+  const [n8nGraphs, setN8nGraphs] = useState<Record<string, N8nProjectGraph>>(() =>
+    loadPersisted<Record<string, N8nProjectGraph>>('n8nGraphs', {})
+  );
 
-  const [activeStudioPlatform, setActiveStudioPlatform] = useState<'web' | 'android'>('web');
-  const [studioCompliance, setStudioCompliance] = useState<string[]>([
-    'DPDP_INDIA',
-    'GDPR_EU',
-    'CCPA_US',
-    'GOOGLE_PLAY_DATA_SAFETY',
+  // Sync persisted state slices to localStorage
+  useEffect(() => {
+    savePersisted('currentTab', currentTab);
+    savePersisted('sidebarCollapsed', isSidebarCollapsed);
+    savePersisted('activeCanvasProjectId', activeCanvasProjectId);
+  }, [currentTab, isSidebarCollapsed, activeCanvasProjectId]);
+
+  useEffect(() => {
+    savePersisted('clients', clients);
+    savePersisted('projects', projects);
+    savePersisted('alerts', alerts);
+    savePersisted('deployments', deployments);
+    savePersisted('backups', backups);
+    savePersisted('invoices', invoices);
+    savePersisted('integrations', integrations);
+  }, [clients, projects, alerts, deployments, backups, invoices, integrations]);
+
+  useEffect(() => {
+    savePersisted('agents', agents);
+    savePersisted('intakes', intakes);
+    savePersisted('slms', slms);
+    savePersisted('campaigns', campaigns);
+    savePersisted('telemetryPackages', telemetryPackages);
+    savePersisted('fdeSystems', fdeSystems);
+    savePersisted('stackPresets', stackPresets);
+    savePersisted('connectedApps', connectedApps);
+    savePersisted('requirementIntakes', requirementIntakes);
+    savePersisted('workflows', workflows);
+  }, [
+    agents,
+    intakes,
+    slms,
+    campaigns,
+    telemetryPackages,
+    fdeSystems,
+    stackPresets,
+    connectedApps,
+    requirementIntakes,
+    workflows,
   ]);
-  const [liveTelemetryScores, setLiveTelemetryScores] = useState({
-    performance: 96,
-    accessibility: 98,
-    bestPractices: 95,
-    seo: 98,
-    semgrep: 0,
-    trivy: 0,
-    gitleaks: 0,
-    lastAuditedAt: new Date().toISOString(),
-  });
+
+  useEffect(() => {
+    savePersisted('figcraftProject', figcraftProject);
+    savePersisted('activeStudioPlatform', activeStudioPlatform);
+    savePersisted('studioCompliance', studioCompliance);
+    savePersisted('liveTelemetryScores', liveTelemetryScores);
+    savePersisted('projectScopes', projectScopes);
+    savePersisted('n8nGraphs', n8nGraphs);
+  }, [
+    figcraftProject,
+    activeStudioPlatform,
+    studioCompliance,
+    liveTelemetryScores,
+    projectScopes,
+    n8nGraphs,
+  ]);
+
+  const updateProjectScope = (
+    projectId: string,
+    updater: (prev: ProjectScopeDraft | undefined) => ProjectScopeDraft
+  ) => {
+    setProjectScopes((prev) => ({
+      ...prev,
+      [projectId]: updater(prev[projectId]),
+    }));
+  };
+
+  const updateN8nGraph = (projectId: string, graph: N8nProjectGraph) => {
+    setN8nGraphs((prev) => ({
+      ...prev,
+      [projectId]: graph,
+    }));
+  };
+
+  const resetDemoState = () => {
+    try {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith(STATE_PREFIX)) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch {}
+    resetStoredGates();
+
+    setClients(initialClients);
+    setProjects(initialProjects);
+    setAlerts(initialAlerts);
+    setDeployments(initialDeployments);
+    setBackups(initialBackups);
+    setInvoices(initialInvoices);
+    setIntegrations(initialIntegrations);
+    setAgents(initialAgents);
+    setIntakes(initialIntakes);
+    setSLMs(initialSLMs);
+    setCampaigns(initialCampaigns);
+    setTelemetryPackages(initialTelemetryPackages);
+    setFDESystems(initialFDESystems);
+    setStackPresets(initialStackPresets);
+    setConnectedApps(initialConnectedApps);
+    setRequirementIntakes(initialRequirementIntakes);
+    setWorkflows(initialWorkflows);
+    setFigCraftProject(DEFAULT_FIGCRAFT_PROJECT);
+    setActiveStudioPlatform('web');
+    setStudioCompliance(DEFAULT_STUDIO_COMPLIANCE);
+    setLiveTelemetryScores(getDefaultTelemetryScores());
+    setProjectScopes({});
+    setN8nGraphs({});
+    setActiveCanvasProjectId(null);
+    setSelectedClient(null);
+    setSelectedProject(null);
+    setThemeMode('dark');
+    setPalette('indigo');
+  };
 
   // Keyboard shortcut listener for Command Palette (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -1153,6 +1357,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setStudioCompliance,
         liveTelemetryScores,
         setLiveTelemetryScores,
+        projectScopes,
+        updateProjectScope,
+        n8nGraphs,
+        updateN8nGraph,
+        resetDemoState,
       }}
     >
       {children}

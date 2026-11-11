@@ -344,20 +344,68 @@ export const N8nWorkflowsTab: React.FC<N8nWorkflowsTabProps> = ({
   projectName,
   embedded = false,
 }) => {
-  const { resolvedTheme, activeCanvasProjectId } = useApp();
+  const { resolvedTheme, activeCanvasProjectId, n8nGraphs, updateN8nGraph } = useApp();
   const isDark = resolvedTheme === 'dark';
   const targetProjectId = projectId || activeCanvasProjectId || 'proj-0001-0000-0000-000000000001';
 
   const templates = getTemplates(isDark);
-  const [selectedTemplateKey, setSelectedTemplateKey] = useState<string>('template_lead_pitch');
-  const [nodes, setNodes, onNodesChange] = useNodesState(templates.template_lead_pitch.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(templates.template_lead_pitch.edges);
+  const savedGraph = n8nGraphs[targetProjectId];
+
+  const [selectedTemplateKey, setSelectedTemplateKey] = useState<string>(
+    () => savedGraph?.selectedTemplateKey || 'template_lead_pitch'
+  );
+  const initialNodes: Node[] =
+    savedGraph?.nodes && savedGraph.nodes.length > 0
+      ? savedGraph.nodes.map((sn) => ({
+          id: sn.id,
+          position: sn.position,
+          data: sn.data,
+          style: makeNodeStyle(isDark, '#6366f1'),
+        }))
+      : templates.template_lead_pitch.nodes;
+
+  const initialEdges: Edge[] =
+    savedGraph?.edges && savedGraph.edges.length > 0
+      ? savedGraph.edges.map((se) => ({
+          id: se.id,
+          source: se.source,
+          target: se.target,
+          label: se.label,
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#6366f1' },
+        }))
+      : templates.template_lead_pitch.edges;
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialEdges);
 
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [executionLogs, setExecutionLogs] = useState<string[]>([
-    `[Ready] Select a workflow template for ${projectName || 'project'} and click Run.`,
-  ]);
+  const [executionLogs, setExecutionLogs] = useState<string[]>(
+    () =>
+      savedGraph?.executionLogs || [
+        `[Ready] Select a workflow template for ${projectName || 'project'} and click Run.`,
+      ]
+  );
+
+  // Sync n8n workflow nodes, edges, template, and logs to AppContext -> localStorage
+  useEffect(() => {
+    updateN8nGraph(targetProjectId, {
+      selectedTemplateKey,
+      nodes: nodes.map((n) => ({
+        id: n.id,
+        position: n.position,
+        data: n.data as Record<string, any>,
+      })),
+      edges: edges.map((e) => ({
+        id: e.id,
+        source: e.source,
+        target: e.target,
+        label: typeof e.label === 'string' ? e.label : undefined,
+      })),
+      executionLogs,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetProjectId, selectedTemplateKey, nodes, edges, executionLogs]);
 
   // Keep node colors synchronized with light/dark theme toggle
   useEffect(() => {

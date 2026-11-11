@@ -166,7 +166,7 @@ export const ProjectBuilderTab: React.FC<ProjectBuilderTabProps> = ({
   projectName,
   embedded = false,
 }) => {
-  const { projects, activeCanvasProjectId, resolvedTheme } = useApp();
+  const { projects, activeCanvasProjectId, resolvedTheme, projectScopes, updateProjectScope } = useApp();
   const isDark = resolvedTheme === 'dark';
 
   const resolvedProject =
@@ -179,26 +179,34 @@ export const ProjectBuilderTab: React.FC<ProjectBuilderTabProps> = ({
     if (projectId) setSelectedProjectId(projectId);
   }, [projectId]);
 
+  const savedScope = projectScopes[selectedProjectId];
+  const defaultTranscript =
+    `${projectName || resolvedProject?.name || 'Enterprise platform'} operating across India, Germany, and the United States. ` +
+    'Requires real-time tracking, responsive web UI (375px-1920px), Android mobile app with account deletion, and PostgreSQL 16 backend with RLS.';
+
   const [activeSubTab, setActiveSubTab] = useState<'intake' | 'er-diagram' | 'stories' | 'openapi'>('intake');
 
-  const [transcript, setTranscript] = useState<string>(
-    `${projectName || resolvedProject?.name || 'Enterprise platform'} operating across India, Germany, and the United States. ` +
-      'Requires real-time tracking, responsive web UI (375px-1920px), Android mobile app with account deletion, and PostgreSQL 16 backend with RLS.'
+  const [transcript, setTranscript] = useState<string>(() => savedScope?.transcript ?? defaultTranscript);
+
+  const [complianceFlags, setComplianceFlags] = useState<{ [key: string]: boolean }>(
+    () =>
+      savedScope?.complianceFlags ?? {
+        DPDP_INDIA: true,
+        GDPR_EU: true,
+        CCPA_US: true,
+        GOOGLE_PLAY_DATA_SAFETY: true,
+      }
   );
 
-  const [complianceFlags, setComplianceFlags] = useState<{ [key: string]: boolean }>({
-    DPDP_INDIA: true,
-    GDPR_EU: true,
-    CCPA_US: true,
-    GOOGLE_PLAY_DATA_SAFETY: true,
-  });
-
-  const [targetModules, setTargetModules] = useState<{ [key: string]: boolean }>({
-    web: true,
-    android: true,
-    backend: true,
-    marketing: true,
-  });
+  const [targetModules, setTargetModules] = useState<{ [key: string]: boolean }>(
+    () =>
+      savedScope?.targetModules ?? {
+        web: true,
+        android: true,
+        backend: true,
+        marketing: true,
+      }
+  );
 
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [synthesizedOutput, setSynthesizedOutput] = useState<{
@@ -207,12 +215,29 @@ export const ProjectBuilderTab: React.FC<ProjectBuilderTabProps> = ({
     sqlMigration: string;
     openapiYaml: string;
     gateId?: string;
-  } | null>(null);
+  } | null>(() => savedScope?.synthesizedOutput ?? null);
 
-  const [selectedEndpoint, setSelectedEndpoint] = useState<string>('/api/v1/orders');
-  const [testPayload, setTestPayload] = useState<string>(
-    '{\n  "customer_id": "cust-84920",\n  "package_weight_kg": 4.5,\n  "destination_city": "Berlin"\n}'
+  const [selectedEndpoint, setSelectedEndpoint] = useState<string>(
+    () => savedScope?.selectedEndpoint ?? '/api/v1/orders'
   );
+  const [testPayload, setTestPayload] = useState<string>(
+    () =>
+      savedScope?.testPayload ??
+      '{\n  "customer_id": "cust-84920",\n  "package_weight_kg": 4.5,\n  "destination_city": "Berlin"\n}'
+  );
+
+  // Sync changes into AppContext -> localStorage per project
+  useEffect(() => {
+    updateProjectScope(selectedProjectId, () => ({
+      transcript,
+      complianceFlags,
+      targetModules,
+      synthesizedOutput,
+      selectedEndpoint,
+      testPayload,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProjectId, transcript, complianceFlags, targetModules, synthesizedOutput, selectedEndpoint, testPayload]);
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [isTestingApi, setIsTestingApi] = useState<boolean>(false);
   const [copiedSql, setCopiedSql] = useState(false);

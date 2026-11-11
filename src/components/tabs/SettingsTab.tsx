@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { 
   Settings, Save, Key, Shield, Globe, Bell, 
-  Terminal, CheckCircle2, Moon, Sun, Monitor, Lock, Palette 
+  Terminal, CheckCircle2, Moon, Sun, Monitor, Lock, Palette, RotateCcw 
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ThemeMode, ColorPalette } from '../../types';
 
 export const SettingsTab: React.FC = () => {
-  const { themeMode, setThemeMode, palette, setPalette, resolvedTheme } = useApp();
+  const { themeMode, setThemeMode, palette, setPalette, resolvedTheme, resetDemoState } = useApp();
   const [appName, setAppName] = useState('Launch Up');
   const [appUrl, setAppUrl] = useState('https://app.launchup.io');
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 2500);
+  };
+
+  const handleResetDemo = () => {
+    resetDemoState();
+    setResetSuccess(true);
+    setTimeout(() => setResetSuccess(false), 2500);
   };
 
   return (
@@ -300,8 +307,24 @@ export const SettingsTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Save Button */}
-        <div className="flex justify-end">
+        {/* Save & Reset Demo Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleResetDemo}
+              className="px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50/80 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/80 dark:border-rose-800/60 rounded-xl transition-all flex items-center gap-2"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset Demo State</span>
+            </button>
+            {resetSuccess && (
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                Local state restored to initial fixtures.
+              </span>
+            )}
+          </div>
+
           <button
             type="submit"
             className="px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"
