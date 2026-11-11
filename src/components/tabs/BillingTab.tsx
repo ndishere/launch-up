@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { DollarSign, CreditCard, Download, CheckCircle2, Clock, AlertCircle, Shield, Zap, Receipt } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const BillingTab: React.FC = () => {
   const { invoices, clients, setIsUpgradeModalOpen } = useApp();
+  const pendingCount = invoices.filter((inv) => inv.status === 'Pending' || inv.status === 'Overdue').length;
   const [filterStatus, setFilterStatus] = useState('All');
 
   const filteredInvoices = invoices.filter((inv) => {
@@ -39,46 +41,39 @@ export const BillingTab: React.FC = () => {
         </button>
       </div>
 
-      {/* Hairline KPI Strip */}
-      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 dark:divide-slate-800/80">
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Monthly Recurring</span>
-            <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            ${totalMRR.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">+22% MTD</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Collected MTD</span>
-            <CreditCard className="w-3.5 h-3.5 text-indigo-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">$24,560</div>
-          <p className="text-[11px] text-slate-400 mt-0.5">On-time settlement</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Active Retainers</span>
-            <Receipt className="w-3.5 h-3.5 text-indigo-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">{clients.length}</div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">0% churn</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Compliance</span>
-            <Shield className="w-3.5 h-3.5 text-emerald-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">PCI Level 1</div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Encrypted tokens</p>
-        </div>
-      </div>
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Monthly Recurring"
+          primaryValue={`$${totalMRR.toLocaleString()}`}
+          subtitle="+22% MTD"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Collected MTD"
+          primaryValue="$24,560"
+          subtitle="On-time settlement"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Active Retainers"
+          primaryValue={clients.length}
+          subtitle="0% churn"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Open Invoices"
+          primaryValue={pendingCount}
+          subtitle={pendingCount > 0 ? 'Awaiting settlement' : 'All settled'}
+          status={pendingCount > 0 ? 'warn' : 'good'}
+        />
+        <SummaryMetricCard
+          title="Compliance"
+          primaryValue="PCI Level 1"
+          subtitle="Encrypted tokens"
+          status="neutral"
+        />
+      </SummaryMetricGrid>
 
       {/* Invoices List */}
       <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden">

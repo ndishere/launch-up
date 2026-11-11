@@ -116,6 +116,12 @@ export const TeamTab: React.FC = () => {
             subValue: 'Token Circuit Breaker',
             status: 'good',
           },
+          {
+            label: 'RBAC Roles',
+            value: `${new Set(teamMembers.map((m) => m.role)).size || 4} Tiers`,
+            subValue: 'Least-privilege active',
+            status: 'neutral',
+          },
         ]}
         actions={
           <div className="flex items-center gap-2">

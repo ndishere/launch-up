@@ -23,6 +23,7 @@ import { ProjectBuilderTab } from './ProjectBuilderTab';
 import { NoCodeEditorTab } from './NoCodeEditorTab';
 import { PreviewStudioTab } from './PreviewStudioTab';
 import { N8nWorkflowsTab } from './N8nWorkflowsTab';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 type WorkspaceSection = 'overview' | 'builder' | 'design' | 'preview' | 'workflows';
 type OverviewSubView = 'sdlc' | 'agents' | 'docker' | 'logs';
@@ -167,6 +168,40 @@ export const ProjectCanvasTab: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Project Health"
+          primaryValue={`${currentProject.healthPercent}%`}
+          subtitle={currentProject.status}
+          status={currentProject.healthPercent >= 90 ? 'good' : 'warn'}
+        />
+        <SummaryMetricCard
+          title="Linked Clients"
+          primaryValue={currentProject.clientIds.length}
+          subtitle={linkedClientNames}
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Target Runtime"
+          primaryValue={currentProject.serverTarget}
+          subtitle={currentProject.framework || 'Next.js 15 + Fastify'}
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Swarm Fleet"
+          primaryValue={`${agents.length} Agents`}
+          subtitle="MOD-01–MOD-10 Mesh"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Build Logs"
+          primaryValue={`${buildLogs.length} Steps`}
+          subtitle={isSimulatingBuild ? 'Running Pipeline' : 'Sandbox Synced'}
+          status={isSimulatingBuild ? 'live' : 'good'}
+        />
+      </SummaryMetricGrid>
 
       {/* SECTION 1: PROJECT OVERVIEW (SDLC, AGENTS, DOCKER, LOGS) */}
       {activeSection === 'overview' && (

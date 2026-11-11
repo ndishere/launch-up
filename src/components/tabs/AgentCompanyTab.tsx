@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { AutonomousAgent, AgentRole } from '../../types';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const AgentCompanyTab: React.FC = () => {
   const { 
@@ -158,61 +159,39 @@ export const AgentCompanyTab: React.FC = () => {
         </div>
       </div>
 
-      {/* 4 Clean Metric Cards (Simplified, Uniform Styling) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5 font-medium">
-            <span>Specialist Agents</span>
-            <Bot className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            {agents.length}
-          </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            100% Operational & Ready
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5 font-medium">
-            <span>Edge / Local Ratio</span>
-            <Laptop className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            67% <span className="text-xs font-normal text-slate-400">On-Device</span>
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
-            Sub-10ms Inference Speed
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5 font-medium">
-            <span>Missions Completed</span>
-            <Zap className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            10,468
-          </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
-            99.5% Success Accuracy
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5 font-medium">
-            <span>Automated Pipelines</span>
-            <Layers className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            {intakes.length} Deployed
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-            FDE Systems + Custom SLMs
-          </p>
-        </div>
-      </div>
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Specialist Agents"
+          primaryValue={agents.length}
+          subtitle="100% Operational & Ready"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Edge / Local Ratio"
+          primaryValue={`${Math.round((agents.filter((a) => a.isLocal).length / (agents.length || 1)) * 100)}%`}
+          subtitle={`${agents.filter((a) => a.isLocal).length} On-Device Nodes`}
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Avg Mesh Latency"
+          primaryValue={`${Math.round(agents.reduce((sum, a) => sum + a.latencyMs, 0) / (agents.length || 1))}ms`}
+          subtitle="Sub-20ms Inference"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Automated Pipelines"
+          primaryValue={`${intakes.length} Deployed`}
+          subtitle="FDE Systems + Custom SLMs"
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Mission Traces"
+          primaryValue={`${executionLogs.length} Logged`}
+          subtitle="Swarm Consensus Ready"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       {/* Screen Sub-Navigation for Clean Separation */}
       <div className="flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-2">

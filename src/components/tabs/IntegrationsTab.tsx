@@ -1,9 +1,13 @@
 import React from 'react';
 import { Layers, CheckCircle2, XCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const IntegrationsTab: React.FC = () => {
   const { integrations, toggleIntegration } = useApp();
+  const connectedCount = integrations.filter((i) => i.connected).length;
+  const disconnectedCount = integrations.length - connectedCount;
+  const categoryCount = new Set(integrations.map((i) => i.category)).size;
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
@@ -22,6 +26,40 @@ export const IntegrationsTab: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Total Connectors"
+          primaryValue={integrations.length}
+          subtitle="Enterprise Registry"
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Active Linked"
+          primaryValue={connectedCount}
+          subtitle="Online & Authenticated"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Pending Setup"
+          primaryValue={disconnectedCount}
+          subtitle="Ready for OAuth / Key"
+          status={disconnectedCount > 0 ? 'warn' : 'good'}
+        />
+        <SummaryMetricCard
+          title="Connector Categories"
+          primaryValue={categoryCount}
+          subtitle="Git, Cloud & Billing"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Vault Encryption"
+          primaryValue="AES-256"
+          subtitle="Zero Plaintext Secrets"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {integrations.map((item) => (

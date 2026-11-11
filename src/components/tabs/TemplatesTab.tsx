@@ -1,9 +1,13 @@
 import React from 'react';
 import { Star, Rocket, ArrowRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const TemplatesTab: React.FC = () => {
   const { templates, setIsCreateProjectModalOpen } = useApp();
+  const avgStars = (templates.reduce((acc, t) => acc + t.stars, 0) / (templates.length || 1)).toFixed(1);
+  const categoryCount = new Set(templates.map((t) => t.category)).size;
+  const techCount = new Set(templates.flatMap((t) => t.techStack)).size;
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
@@ -30,6 +34,40 @@ export const TemplatesTab: React.FC = () => {
           <span>Launch Template</span>
         </button>
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Verified Blueprints"
+          primaryValue={templates.length}
+          subtitle="Production Starters"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Avg Template Rating"
+          primaryValue={`${avgStars} / 5.0`}
+          subtitle="Agency Battle-Tested"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Architecture Domains"
+          primaryValue={categoryCount}
+          subtitle="Web, Mobile & SaaS"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Tech Stack Modules"
+          primaryValue={techCount}
+          subtitle="Pre-wired Frameworks"
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Provision SLA"
+          primaryValue="< 4 mins"
+          subtitle="1-Click Scaffold Ready"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {templates.map((tmpl) => (

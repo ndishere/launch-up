@@ -4,6 +4,7 @@ import {
   CheckCircle2, Copy, Check, FileText, Lock, RefreshCw, 
   ArrowRight, Key, Zap, HardDrive, Terminal, ExternalLink
 } from 'lucide-react';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const SystemDesignTab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'schema' | 'sdlc' | 'tech-stack' | 'security' | 'backups'>('schema');
@@ -195,6 +196,40 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
           </div>
         </div>
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Database Engine"
+          primaryValue="PostgreSQL 16"
+          subtitle="M:N Multi-Tenant RLS"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Active Blueprint"
+          primaryValue={activeSubTab.toUpperCase()}
+          subtitle="5 SDLC Spec Views"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Secrets Cipher"
+          primaryValue="AES-256-GCM"
+          subtitle="Hardware Vault Ready"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Core Tables"
+          primaryValue="5 Schemas"
+          subtitle="Clients, Projects & Audit"
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Backup Integrity"
+          primaryValue="SHA-256"
+          subtitle="30-Day Git + Snapshots"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       {/* Subtab Content: 1. Schema & ERD */}
       {activeSubTab === 'schema' && (

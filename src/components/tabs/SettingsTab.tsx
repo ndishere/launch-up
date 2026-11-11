@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ThemeMode, ColorPalette } from '../../types';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const SettingsTab: React.FC = () => {
   const { themeMode, setThemeMode, palette, setPalette, resolvedTheme, resetDemoState } = useApp();
@@ -45,6 +46,40 @@ export const SettingsTab: React.FC = () => {
           </span>
         )}
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Appearance Mode"
+          primaryValue={themeMode.toUpperCase()}
+          subtitle={`Resolved: ${resolvedTheme}`}
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Color Palette"
+          primaryValue={palette.toUpperCase()}
+          subtitle="Active Theme Tokens"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="State Sync"
+          primaryValue="LocalStorage"
+          subtitle="Auto-Persisted Workspace"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Secrets Vault"
+          primaryValue="AES-256-GCM"
+          subtitle="Zero Plaintext Keys"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Workspace Host"
+          primaryValue="Production"
+          subtitle={appUrl.replace(/^https?:\/\//, '')}
+          status="neutral"
+        />
+      </SummaryMetricGrid>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* General Branding */}

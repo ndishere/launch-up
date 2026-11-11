@@ -29,6 +29,7 @@ export const WorkflowsTab: React.FC = () => {
           { label: 'Executions', value: totalRuns.toLocaleString(), subValue: 'Total triggers', status: 'live' },
           { label: 'Success Rate', value: `${avgSuccess}%`, subValue: 'Zero faults', status: 'good' },
           { label: 'Latency', value: '42ms', subValue: 'P99 webhook', status: 'good' },
+          { label: 'Total Pipelines', value: workflows.length, subValue: 'n8n & event triggers', status: 'neutral' },
         ]}
         actions={
           <button

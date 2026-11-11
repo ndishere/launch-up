@@ -37,6 +37,7 @@ import {
   healIncident,
   decideGate,
 } from '../../services/api';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 interface WorkflowNodeData {
   label: string;
@@ -712,6 +713,42 @@ export const N8nWorkflowsTab: React.FC<N8nWorkflowsTabProps> = ({
             <input type="file" accept=".json" onChange={importN8nJson} className="hidden" />
           </label>
         </div>
+      </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <div className="px-4 pt-3 shrink-0">
+        <SummaryMetricGrid>
+          <SummaryMetricCard
+            title="Workflow Nodes"
+            primaryValue={nodes.length}
+            subtitle="MOD-01–MOD-10 Blocks"
+            status="live"
+          />
+          <SummaryMetricCard
+            title="Graph Connections"
+            primaryValue={edges.length}
+            subtitle="Active Data Edges"
+            status="good"
+          />
+          <SummaryMetricCard
+            title="Template Catalog"
+            primaryValue={`${Object.keys(templates).length} Presets`}
+            subtitle={templates[selectedTemplateKey]?.name.split('(')[0].trim() || 'Custom Flow'}
+            status="neutral"
+          />
+          <SummaryMetricCard
+            title="Execution Traces"
+            primaryValue={executionLogs.length}
+            subtitle={isSimulating ? 'Dispatching Mesh...' : 'Run History Logged'}
+            status={isSimulating ? 'live' : 'good'}
+          />
+          <SummaryMetricCard
+            title="Engine Status"
+            primaryValue={isSimulating ? 'Running' : 'Standby'}
+            subtitle="JSON Export & Webhook Sync"
+            status={isSimulating ? 'live' : 'good'}
+          />
+        </SummaryMetricGrid>
       </div>
 
       {/* Main Graph Canvas + Inspector */}

@@ -7,6 +7,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { MarketingCampaign } from '../../types';
 import { generateMarketingCalendar, sendWhatsAppMessage } from '../../services/api';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const MarketingEngineTab: React.FC = () => {
   const { campaigns, rebalanceCampaign, createCampaign, clients, projects } = useApp();
@@ -135,60 +136,39 @@ export const MarketingEngineTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Aggregate Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span>Average ROAS</span>
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            {avgRoas}x <span className="text-xs text-emerald-500 font-medium">Return</span>
-          </div>
-          <p className="text-[11px] text-emerald-500 mt-1 font-mono">
-            Autonomous Bid Rebalancing
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span>Monthly Managed Budget</span>
-            <DollarSign className="w-4 h-4 text-indigo-500" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            ${totalMonthlySpend.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1 font-mono">
-            Spread across {campaigns.length} active channels
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span>Inbound Leads Captured</span>
-            <Target className="w-4 h-4 text-purple-500" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            {totalLeads}
-          </div>
-          <p className="text-[11px] text-purple-500 mt-1 font-mono">
-            Synced directly to CRM
-          </p>
-        </div>
-
-        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span>Autonomous Creative Sets</span>
-            <Sparkles className="w-4 h-4 text-pink-500" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white">
-            84 Hooks
-          </div>
-          <p className="text-[11px] text-pink-500 mt-1 font-mono">
-            Dynamic A/B Evaluation
-          </p>
-        </div>
-      </div>
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Average ROAS"
+          primaryValue={`${avgRoas}x`}
+          subtitle="Autonomous Bid Rebalance"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Managed Budget"
+          primaryValue={`$${totalMonthlySpend.toLocaleString()}`}
+          subtitle={`${campaigns.length} active channels`}
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Inbound Leads"
+          primaryValue={totalLeads.toLocaleString()}
+          subtitle="Synced directly to CRM"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Creative Sets"
+          primaryValue={`${campaigns.reduce((acc, c) => acc + (c.creativeAssetCount || 0), 0)} Hooks`}
+          subtitle="Dynamic A/B Evaluation"
+          status="neutral"
+        />
+        <SummaryMetricCard
+          title="Active Campaigns"
+          primaryValue={`${campaigns.filter((c) => c.status === 'Running').length} / ${campaigns.length}`}
+          subtitle="Canva + WhatsApp Ready"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* FULL-STACK CONTROL PLANE: MOD-07 & MOD-08 INTERACTIVE ENGINES  */}

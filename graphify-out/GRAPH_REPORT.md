@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-11)
 
 ## Corpus Check
-- 177 files · ~130,290 words
+- 177 files · ~130,791 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 13, .example 1, .lock 1)
 
 ## Summary
-- 1819 nodes · 3345 edges · 95 communities (89 shown, 6 thin omitted)
+- 1819 nodes · 3422 edges · 95 communities (89 shown, 6 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 42 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bbb79e17`
+- Built from commit: `9e0057f8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -84,7 +84,7 @@
 - api.ts
 - whatsapp-service/package.json
 - compilerOptions
-- DashboardTab.tsx
+- ScreenAnalyticsHeader
 - marketing-engine-service
 - NoCodeEditorTab.tsx
 - web-builder-service
@@ -116,12 +116,12 @@
 2. `react` - 43 edges
 3. `lucide-react` - 38 edges
 4. `AppLayout()` - 36 edges
-5. `AppContextType` - 27 edges
-6. `services` - 20 edges
-7. `interval` - 18 edges
-8. `retries` - 18 edges
-9. `test` - 18 edges
-10. `timeout` - 18 edges
+5. `SummaryMetricGrid()` - 35 edges
+6. `SummaryMetricCard()` - 35 edges
+7. `AppContextType` - 27 edges
+8. `services` - 20 edges
+9. `ScreenAnalyticsHeader()` - 19 edges
+10. `N8nWorkflowsTab()` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `TypeScript 5.x` --references--> `Client`  [INFERRED]
@@ -149,8 +149,8 @@ Cohesion: 0.22
 Nodes (24): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+16 more)
 
 ### Community 2 - "ba-intake-service/src/lib/engine.ts"
-Cohesion: 0.16
-Nodes (22): `MOD-02`: BA Intake & Scope Synthesizer, detectSemanticConflicts(), generateOpenApiYaml(), generateSqlMigration(), processBaIntake(), resolveComplianceFlags(), synthesizePrd(), VALID_COUNTRIES (+14 more)
+Cohesion: 0.19
+Nodes (19): `MOD-02`: BA Intake & Scope Synthesizer, detectSemanticConflicts(), generateOpenApiYaml(), generateSqlMigration(), processBaIntake(), resolveComplianceFlags(), synthesizePrd(), VALID_COUNTRIES (+11 more)
 
 ### Community 3 - "package.json"
 Cohesion: 0.10
@@ -305,8 +305,8 @@ Cohesion: 0.12
 Nodes (15): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+7 more)
 
 ### Community 43 - "sre-healing-service/src/lib/engine.ts"
-Cohesion: 0.17
-Nodes (19): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), buildApp() (+11 more)
+Cohesion: 0.21
+Nodes (17): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), ForbiddenFileTouchError (+9 more)
 
 ### Community 44 - "auth-service"
 Cohesion: 0.33
@@ -353,8 +353,8 @@ Cohesion: 0.17
 Nodes (19): `MOD-03`: Responsive Web & Landing Page Builder, BuildOptions, checkCookieConsent(), processWebBuild(), VALID_GOLDEN_TEMPLATES, verifyViewports(), fileDeltaSchema, webBuilderRoutes() (+11 more)
 
 ### Community 55 - "lead-pitch-service/src/lib/engine.ts"
-Cohesion: 0.16
-Nodes (22): `MOD-01`: Lead Discovery & Canva Pitch Engine, auditDigitalGaps(), autofillCanvaProposal(), checkDncSuppression(), processLeadDiscovery(), resolveCompliance(), leadPitchRoutes(), leadRequestSchema (+14 more)
+Cohesion: 0.19
+Nodes (19): `MOD-01`: Lead Discovery & Canva Pitch Engine, auditDigitalGaps(), autofillCanvaProposal(), checkDncSuppression(), processLeadDiscovery(), resolveCompliance(), leadRequestSchema, mockDncLedger (+11 more)
 
 ### Community 56 - "sre-healing-service"
 Cohesion: 0.33
@@ -389,16 +389,16 @@ Cohesion: 0.13
 Nodes (15): checkPort(), cleanup(), __dirname, __filename, main(), processes, rootDir, SERVICES (+7 more)
 
 ### Community 64 - "App.tsx"
-Cohesion: 0.12
-Nodes (37): lucide-react, react, AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, Header(), AddClientModal() (+29 more)
+Cohesion: 0.13
+Nodes (42): lucide-react, react, @xyflow/react, AppLayout(), BADGE_STYLES, DOT_STYLES, SummaryMetricCard(), SummaryMetricCardProps (+34 more)
 
 ### Community 65 - "whatsapp-service/src/lib/engine.ts"
-Cohesion: 0.19
-Nodes (17): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), buildApp(), PORT, MetaApiRejectError (+9 more)
+Cohesion: 0.24
+Nodes (15): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), MetaApiRejectError, Mod08EventType, Mod08MessagePayload (+7 more)
 
 ### Community 66 - "api.ts"
-Cohesion: 0.14
-Nodes (34): @xyflow/react, MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab(), N8nWorkflowsTabProps, WorkflowNodeData, buildErNodes() (+26 more)
+Cohesion: 0.13
+Nodes (34): GenerateLeadModal(), GenerateLeadModalProps, INDUSTRY_PRESETS, DeploymentsTab(), MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab() (+26 more)
 
 ### Community 67 - "whatsapp-service/package.json"
 Cohesion: 0.08
@@ -408,9 +408,9 @@ Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet
 Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+8 more)
 
-### Community 69 - "DashboardTab.tsx"
-Cohesion: 0.16
-Nodes (15): BADGE_STYLES, DOT_STYLES, MetricStatusTone, SummaryMetricCard(), SummaryMetricCardProps, SummaryMetricGrid(), GenerateLeadModal(), GenerateLeadModalProps (+7 more)
+### Community 69 - "ScreenAnalyticsHeader"
+Cohesion: 0.22
+Nodes (10): MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, MetricStatusTone, ConnectedAppsTab(), FDESystemsTab(), SLMLabTab(), TelemetryHubTab() (+2 more)
 
 ### Community 70 - "marketing-engine-service"
 Cohesion: 0.33
@@ -437,8 +437,8 @@ Cohesion: 0.18
 Nodes (11): MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, command, container_name, environment, image, networks, ports (+3 more)
 
 ### Community 76 - "marketing-engine-service/src/lib/engine.ts"
-Cohesion: 0.27
-Nodes (12): `MOD-07`: Canva Pro Digital Marketing Engine, generatePlatformPost(), PLATFORM_ROTATION, processMarketingCampaign(), marketingRequestSchema, CalendarItem, CanvaRateLimitError, Mod07MarketingRequest (+4 more)
+Cohesion: 0.21
+Nodes (15): `MOD-07`: Canva Pro Digital Marketing Engine, generatePlatformPost(), PLATFORM_ROTATION, processMarketingCampaign(), marketingRequestSchema, marketingRoutes(), buildApp(), PORT (+7 more)
 
 ### Community 77 - "ambient.d.ts"
 Cohesion: 0.50
@@ -453,7 +453,7 @@ Cohesion: 0.25
 Nodes (6): App(), AppProvider(), getDefaultTelemetryScores(), loadPersisted(), savePersisted(), resetStoredGates()
 
 ### Community 80 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
-Cohesion: 0.33
+Cohesion: 0.29
 Nodes (6): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:
 
 ### Community 81 - "gateway"
@@ -485,8 +485,8 @@ Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
 
 ### Community 88 - "agency-concurrency.perf.test.ts"
-Cohesion: 0.17
-Nodes (10): marketingRoutes(), buildApp(), PORT, qaSecopsRoutes(), buildApp(), PORT, buildMod01(), buildMod02() (+2 more)
+Cohesion: 0.11
+Nodes (17): baIntakeRoutes(), buildApp(), PORT, leadPitchRoutes(), buildApp(), PORT, qaSecopsRoutes(), buildApp() (+9 more)
 
 ### Community 90 - "2. Module-by-Module JSON Input/Output Contracts"
 Cohesion: 0.50
@@ -498,7 +498,7 @@ Nodes (4): express@^4.21.2, @types/canvas-confetti@^1.9.0, express, @types/canva
 
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 748 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 746 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -509,12 +509,12 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `AppContext.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07832167832167833 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `api.ts`, `package.json`, `DashboardTab.tsx`, `NoCodeEditorTab.tsx`, `AppProvider`, `Sidebar.tsx`, `dependencies`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+  _Cohesion score 0.08090117767537122 - nodes in this community are weakly interconnected._
+- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `api.ts`, `package.json`, `ScreenAnalyticsHeader`, `NoCodeEditorTab.tsx`, `AppProvider`, `Sidebar.tsx`, `dependencies`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.10052910052910052 - nodes in this community are weakly interconnected._
-- **Why does `TypeScript 5.x` connect `AppContext.tsx` to `Launch Up — Comprehensive Technology Stack & Curriculum Guide`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Should `auth-service/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._

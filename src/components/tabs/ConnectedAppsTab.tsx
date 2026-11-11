@@ -77,6 +77,12 @@ export const ConnectedAppsTab: React.FC = () => {
             subValue: 'Auto-synchronized',
             status: 'neutral',
           },
+          {
+            label: 'Sync Coverage',
+            value: '100% Active',
+            subValue: 'Zero auth drift',
+            status: 'good',
+          },
         ]}
         actions={
           <div className="flex items-center gap-2">

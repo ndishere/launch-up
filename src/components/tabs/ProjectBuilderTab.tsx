@@ -26,6 +26,7 @@ import {
 
 import { synthesizeScope, buildBackendAPI } from '../../services/api';
 import { useApp } from '../../context/AppContext';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 interface ProjectBuilderTabProps {
   projectId?: string;
@@ -383,6 +384,42 @@ export const ProjectBuilderTab: React.FC<ProjectBuilderTabProps> = ({
             );
           })}
         </div>
+      </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <div className="px-4 pt-3 shrink-0">
+        <SummaryMetricGrid>
+          <SummaryMetricCard
+            title="ER Graph Tables"
+            primaryValue={`${erNodes.length} Entities`}
+            subtitle="PostgreSQL RLS Enabled"
+            status="good"
+          />
+          <SummaryMetricCard
+            title="Compliance Flags"
+            primaryValue={`${Object.values(complianceFlags).filter(Boolean).length} Active`}
+            subtitle="DPDP, GDPR, CCPA, Play"
+            status="live"
+          />
+          <SummaryMetricCard
+            title="User Stories"
+            primaryValue={synthesizedOutput?.stories.length || 0}
+            subtitle={synthesizedOutput ? 'OpenAPI Synthesized' : 'Awaiting Synthesis'}
+            status={synthesizedOutput ? 'good' : 'neutral'}
+          />
+          <SummaryMetricCard
+            title="Target Modules"
+            primaryValue={`${Object.values(targetModules).filter(Boolean).length} Selected`}
+            subtitle="Web, Android & Fastify"
+            status="neutral"
+          />
+          <SummaryMetricCard
+            title="Gate 2 Spec"
+            primaryValue={synthesizedOutput?.gateId ? 'Issued' : 'Draft'}
+            subtitle={isSynthesizing ? 'Synthesizing Scope...' : 'MOD-02 + MOD-05 Sync'}
+            status={synthesizedOutput?.gateId ? 'good' : 'warn'}
+          />
+        </SummaryMetricGrid>
       </div>
 
       {/* Main Content */}

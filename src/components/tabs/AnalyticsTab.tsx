@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TrendingUp, Users, Globe, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const AnalyticsTab: React.FC = () => {
   const { projects } = useApp();
@@ -72,44 +73,39 @@ export const AnalyticsTab: React.FC = () => {
         </select>
       </div>
 
-      {/* Hairline KPI Strip */}
-      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 dark:divide-slate-800/80">
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Monthly Visitors</span>
-            <Users className="w-3.5 h-3.5 text-indigo-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">190,800</div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">+21.4% MoM</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Conversion Rate</span>
-            <TrendingUp className="w-3.5 h-3.5 text-indigo-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">3.18%</div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">+0.4% baseline</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Lighthouse & SEO</span>
-            <Globe className="w-3.5 h-3.5 text-emerald-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">99 / 100</div>
-          <p className="text-[11px] text-slate-400 mt-0.5">0.6s LCP</p>
-        </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>Acquisition CAC</span>
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          </div>
-          <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">$14.20</div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">-12% cost</p>
-        </div>
-      </div>
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Monthly Visitors"
+          primaryValue="190,800"
+          subtitle="+21.4% MoM"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Conversion Rate"
+          primaryValue="3.18%"
+          subtitle="+0.4% baseline"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Lighthouse & SEO"
+          primaryValue="99 / 100"
+          subtitle="0.6s LCP"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Acquisition CAC"
+          primaryValue="$14.20"
+          subtitle="-12% cost"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Tracked Projects"
+          primaryValue={selectedProject === 'All' ? projects.length : 1}
+          subtitle={`${campaigns.length} active campaigns`}
+          status="neutral"
+        />
+      </SummaryMetricGrid>
 
       {/* Campaigns Table */}
       <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden">

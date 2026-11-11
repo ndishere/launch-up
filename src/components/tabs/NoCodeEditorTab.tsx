@@ -26,6 +26,7 @@ import {
   generateFigCraftSvgDiagram,
 } from '../../lib/figcraft-adapter';
 import { buildLandingWeb, buildMobileApp } from '../../services/api';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 interface NoCodeEditorTabProps {
   projectId?: string;
@@ -256,6 +257,42 @@ export const NoCodeEditorTab: React.FC<NoCodeEditorTabProps> = ({
           <Sparkles className={`w-3.5 h-3.5 ${isCompiling ? 'animate-spin' : ''}`} />
           <span>{isCompiling ? 'Compiling...' : 'Push to Staging'}</span>
         </button>
+      </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <div className="px-4 pt-3 shrink-0">
+        <SummaryMetricGrid>
+          <SummaryMetricCard
+            title="Canvas Layers"
+            primaryValue={figcraftProject.rootComponents.length}
+            subtitle="Root Component Tree"
+            status="live"
+          />
+          <SummaryMetricCard
+            title="Mobile 375px Safety"
+            primaryValue={widthSafety.isSafe ? '0px Overflow' : 'Overflow'}
+            subtitle="Responsive Constraints"
+            status={widthSafety.isSafe ? 'good' : 'warn'}
+          />
+          <SummaryMetricCard
+            title="Studio View"
+            primaryValue={activeMode.toUpperCase()}
+            subtitle="Canvas / Code / SVG"
+            status="neutral"
+          />
+          <SummaryMetricCard
+            title="Target Project"
+            primaryValue={displayName}
+            subtitle="FigCraft Design System"
+            status="good"
+          />
+          <SummaryMetricCard
+            title="Staging Compile"
+            primaryValue={compileResult?.stagingUrl ? 'Deployed' : 'Ready'}
+            subtitle={isCompiling ? 'Generating Web & APK...' : 'MOD-03 + MOD-04 Sync'}
+            status={compileResult?.stagingUrl ? 'good' : 'neutral'}
+          />
+        </SummaryMetricGrid>
       </div>
 
       {/* Deployment Confirmation Strip */}

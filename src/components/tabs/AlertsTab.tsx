@@ -5,9 +5,13 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { healIncident } from '../../services/api';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 
 export const AlertsTab: React.FC = () => {
   const { alerts, markAlertAsRead, clearAlert, projects } = useApp();
+  const unreadCount = alerts.filter((a) => !a.read).length;
+  const errorCount = alerts.filter((a) => a.type === 'error').length;
+  const warningCount = alerts.filter((a) => a.type === 'warning').length;
 
   // MOD-09 SRE Interactive State
   const [incidentSource, setIncidentSource] = useState<'SENTRY_5XX' | 'UPTIME_KUMA_DOWN' | 'GA4_CONVERSION_DROP'>('SENTRY_5XX');
@@ -64,6 +68,40 @@ export const AlertsTab: React.FC = () => {
           <span>Mark All as Read</span>
         </button>
       </div>
+
+      {/* Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Total Incidents"
+          primaryValue={alerts.length}
+          subtitle="Observed Feed"
+          status={alerts.length > 0 ? 'live' : 'good'}
+        />
+        <SummaryMetricCard
+          title="Unread Alerts"
+          primaryValue={unreadCount}
+          subtitle={unreadCount > 0 ? 'Requires triage' : 'All acknowledged'}
+          status={unreadCount > 0 ? 'warn' : 'good'}
+        />
+        <SummaryMetricCard
+          title="Critical Faults"
+          primaryValue={errorCount}
+          subtitle="5xx / Security flags"
+          status={errorCount > 0 ? 'bad' : 'good'}
+        />
+        <SummaryMetricCard
+          title="Warnings Logged"
+          primaryValue={warningCount}
+          subtitle="Latency & Quota"
+          status={warningCount > 0 ? 'warn' : 'good'}
+        />
+        <SummaryMetricCard
+          title="MOD-09 Auto-Heal"
+          primaryValue={sreResult?.data?.hotfix_pr_url ? 'PR Ready' : 'Standby'}
+          subtitle={`${projects.length} Monitored Apps`}
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       {/* MOD-09: Autonomous SRE & Self-Healing Backend Operations */}
       <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
