@@ -24,6 +24,10 @@ import {
 } from './workspaceDefaults';
 import { sanitizeCodeSnippet } from '../../lib/code-sanitizer';
 import { matchTemplates } from '../../lib/template-matcher';
+import {
+  applyBranchAutomationAction,
+  type GitDockerActionType,
+} from '../../lib/git-docker-manager';
 import { verifyProjectFinOpsBudget } from '../../services/api';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
@@ -208,44 +212,39 @@ export const ProjectWorkspaceModal: React.FC = () => {
     }));
   };
 
-  const handlePromoteBranch = (sourceBranch: GitStageBranchName) => {
-    const order: GitStageBranchName[] = [
-      'feature/dev',
-      'feature/testing',
-      'feature/uat',
-      'feature/production',
-    ];
-    const nextBranch = order[order.indexOf(sourceBranch) + 1];
-    if (!nextBranch) return;
-    const sha = Math.random().toString(16).slice(2, 9);
+  const handleGitDockerAction = (
+    sourceBranch: GitStageBranchName,
+    action: GitDockerActionType,
+    customMessage?: string
+  ) => {
+    updateProjectWorkspace(project.id, (prev) => {
+      const transition = applyBranchAutomationAction(
+        prev.gitDocker,
+        sourceBranch,
+        action,
+        customMessage
+      );
+      return {
+        ...prev,
+        gitDocker: transition.branches,
+        logs: [
+          {
+            id: `log-git-${Date.now()}`,
+            timestamp: new Date().toLocaleTimeString(),
+            stageId: 'integration' as const,
+            agentName: 'Atlas Integration Lead',
+            modelUsed: prev.modelRouting.deepArchitecture,
+            message: transition.logMessage,
+            level: (action === 'rollback' ? 'warn' : 'success') as 'success' | 'warn',
+          },
+          ...prev.logs,
+        ].slice(0, 60),
+      };
+    });
+  };
 
-    updateProjectWorkspace(project.id, (prev) => ({
-      ...prev,
-      gitDocker: prev.gitDocker.map((b) =>
-        b.branch === nextBranch
-          ? {
-              ...b,
-              status: 'Active',
-              lastCommitSha: sha,
-              lastCommitMsg: `merge: promoted verified build from ${sourceBranch}`,
-              dockerHealth: 'Healthy',
-              replicas: nextBranch === 'feature/production' ? '3/3 Live' : '2/2 Healthy',
-            }
-          : b
-      ),
-      logs: [
-        {
-          id: `log-git-${Date.now()}`,
-          timestamp: new Date().toLocaleTimeString(),
-          stageId: 'integration' as const,
-          agentName: 'Atlas Integration Lead',
-          modelUsed: prev.modelRouting.deepArchitecture,
-          message: `Promoted isolated Git branch ${sourceBranch} → ${nextBranch} (${sha}). Containers healthy.`,
-          level: 'success' as const,
-        },
-        ...prev.logs,
-      ].slice(0, 60),
-    }));
+  const handlePromoteBranch = (sourceBranch: GitStageBranchName) => {
+    handleGitDockerAction(sourceBranch, 'promote');
   };
 
   const TABS: Array<{ id: WorkspaceTabId; label: string; icon: React.ElementType }> = [
@@ -633,6 +632,7 @@ export const ProjectWorkspaceModal: React.FC = () => {
               project={project}
               branches={workspace.gitDocker}
               onPromoteBranch={handlePromoteBranch}
+              onGitDockerAction={handleGitDockerAction}
             />
           )}
         </div>

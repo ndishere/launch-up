@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794385748.5644147,
-    "seen": 1794386277.1670308,
-    "ast_hash": "11904c9f0e2fdf93f4e102fd503b8662",
+    "mtime": 1794390074.9679852,
+    "seen": 1794390268.8529215,
+    "ast_hash": "ff03c4c5ed61df9f36099474211fa35f",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -1104,15 +1104,15 @@
     "semantic_hash": ""
   },
   "src/components/workspace/FinOpsAndGitView.tsx": {
-    "mtime": 1794386141.426798,
-    "seen": 1794386277.1575541,
-    "ast_hash": "aace995a126a2f4c9c65222ced804e37",
+    "mtime": 1794390187.2215676,
+    "seen": 1794390268.840841,
+    "ast_hash": "33cecb02fd19948da3e13904fd7a0ddf",
     "semantic_hash": ""
   },
   "src/components/workspace/ProjectWorkspaceModal.tsx": {
-    "mtime": 1794386165.0803444,
-    "seen": 1794386277.1575587,
-    "ast_hash": "fcad7bda6dadc31173e3429405ce431d",
+    "mtime": 1794390210.9669626,
+    "seen": 1794390268.840846,
+    "ast_hash": "ef8bbc8af8a3ad48cef792ed40f6a714",
     "semantic_hash": ""
   },
   "src/components/workspace/SwarmAndModelsView.tsx": {
@@ -1122,8 +1122,8 @@
     "semantic_hash": ""
   },
   "src/components/workspace/workspaceDefaults.ts": {
-    "mtime": 1794386194.1227057,
-    "seen": 1794386277.1579053,
+    "mtime": 1794390075.290749,
+    "seen": 1794390268.8413744,
     "ast_hash": "5615d884ef9c71643434149410470040",
     "semantic_hash": ""
   },
@@ -1173,6 +1173,18 @@
     "mtime": 1794386225.0437236,
     "seen": 1794386277.1651177,
     "ast_hash": "35ee3e893d19452e520374f980b641f8",
+    "semantic_hash": ""
+  },
+  "src/lib/git-docker-manager.ts": {
+    "mtime": 1794390149.0257607,
+    "seen": 1794390268.842445,
+    "ast_hash": "819c702d0e5ab97630d7816c53857aab",
+    "semantic_hash": ""
+  },
+  "tests/workspace/sprint4-git-docker.unit.test.ts": {
+    "mtime": 1794390225.3550594,
+    "seen": 1794390268.850864,
+    "ast_hash": "e8d7315dacddca0a5e87fa39cee4eb73",
     "semantic_hash": ""
   },
   "package-lock.json": {

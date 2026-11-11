@@ -13,6 +13,9 @@ import {
   ShieldCheck,
   ShieldAlert,
   RefreshCw,
+  GitCommit,
+  RotateCcw,
+  Terminal,
 } from 'lucide-react';
 import {
   Client,
@@ -28,6 +31,12 @@ import {
   sanitizeCodeSnippet,
 } from '../../lib/code-sanitizer.ts';
 import { matchTemplates } from '../../lib/template-matcher.ts';
+import {
+  generateGitDockerCliCommands,
+  generateProjectComposeYaml,
+  generateProjectDockerfile,
+  type GitDockerActionType,
+} from '../../lib/git-docker-manager.ts';
 import { UnitEconomicsProfitabilityCard } from './UnitEconomicsProfitabilityCard';
 
 interface FinOpsUnitEconomicsViewProps {
@@ -689,120 +698,277 @@ interface GitDockerStagingViewProps {
   project: Project;
   branches: ProjectGitBranchNode[];
   onPromoteBranch: (branch: GitStageBranchName) => void;
+  onGitDockerAction?: (
+    branch: GitStageBranchName,
+    action: GitDockerActionType,
+    customMessage?: string
+  ) => void;
 }
 
 export const GitDockerStagingView: React.FC<GitDockerStagingViewProps> = ({
   project,
   branches,
   onPromoteBranch,
+  onGitDockerAction,
 }) => {
-  const [copiedCompose, setCopiedCompose] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState<GitStageBranchName>('feature/dev');
+  const [commitMessage, setCommitMessage] = useState('');
+  const [specTab, setSpecTab] = useState<'compose' | 'dockerfile' | 'cli'>('compose');
+  const [copiedSpec, setCopiedSpec] = useState(false);
 
-  const composeSnippet = `services:
-  web:
-    build: { context: ., dockerfile: Dockerfile }
-    image: launchup/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}:latest
-    ports: ["3000:80"]
-    environment:
-      - TARGET_CLOUD=${project.serverTarget}
-  api-gateway:
-    image: launchup/fastify-rls-core:16
-    ports: ["8004-8013:8004-8013"]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]`;
+  const activeNode =
+    branches.find((b) => b.branch === selectedBranch) ?? branches[0];
 
-  const copyCompose = () => {
-    navigator.clipboard.writeText(composeSnippet);
-    setCopiedCompose(true);
-    setTimeout(() => setCopiedCompose(false), 2000);
+  const composeSnippet = generateProjectComposeYaml(project, branches);
+  const dockerfileSnippet = generateProjectDockerfile(project);
+  const cliSnippet = generateGitDockerCliCommands(project, activeNode.branch);
+
+  const activeSpecContent =
+    specTab === 'compose'
+      ? composeSnippet
+      : specTab === 'dockerfile'
+      ? dockerfileSnippet
+      : cliSnippet;
+
+  const composeSanitization = sanitizeCodeSnippet(composeSnippet);
+
+  const triggerAction = (
+    branch: GitStageBranchName,
+    action: GitDockerActionType,
+    customMessage?: string
+  ) => {
+    if (onGitDockerAction) {
+      onGitDockerAction(branch, action, customMessage);
+    } else if (action === 'promote') {
+      onPromoteBranch(branch);
+    }
+  };
+
+  const handleCommitSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    triggerAction(activeNode.branch, 'commit', commitMessage);
+    setCommitMessage('');
+  };
+
+  const copyActiveSpec = () => {
+    navigator.clipboard.writeText(activeSpecContent);
+    setCopiedSpec(true);
+    setTimeout(() => setCopiedSpec(false), 1800);
   };
 
   return (
     <div className="space-y-5">
       {/* 4 Isolated Branch Promotion Pipeline */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {branches.map((node, idx) => (
-          <div
-            key={node.branch}
-            className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4 flex flex-col justify-between space-y-3"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                  <GitBranch className="w-3.5 h-3.5" />
-                  {node.branch}
-                </span>
-                <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                    node.dockerHealth === 'Healthy'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                  }`}
-                >
-                  {node.dockerHealth}
-                </span>
+        {branches.map((node, idx) => {
+          const isSelected = node.branch === activeNode.branch;
+          return (
+            <div
+              key={node.branch}
+              onClick={() => setSelectedBranch(node.branch)}
+              className={`cursor-pointer bg-white dark:bg-[#111318] rounded-xl border p-4 flex flex-col justify-between space-y-3 transition-colors ${
+                isSelected
+                  ? 'border-indigo-500 ring-1 ring-indigo-500/30'
+                  : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                    <GitBranch className="w-3.5 h-3.5" />
+                    {node.branch}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {node.status}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                        node.dockerHealth === 'Healthy'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
+                          : node.dockerHealth === 'Building'
+                          ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                      }`}
+                    >
+                      {node.dockerHealth}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-xs font-semibold text-slate-900 dark:text-white">
+                  {node.stageLabel}
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                  {node.lastCommitMsg}
+                </p>
               </div>
 
-              <div className="text-xs font-semibold text-slate-900 dark:text-white">
-                {node.stageLabel}
+              <div className="space-y-2 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">HEAD SHA</span>
+                  <span className="text-slate-800 dark:text-slate-200">{node.lastCommitSha}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Container</span>
+                  <span className="text-slate-800 dark:text-slate-200">{node.containerService}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Port / Replicas</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">
+                    :{node.containerPort} · {node.replicas}
+                  </span>
+                </div>
+
+                <div className="pt-1 flex items-center gap-1.5 font-sans">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerAction(node.branch, 'rebuild');
+                    }}
+                    className="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors inline-flex items-center justify-center gap-1"
+                    title="Rebuild & verify Docker container"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Rebuild</span>
+                  </button>
+
+                  {idx > 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        triggerAction(node.branch, 'rollback');
+                      }}
+                      className="py-1.5 px-2 rounded-lg text-[11px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors inline-flex items-center justify-center gap-1"
+                      title="Rollback to standby snapshot"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+
+                {idx < branches.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerAction(node.branch, 'promote');
+                    }}
+                    className="w-full py-1.5 px-2.5 rounded-lg text-[11px] font-sans font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 transition-colors flex items-center justify-center gap-1"
+                  >
+                    <span>Promote → {branches[idx + 1].branch}</span>
+                    <ArrowUpRight className="w-3 h-3" />
+                  </button>
+                )}
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                {node.lastCommitMsg}
-              </p>
             </div>
+          );
+        })}
+      </div>
 
-            <div className="space-y-2 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
-              <div className="flex justify-between">
-                <span className="text-slate-400">HEAD SHA</span>
-                <span className="text-slate-800 dark:text-slate-200">{node.lastCommitSha}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Container</span>
-                <span className="text-slate-800 dark:text-slate-200">{node.containerService}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Port / Replicas</span>
-                <span className="text-emerald-600 dark:text-emerald-400">
-                  :{node.containerPort} · {node.replicas}
-                </span>
-              </div>
-
-              {idx < branches.length - 1 && (
-                <button
-                  type="button"
-                  onClick={() => onPromoteBranch(node.branch)}
-                  className="w-full mt-1 py-1.5 px-2.5 rounded-lg text-[11px] font-sans font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 transition-colors flex items-center justify-center gap-1"
-                >
-                  <span>Promote → {branches[idx + 1].branch}</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </button>
-              )}
-            </div>
+      {/* Selected Branch Commit Automation Bar */}
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-2">
+            <GitCommit className="w-4 h-4 text-indigo-500" />
+            <span className="text-xs font-bold text-slate-900 dark:text-white">
+              Isolated Branch Automation ·{' '}
+              <span className="font-mono text-indigo-600 dark:text-indigo-400">
+                {activeNode.branch}
+              </span>
+            </span>
           </div>
-        ))}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            Stage commits cleanly to {activeNode.branch} ({activeNode.containerService}:{activeNode.containerPort}) without polluting sibling branches.
+          </p>
+        </div>
+
+        <form onSubmit={handleCommitSubmit} className="flex flex-1 max-w-xl items-center gap-2">
+          <input
+            type="text"
+            value={commitMessage}
+            onChange={(e) => setCommitMessage(e.target.value)}
+            placeholder={`Commit message for ${activeNode.branch} (e.g. feat: add RLS checkout guard)...`}
+            className="flex-1 px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+          />
+          <button
+            type="submit"
+            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold inline-flex items-center gap-1.5 shrink-0"
+          >
+            <GitCommit className="w-3.5 h-3.5" />
+            <span>Commit & Build</span>
+          </button>
+        </form>
       </div>
 
       {/* Docker & Compose Spec Viewer */}
       <div className="bg-[#0D111A] rounded-xl border border-slate-800 p-4 space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+          <div className="flex items-center gap-2 flex-wrap">
             <Box className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-mono font-semibold text-white">
-              docker-compose.staging.yml · Multi-Container Mesh ({project.serverTarget})
-            </span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setSpecTab('compose')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold ${
+                  specTab === 'compose'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                docker-compose.staging.yml
+              </button>
+              <button
+                type="button"
+                onClick={() => setSpecTab('dockerfile')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold ${
+                  specTab === 'dockerfile'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Dockerfile
+              </button>
+              <button
+                type="button"
+                onClick={() => setSpecTab('cli')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold inline-flex items-center gap-1 ${
+                  specTab === 'cli'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Terminal className="w-3 h-3" />
+                <span>Git/Docker CLI</span>
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={copyCompose}
-            className="px-2.5 py-1 text-[11px] font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg inline-flex items-center gap-1"
-          >
-            {copiedCompose ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-            <span>{copiedCompose ? 'Copied' : 'Copy Compose'}</span>
-          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-950/70 text-emerald-300 border border-emerald-800/60 text-[10px] font-mono inline-flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" />
+              <span>
+                {composeSanitization.isSafe
+                  ? 'Sanitized · 0 Secrets'
+                  : `${composeSanitization.removedItems.length} warnings`}
+              </span>
+            </span>
+
+            <button
+              type="button"
+              onClick={copyActiveSpec}
+              className="px-2.5 py-1 text-[11px] font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg inline-flex items-center gap-1"
+            >
+              {copiedSpec ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+              <span>{copiedSpec ? 'Copied' : 'Copy Spec'}</span>
+            </button>
+          </div>
         </div>
 
-        <pre className="text-xs font-mono text-indigo-200/90 overflow-x-auto leading-relaxed">
-          {composeSnippet}
+        <pre className="text-xs font-mono text-indigo-200/90 overflow-x-auto leading-relaxed max-h-80 overflow-y-auto">
+          {activeSpecContent}
         </pre>
       </div>
     </div>
