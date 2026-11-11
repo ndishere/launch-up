@@ -4,7 +4,7 @@
  * Cross-platform compatible (Windows Node 22+ EINVAL safe)
  */
 
-import { spawn, ChildProcess } from 'node:child_process';
+import { spawn, spawnSync, ChildProcess } from 'node:child_process';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -48,46 +48,50 @@ function checkPort(port: number): Promise<boolean> {
   });
 }
 
-async function startService(svc: ServiceSpec) {
+async function waitForHealth(port: number, timeoutMs = 10000): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (await checkPort(port)) return true;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  return false;
+}
+
+async function startService(svc: ServiceSpec): Promise<boolean> {
   const isRunning = await checkPort(svc.port);
   if (isRunning) {
     console.log(`[LaunchUp Mesh] ${svc.name} is already active on port ${svc.port}.`);
-    return;
+    return true;
   }
 
   const scriptPath = path.resolve(rootDir, svc.entry);
   const tsxCli = path.resolve(rootDir, 'node_modules/tsx/dist/cli.mjs');
-  const spawnArgs = fs.existsSync(tsxCli)
-    ? [tsxCli, scriptPath]
-    : ['--experimental-strip-types', scriptPath];
+  if (!fs.existsSync(tsxCli)) {
+    throw new Error(`tsx loader not found at ${tsxCli}. Run npm install first.`);
+  }
 
-  const child = spawn(
-    process.execPath,
-    spawnArgs,
-    {
-      cwd: rootDir,
-      env: {
-        ...process.env,
-        PORT: String(svc.port),
-        NODE_ENV: 'development',
-        LOG_LEVEL: 'warn',
-      },
-      stdio: ['ignore', 'pipe', 'pipe'],
-      shell: false,
-    }
-  );
-
-  child.stdout?.on('data', (data) => {
-    const msg = data.toString().trim();
-    if (msg.includes('listening on port')) {
-      console.log(`  ✔ [Port ${svc.port}] ${svc.name} LIVE`);
-    }
+  const child = spawn(process.execPath, [tsxCli, scriptPath], {
+    cwd: rootDir,
+    env: {
+      ...process.env,
+      PORT: String(svc.port),
+      NODE_ENV: 'development',
+      LOG_LEVEL: 'warn',
+      DATABASE_URL:
+        process.env.DATABASE_URL || 'postgresql://postgres:postgres@127.0.0.1:5432/launchup',
+      JWT_SECRET:
+        process.env.JWT_SECRET || 'launchup-local-dev-jwt-secret-key-min-32-chars',
+    },
+    stdio: ['ignore', 'pipe', 'pipe'],
+    shell: false,
   });
 
+  let stderrBuf = '';
   child.stderr?.on('data', (data) => {
     const err = data.toString().trim();
-    if (err.includes('Error') && !err.includes('experimental')) {
-      console.warn(`  ⚠ [Port ${svc.port}] ${svc.name}: ${err.slice(0, 120)}`);
+    stderrBuf += err + '\n';
+    if (err.includes('ERR_MODULE_NOT_FOUND') || (err.includes('Error') && !err.includes('experimental'))) {
+      console.warn(`  ⚠ [Port ${svc.port}] ${svc.name}: ${err.slice(0, 180)}`);
     }
   });
 
@@ -96,6 +100,14 @@ async function startService(svc: ServiceSpec) {
   });
 
   processes.push(child);
+
+  const healthy = await waitForHealth(svc.port, 8000);
+  if (healthy && !stderrBuf.includes('ERR_MODULE_NOT_FOUND')) {
+    console.log(`  ✔ [Port ${svc.port}] ${svc.name} -> 200 OK (/health)`);
+    return true;
+  }
+  console.error(`  ✖ [Port ${svc.port}] ${svc.name} failed health check`);
+  return false;
 }
 
 function startVite() {
@@ -127,33 +139,39 @@ function startVite() {
   processes.push(viteProcess);
 }
 
-function cleanup() {
+function cleanup(exitCode = 0) {
   console.log('\n[LaunchUp Orchestrator] Shutting down child services...');
   for (const proc of processes) {
     try {
       if (proc.pid) {
         if (process.platform === 'win32') {
-          spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { shell: true });
+          spawnSync('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { stdio: 'ignore' });
         } else {
           proc.kill('SIGTERM');
         }
       }
     } catch {}
   }
-  process.exit(0);
+  process.exit(exitCode);
 }
 
-process.on('SIGINT', cleanup);
-process.on('SIGTERM', cleanup);
+process.on('SIGINT', () => cleanup(0));
+process.on('SIGTERM', () => cleanup(0));
 
 async function main() {
+  const verifyOnly = process.argv.includes('--verify');
   console.log('╔══════════════════════════════════════════════════════════════╗');
   console.log('║  LAUNCH UP - FULL-STACK CONTROL PLANE MESH ORCHESTRATOR   ║');
   console.log('╚══════════════════════════════════════════════════════════════╝');
   console.log('\nBooting 10 Microservices (Ports 8004 - 8013)...');
 
-  for (const svc of SERVICES) {
-    await startService(svc);
+  const results = await Promise.all(SERVICES.map((svc) => startService(svc)));
+  const healthyCount = results.filter(Boolean).length;
+  console.log(`\n[LaunchUp Mesh] ${healthyCount}/${SERVICES.length} microservices healthy.`);
+
+  if (verifyOnly) {
+    cleanup(healthyCount === SERVICES.length ? 0 : 1);
+    return;
   }
 
   startVite();
@@ -161,5 +179,5 @@ async function main() {
 
 main().catch((err) => {
   console.error('[LaunchUp Orchestrator] Startup failure:', err);
-  cleanup();
+  cleanup(1);
 });
