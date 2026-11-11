@@ -6,12 +6,14 @@ import {
   RemoteTelemetryPackage, FDESystemArchitecture,
   TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow,
   ProjectWorkspaceState, CustomApiProviderConfig, AgentModelAssignments, SwarmAgentRoleKey,
+  TokenOptimizerSettings,
 } from '../types';
 import { createDefaultProjectWorkspace } from '../components/workspace/workspaceDefaults';
 import {
   getDefaultAgentModelAssignments,
   getDefaultCustomApiProviders,
 } from '../lib/custom-api-gateway';
+import { DEFAULT_TOKEN_OPTIMIZER_SETTINGS } from '../lib/token-compressor';
 import { FigCraftProjectSchema, DEFAULT_FIGCRAFT_TOKENS } from '../lib/figcraft-adapter';
 import { 
   initialClients, initialProjects, initialAlerts, initialDeployments, 
@@ -297,6 +299,9 @@ interface AppContextType {
   removeCustomApiProvider: (id: string) => void;
   testCustomApiProvider: (id: string) => Promise<VerifyApiConnectionResponse | null>;
   setAgentModelAssignment: (roleKey: SwarmAgentRoleKey, providerId: string) => void;
+  // RTX 3050 (6GB VRAM) Optimizer & 4-Layer Token Compression
+  tokenOptimizer: TokenOptimizerSettings;
+  updateTokenOptimizer: (patch: Partial<TokenOptimizerSettings>) => void;
   resetDemoState: () => void;
 }
 
@@ -676,6 +681,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       getDefaultAgentModelAssignments()
     )
   );
+  const [tokenOptimizer, setTokenOptimizer] = useState<TokenOptimizerSettings>(() =>
+    loadPersisted<TokenOptimizerSettings>(
+      'tokenOptimizer',
+      DEFAULT_TOKEN_OPTIMIZER_SETTINGS
+    )
+  );
 
   // Sync persisted state slices to localStorage
   useEffect(() => {
@@ -730,6 +741,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     savePersisted('lastVendorReadiness', lastVendorReadiness);
     savePersisted('customApiProviders', customApiProviders);
     savePersisted('agentModelAssignments', agentModelAssignments);
+    savePersisted('tokenOptimizer', tokenOptimizer);
   }, [
     figcraftProject,
     activeStudioPlatform,
@@ -742,6 +754,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     lastVendorReadiness,
     customApiProviders,
     agentModelAssignments,
+    tokenOptimizer,
   ]);
 
   const triggerInternalHealthPulse = async () => {
@@ -828,6 +841,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               lastMessage: result.message,
               verifiedModel:
                 result.status === 'CONNECTED' ? result.verifiedModel : undefined,
+              discoveredModels:
+                result.status === 'CONNECTED' && result.discoveredModels
+                  ? result.discoveredModels
+                  : item.discoveredModels,
               errorCode: result.status === 'FAILED' ? result.errorCode : undefined,
             }
           : item
@@ -844,6 +861,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setAgentModelAssignments((prev) => ({
       ...prev,
       [roleKey]: providerId,
+    }));
+  };
+
+  const updateTokenOptimizer = (patch: Partial<TokenOptimizerSettings>) => {
+    setTokenOptimizer((prev) => ({
+      ...prev,
+      ...patch,
     }));
   };
 
@@ -983,6 +1007,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setLastVendorReadiness(null);
     setCustomApiProviders(getDefaultCustomApiProviders());
     setAgentModelAssignments(getDefaultAgentModelAssignments());
+    setTokenOptimizer(DEFAULT_TOKEN_OPTIMIZER_SETTINGS);
     setActiveCanvasProjectId(null);
     setSelectedClient(null);
     setSelectedProject(null);
@@ -1676,6 +1701,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         removeCustomApiProvider,
         testCustomApiProvider,
         setAgentModelAssignment,
+        tokenOptimizer,
+        updateTokenOptimizer,
         resetDemoState,
       }}
     >

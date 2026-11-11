@@ -39,6 +39,9 @@ const PRESET_ORDER: CustomApiProviderType[] = [
   'gemini',
   'groq',
   'ollama',
+  'ik_llama_cpp',
+  'airllm',
+  'lmstudio',
   'custom',
 ];
 
@@ -63,6 +66,7 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
   const [testStatus, setTestStatus] = useState<ApiConnectionStatus>('UNVERIFIED');
   const [testLatencyMs, setTestLatencyMs] = useState<number | undefined>(undefined);
   const [testVerifiedModel, setTestVerifiedModel] = useState<string | undefined>(undefined);
+  const [testDiscoveredModels, setTestDiscoveredModels] = useState<string[]>([]);
   const [testMessage, setTestMessage] = useState<string>('Unverified • Click Test to Verify');
   const [testErrorCode, setTestErrorCode] = useState<
     'ERR_API_AUTH_FAILED' | 'ERR_API_UNREACHABLE' | undefined
@@ -87,6 +91,7 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
       setTestStatus(editingProvider.status);
       setTestLatencyMs(editingProvider.latencyMs);
       setTestVerifiedModel(editingProvider.verifiedModel);
+      setTestDiscoveredModels(editingProvider.discoveredModels || []);
       setTestMessage(editingProvider.lastMessage || 'Unverified • Click Test to Verify');
       setTestErrorCode(editingProvider.errorCode);
       setLastTestedAt(editingProvider.lastTestedAt);
@@ -103,6 +108,7 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
       setTestStatus('UNVERIFIED');
       setTestLatencyMs(undefined);
       setTestVerifiedModel(undefined);
+      setTestDiscoveredModels([]);
       setTestMessage('Unverified • Click Test to Verify');
       setTestErrorCode(undefined);
       setLastTestedAt(undefined);
@@ -156,9 +162,11 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
       setTestMessage(result.message);
       if (result.status === 'CONNECTED') {
         setTestVerifiedModel(result.verifiedModel);
+        setTestDiscoveredModels(result.discoveredModels || []);
         setTestErrorCode(undefined);
       } else {
         setTestVerifiedModel(undefined);
+        setTestDiscoveredModels([]);
         setTestErrorCode(result.errorCode);
       }
     } finally {
@@ -188,6 +196,8 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
         status: testStatus,
         latencyMs: testLatencyMs,
         verifiedModel: testVerifiedModel,
+        discoveredModels:
+          testDiscoveredModels.length > 0 ? testDiscoveredModels : undefined,
         lastTestedAt,
         lastMessage: testMessage,
         errorCode: testErrorCode,
@@ -348,20 +358,29 @@ export const CustomApiSetupModal: React.FC<CustomApiSetupModalProps> = ({
                 className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               />
               <div className="flex flex-wrap gap-1 mt-1.5">
-                {activePreset.suggestedModels.map((modelOpt) => (
-                  <button
-                    key={modelOpt}
-                    type="button"
-                    onClick={() => setDefaultModelId(modelOpt)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono border transition-colors ${
-                      defaultModelId === modelOpt
-                        ? 'bg-indigo-50 dark:bg-indigo-950/70 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300'
-                        : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    {modelOpt}
-                  </button>
-                ))}
+                {Array.from(
+                  new Set([...testDiscoveredModels, ...activePreset.suggestedModels])
+                )
+                  .slice(0, 6)
+                  .map((modelOpt) => {
+                    const isDiscovered = testDiscoveredModels.includes(modelOpt);
+                    return (
+                      <button
+                        key={modelOpt}
+                        type="button"
+                        onClick={() => setDefaultModelId(modelOpt)}
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                          defaultModelId === modelOpt
+                            ? 'bg-indigo-50 dark:bg-indigo-950/70 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-300'
+                            : isDiscovered
+                            ? 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-300/70 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300'
+                            : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        {isDiscovered ? `✓ ${modelOpt}` : modelOpt}
+                      </button>
+                    );
+                  })}
               </div>
             </div>
           </div>

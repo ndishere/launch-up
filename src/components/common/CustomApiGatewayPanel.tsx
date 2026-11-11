@@ -248,6 +248,35 @@ export const CustomApiGatewayPanel: React.FC<CustomApiGatewayPanelProps> = ({
                     <div className="text-[10px] font-mono text-slate-400 truncate">
                       {item.baseUrl}
                     </div>
+                    {item.discoveredModels && item.discoveredModels.length > 0 && (
+                      <div className="pt-1 flex flex-wrap gap-1">
+                        {item.discoveredModels.slice(0, 3).map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() =>
+                              updateCustomApiProvider(item.id, {
+                                defaultModelId: m,
+                                verifiedModel: m,
+                              })
+                            }
+                            title={`Switch active model to ${m}`}
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-mono border transition-colors ${
+                              (item.verifiedModel || item.defaultModelId) === m
+                                ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300'
+                                : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 hover:text-indigo-500'
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                        {item.discoveredModels.length > 3 && (
+                          <span className="text-[9px] font-mono text-slate-400 px-1 py-0.5">
+                            +{item.discoveredModels.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

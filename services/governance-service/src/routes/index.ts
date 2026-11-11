@@ -21,7 +21,18 @@ import { verifyApiConnectionEngine } from '../engine.js';
 
 // ── Validation Schemas ────────────────────────────────
 const verifyApiConnectionSchema = z.object({
-  provider: z.enum(['openrouter', 'openai', 'anthropic', 'gemini', 'groq', 'ollama', 'custom']),
+  provider: z.enum([
+    'openrouter',
+    'openai',
+    'anthropic',
+    'gemini',
+    'groq',
+    'ollama',
+    'ik_llama_cpp',
+    'airllm',
+    'lmstudio',
+    'custom',
+  ]),
   baseUrl: z.string().min(1),
   apiKey: z.string().default(''),
   modelId: z.string().optional(),

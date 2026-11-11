@@ -5,6 +5,9 @@ export type VerifiableApiProvider =
   | 'gemini'
   | 'groq'
   | 'ollama'
+  | 'ik_llama_cpp'
+  | 'airllm'
+  | 'lmstudio'
   | 'custom';
 
 export interface VerifyApiConnectionInput {
@@ -20,6 +23,7 @@ export interface VerifyApiConnectionSuccess {
   latencyMs: number;
   provider: string;
   verifiedModel: string;
+  discoveredModels?: string[];
   message: string;
   timestamp: string;
 }
@@ -43,11 +47,20 @@ const DEFAULT_MODEL_BY_PROVIDER: Record<VerifiableApiProvider, string> = {
   anthropic: 'claude-3-7-sonnet-20250219',
   gemini: 'gemini-2.5-pro',
   groq: 'llama-3.3-70b-versatile',
-  ollama: 'qwen2.5-coder:14b',
+  ollama: 'qwen2.5-coder:7b-instruct-q4_K_M',
+  ik_llama_cpp: 'qwen2.5-coder-7b-q4_k_m',
+  airllm: 'qwen2.5-32b-layer-streamed',
+  lmstudio: 'deepseek-r1-distill-qwen-7b',
   custom: 'custom-model',
 };
 
-const PROVIDERS_ALLOWING_EMPTY_KEY = new Set<VerifiableApiProvider>(['ollama', 'custom']);
+const PROVIDERS_ALLOWING_EMPTY_KEY = new Set<VerifiableApiProvider>([
+  'ollama',
+  'ik_llama_cpp',
+  'airllm',
+  'lmstudio',
+  'custom',
+]);
 
 function validateBaseUrl(rawUrl: string): URL | null {
   try {
@@ -107,16 +120,8 @@ function buildProbeTarget(
   return { targetUrl: endpoint, headers };
 }
 
-function extractVerifiedModelName(
-  body: unknown,
-  requestedModel: string | undefined,
-  provider: VerifiableApiProvider,
-): string {
-  const fallbackModel = requestedModel?.trim() || DEFAULT_MODEL_BY_PROVIDER[provider];
-  if (!body || typeof body !== 'object') {
-    return fallbackModel;
-  }
-
+function extractCandidateModels(body: unknown): string[] {
+  if (!body || typeof body !== 'object') return [];
   const record = body as Record<string, unknown>;
   const candidates: string[] = [];
 
@@ -128,12 +133,26 @@ function extractVerifiedModelName(
     }
   } else if (Array.isArray(record.models)) {
     for (const item of record.models) {
-      if (item && typeof item === 'object' && typeof (item as { name?: unknown }).name === 'string') {
-        candidates.push((item as { name: string }).name);
+      if (item && typeof item === 'object') {
+        const modelObj = item as { name?: unknown; model?: unknown };
+        if (typeof modelObj.name === 'string') {
+          candidates.push(modelObj.name);
+        } else if (typeof modelObj.model === 'string') {
+          candidates.push(modelObj.model);
+        }
       }
     }
   }
 
+  return Array.from(new Set(candidates)).slice(0, 25);
+}
+
+function extractVerifiedModelName(
+  candidates: string[],
+  requestedModel: string | undefined,
+  provider: VerifiableApiProvider,
+): string {
+  const fallbackModel = requestedModel?.trim() || DEFAULT_MODEL_BY_PROVIDER[provider];
   if (requestedModel?.trim()) {
     const exactOrSuffix = candidates.find(
       (id) => id === requestedModel.trim() || id.endsWith(`/${requestedModel.trim()}`),
@@ -198,11 +217,24 @@ export async function verifyApiConnectionEngine(
   // Deterministic simulation / test mode keys (`sk-test-...` or `sim-...`)
   if (/^(sk-test-|sim-)/i.test(trimmedKey)) {
     const simulatedLatency = 42 + ((trimmedKey.length * 13 + provider.length * 17) % 115);
+    const verifiedModel = input.modelId?.trim() || DEFAULT_MODEL_BY_PROVIDER[provider];
+    const discoveredModels =
+      provider === 'ollama'
+        ? Array.from(
+            new Set([
+              verifiedModel,
+              'qwen2.5-coder:7b-instruct-q4_K_M',
+              'phi3.5:3.8b',
+              'deepseek-r1:7b-qwen-distill-q4_K_M',
+            ]),
+          )
+        : [verifiedModel];
     return {
       status: 'CONNECTED',
       latencyMs: simulatedLatency,
       provider,
-      verifiedModel: input.modelId?.trim() || DEFAULT_MODEL_BY_PROVIDER[provider],
+      verifiedModel,
+      discoveredModels,
       message: 'Handshake verified (HTTP 200 OK)',
       timestamp: new Date().toISOString(),
     };
@@ -260,12 +292,38 @@ export async function verifyApiConnectionEngine(
       // Some custom endpoints return plain 200 OK without JSON body
     }
 
+    let discoveredModels = extractCandidateModels(parsedBody);
+
+    // For local Ollama, also probe `/api/tags` to discover locally pulled GGUF/Modelfile models
+    if (provider === 'ollama') {
+      const tagsCtrl = new AbortController();
+      const tagsTimeout = setTimeout(() => tagsCtrl.abort(), 1500);
+      try {
+        const tagsRes = await fetch(`${parsedUrl.origin}/api/tags`, {
+          method: 'GET',
+          signal: tagsCtrl.signal,
+        });
+        clearTimeout(tagsTimeout);
+        if (tagsRes.ok) {
+          const tagsBody = await tagsRes.json();
+          const tagModels = extractCandidateModels(tagsBody);
+          discoveredModels = Array.from(new Set([...discoveredModels, ...tagModels])).slice(0, 25);
+        }
+      } catch {
+        clearTimeout(tagsTimeout);
+      }
+    }
+
     return {
       status: 'CONNECTED',
       latencyMs,
       provider,
-      verifiedModel: extractVerifiedModelName(parsedBody, input.modelId, provider),
-      message: 'Handshake verified (HTTP 200 OK)',
+      verifiedModel: extractVerifiedModelName(discoveredModels, input.modelId, provider),
+      discoveredModels: discoveredModels.length > 0 ? discoveredModels : undefined,
+      message:
+        discoveredModels.length > 0 && provider === 'ollama'
+          ? `Handshake verified (HTTP 200 OK · ${discoveredModels.length} local model(s) discovered)`
+          : 'Handshake verified (HTTP 200 OK)',
       timestamp: new Date().toISOString(),
     };
   } catch (err: unknown) {

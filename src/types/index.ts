@@ -521,6 +521,8 @@ export interface ProjectFinOpsState {
   manualExpenses: ProjectFinOpsExpense[];
   reusabilityPercent?: number;
   reusabilityTokenSavingsUsd?: number;
+  tokenCompressionSavingsUsd?: number;
+  tokenReductionPercent?: number;
   templateMatchResults?: TemplateMatchResult | null;
   lastSanitizationResult?: SanitizationResult | null;
   lastMod10Check?: Mod10FinOpsCheckSnapshot | null;
@@ -568,6 +570,9 @@ export type CustomApiProviderType =
   | 'gemini'
   | 'groq'
   | 'ollama'
+  | 'ik_llama_cpp'
+  | 'airllm'
+  | 'lmstudio'
   | 'custom';
 
 export type ApiConnectionStatus = 'UNVERIFIED' | 'CONNECTED' | 'FAILED';
@@ -593,6 +598,7 @@ export interface CustomApiProviderConfig {
   status: ApiConnectionStatus;
   latencyMs?: number;
   verifiedModel?: string;
+  discoveredModels?: string[];
   lastTestedAt?: string;
   lastMessage?: string;
   errorCode?: 'ERR_API_AUTH_FAILED' | 'ERR_API_UNREACHABLE';
@@ -601,3 +607,17 @@ export interface CustomApiProviderConfig {
 }
 
 export type AgentModelAssignments = Record<SwarmAgentRoleKey, string>;
+
+// ====================================================================
+// RTX 3050 (6GB VRAM) OPTIMIZER & 4-LAYER TOKEN COMPRESSION TYPES
+// ====================================================================
+export type CavemanAgentMode = 'off' | 'lite' | 'full' | 'ultra';
+
+export interface TokenOptimizerSettings {
+  turboQuantKvCacheQ4: boolean;
+  sequentialSingleGpuQueue: boolean;
+  cavemanMode: CavemanAgentMode;
+  repomixAstSkeletonMode: boolean;
+  goldenTemplateDeltaOnly: boolean;
+  vramBudgetGb: number;
+}

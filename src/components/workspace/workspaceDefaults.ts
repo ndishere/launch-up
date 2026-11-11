@@ -204,11 +204,12 @@ export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOp
   const roiPercent =
     totalActualCost > 0 ? Number(((grossProfitUsd / totalActualCost) * 100).toFixed(1)) : 0;
 
+  const tokenCompressionSavings = finops.tokenCompressionSavingsUsd ?? 0;
   const reusabilitySavingsUsd = Number(
     (
-      finops.reusabilityTokenSavingsUsd ??
-      finops.templateMatchResults?.totalEstimatedSavingsUsd ??
-      0
+      (finops.reusabilityTokenSavingsUsd ??
+        finops.templateMatchResults?.totalEstimatedSavingsUsd ??
+        0) + tokenCompressionSavings
     ).toFixed(2)
   );
   const reusabilityPercent =
