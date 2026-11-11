@@ -1,56 +1,29 @@
 import React, { useState } from 'react';
 import { 
-  Users, Plus, Search, Filter, Mail, Phone, ExternalLink, 
-  FolderKanban, DollarSign, Shield, MoreVertical, Eye, Trash2, Building, CheckCircle,
-  Link, Sparkles, CheckCircle2, ArrowRight, Globe, RefreshCw, AlertCircle
+  Plus, Search, Mail, ExternalLink, 
+  FolderKanban, Eye, Sparkles
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Client, ClientStatus, ClientTier } from '../../types';
-import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
-import { discoverLead } from '../../services/api';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { GenerateLeadModal } from '../modals/GenerateLeadModal';
 
 export const ClientsTab: React.FC = () => {
   const { 
     clients, 
     projects, 
     setIsAddClientModalOpen, 
-    setIsClientPortalModalOpen,
     setSelectedClient,
-    selectedClient,
     requirementIntakes,
-    convertIntakeToProject
   } = useApp();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [tierFilter, setTierFilter] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<string>('All');
-
-  // MOD-01 Lead Discovery Interactive State
-  const [prospectUrl, setProspectUrl] = useState('https://apex-freight-example.com');
-  const [isAuditing, setIsAuditing] = useState(false);
-  const [leadResult, setLeadResult] = useState<any>(null);
-
-  const handleAuditLead = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prospectUrl) return;
-    setIsAuditing(true);
-    setLeadResult(null);
-    try {
-      const res = await discoverLead({
-        project_id: projects[0]?.id || 'proj-0001-0000-0000-000000000001',
-        prospect_url: prospectUrl,
-        client_id: clients[0]?.id,
-      });
-      setLeadResult(res);
-    } catch (err: any) {
-      setLeadResult({ error: err.message });
-    } finally {
-      setIsAuditing(false);
-    }
-  };
+  const [isGenerateLeadOpen, setIsGenerateLeadOpen] = useState(false);
 
   const totalMRR = clients.reduce((acc, c) => acc + c.monthlySubscription, 0);
   const activeClients = clients.filter(c => c.status === 'Active').length;
+  const pendingIntakesCount = requirementIntakes.filter(r => r.status !== 'Converted to Project').length;
 
   const filteredClients = clients.filter((client) => {
     const matchesSearch = 
@@ -64,155 +37,84 @@ export const ClientsTab: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Top Combined Analytics Section with Live Success/Error Rates */}
-      <ScreenAnalyticsHeader
-        title="Clients & Requirement Ingestion"
-        badge="1-Person Company Engine"
-        description="Share 1 secure link with clients to auto-pull requirements, products, and budgets into Launch Up via encrypted APIs, or enter manually on client calls with full role-based access."
-        metrics={[
-          {
-            label: 'Total Clients',
-            value: clients.length,
-            subValue: `${activeClients} Active Contracts`,
-            status: 'good',
-          },
-          {
-            label: 'Retainer MRR',
-            value: `$${totalMRR.toLocaleString()}/mo`,
-            subValue: 'Stripe Connect Synced',
-            status: 'good',
-          },
-          {
-            label: 'Intake Pull Rate',
-            value: '100% Success',
-            subValue: '0 Webhook Dropped',
-            status: 'live',
-          },
-          {
-            label: 'Live Error Rate',
-            value: '0.00%',
-            subValue: 'API Encryption Vault Healthy',
-            status: 'good',
-          },
-          {
-            label: 'Pending Intakes',
-            value: requirementIntakes.filter(r => r.status !== 'Converted to Project').length,
-            subValue: 'Awaiting Project Canvas',
-            status: 'warn',
-          },
-        ]}
-        actions={
-          <div className="flex items-center gap-2">
-            <button
-              id="share-intake-link-btn"
-              onClick={() => setIsClientPortalModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all"
-            >
-              <Link className="w-4 h-4" />
-              <span>Share Client Intake Link</span>
-            </button>
-            <button
-              id="intake-client-btn"
-              onClick={() => setIsAddClientModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 rounded-xl transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Client Manually</span>
-            </button>
-          </div>
-        }
-      />
-
-      {/* MOD-01: Autonomous Lead Discovery & Canva Pro Pitch Engine */}
-      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400">
-              <Sparkles className="w-4 h-4" />
+      {/* Header Row */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              Clients & Requirement Ingestion
+            </h1>
+            <span className="px-2 py-0.5 text-[11px] font-medium bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/50 rounded-md inline-flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+              1-Person Company Engine
             </span>
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                MOD-01: Autonomous Lead Discovery & Canva Pitch Engine (Port 8005)
-              </h2>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Audit a prospect website, detect missing mobile apps & slow Lighthouse scores, auto-generate a Canva Pro pitch deck, and issue Gate 1 (OUTREACH_PITCH).
-              </p>
-            </div>
           </div>
-          <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50">
-            MOD-01 Active
-          </span>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+            Discover and pitch leads autonomously via MOD-01 or onboard clients manually and through shareable Google Form intake links.
+          </p>
         </div>
 
-        <form onSubmit={handleAuditLead} className="flex flex-col sm:flex-row items-center gap-3">
-          <div className="relative flex-1 w-full">
-            <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="url"
-              required
-              placeholder="Enter prospect website URL (e.g. https://apex-freight-example.com)..."
-              value={prospectUrl}
-              onChange={(e) => setProspectUrl(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
-            />
-          </div>
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           <button
-            type="submit"
-            disabled={isAuditing}
-            className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0"
+            id="generate-lead-btn"
+            type="button"
+            onClick={() => setIsGenerateLeadOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-950 border border-indigo-200/70 dark:border-indigo-800/60 rounded-xl transition-colors"
           >
-            {isAuditing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-            <span>Run Audit & Generate Pitch</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Generate Lead</span>
           </button>
-        </form>
 
-        {leadResult && (
-          <div className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Audit & Proposal Synthesis Complete</span>
-              </span>
-              <span className={`text-[10px] font-mono font-bold ${leadResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {leadResult.isLive ? '●  Live Fastify 8005' : '● ‹ In-Memory Fallback'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] text-slate-400 block">Lighthouse Audit Score</span>
-                <span className="text-base font-bold text-amber-500">
-                  {leadResult.data?.lighthouse_audit_score || 58}/100
-                </span>
-              </div>
-              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] text-slate-400 block">Gate 1 Approval ID</span>
-                <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                  {leadResult.data?.approval_gate_id}
-                </span>
-              </div>
-              <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] text-slate-400 block">Canva Proposal Link</span>
-                <a
-                  href={leadResult.data?.proposal_canva_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs font-semibold text-indigo-600 hover:underline flex items-center gap-1 mt-0.5"
-                >
-                  <span>Open Canva Proposal</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </div>
-
-            {leadResult.data?.missing_assets && (
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 pt-1">
-                <strong>Detected Gaps for Client Pitch:</strong> {leadResult.data.missing_assets.join(', ')}
-              </div>
-            )}
-          </div>
-        )}
+          <button
+            id="add-client-btn"
+            type="button"
+            onClick={() => setIsAddClientModalOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Client</span>
+          </button>
+        </div>
       </div>
+
+      {/* Standardized 5-Cell Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Total Clients"
+          primaryValue={clients.length}
+          subtitle={`${activeClients} Active Contracts`}
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Retainer MRR"
+          primaryValue={`$${totalMRR.toLocaleString()}/mo`}
+          subtitle="Stripe Connect Synced"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Intake Pull Rate"
+          primaryValue="100% Success"
+          subtitle="0 Webhook Dropped"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Live Error Rate"
+          primaryValue="0.00%"
+          subtitle="Encryption Vault Healthy"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Pending Intakes"
+          primaryValue={pendingIntakesCount}
+          subtitle="Awaiting Project Canvas"
+          status="warn"
+        />
+      </SummaryMetricGrid>
+
+      <GenerateLeadModal
+        isOpen={isGenerateLeadOpen}
+        onClose={() => setIsGenerateLeadOpen(false)}
+      />
 
       {/* Filter and Search Bar */}
       <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">

@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { useApp, PALETTE_DEFINITIONS } from '../../context/AppContext';
 import { Client } from '../../types';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { HealthPulseModal } from '../modals/HealthPulseModal';
 
 export const DashboardTab: React.FC = () => {
   const { 
@@ -20,11 +22,13 @@ export const DashboardTab: React.FC = () => {
     palette,
     setCurrentTab, 
     setIsAddClientModalOpen,
-    setIsClientPortalModalOpen,
     setActiveCanvasProjectId,
     setSelectedClient,
     triggerDeployment,
-    createManualBackup
+    createManualBackup,
+    meshStatuses,
+    systemHealthPercent,
+    healthPulseLogs,
   } = useApp();
 
   const currentPal = PALETTE_DEFINITIONS[palette] || PALETTE_DEFINITIONS.indigo;
@@ -32,50 +36,19 @@ export const DashboardTab: React.FC = () => {
 
   const [timeRange, setTimeRange] = useState<'7D' | '30D' | '90D'>('30D');
   const [trafficFilter, setTrafficFilter] = useState('Last 30 Days');
+  const [isHealthPulseOpen, setIsHealthPulseOpen] = useState(false);
 
-  // Top cards data matching exact screenshot
-  const statCards = [
-    {
-      title: 'Total Clients',
-      value: '32',
-      trend: '12% vs last month',
-      trendUp: true,
-      icon: Users,
-      iconBg: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400',
-    },
-    {
-      title: 'Active Projects',
-      value: '48',
-      trend: '18% vs last month',
-      trendUp: true,
-      icon: FolderKanban,
-      iconBg: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400',
-    },
-    {
-      title: 'Live Websites',
-      value: '36',
-      trend: '14% vs last month',
-      trendUp: true,
-      icon: Rocket,
-      iconBg: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400',
-    },
-    {
-      title: 'Revenue (MTD)',
-      value: '$24,560',
-      trend: '22% vs last month',
-      trendUp: true,
-      icon: DollarSign,
-      iconBg: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400',
-    },
-    {
-      title: 'System Health',
-      value: '99.9%',
-      trend: 'All systems operational',
-      isStatus: true,
-      icon: Activity,
-      iconBg: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400',
-    },
-  ];
+  const activeClientsCount = clients.filter((c) => c.status === 'Active').length;
+  const clientRetentionPct = clients.length > 0 ? Math.round((activeClientsCount / clients.length) * 100) : 100;
+  const liveProjectsCount = projects.filter((p) => p.status === 'Live').length;
+  const inProgressProjectsCount = projects.filter((p) => p.status === 'In Progress').length;
+  const activeProjectsCount = liveProjectsCount + inProgressProjectsCount;
+  const pendingProjectsCount = projects.filter((p) => p.status === 'Pending').length;
+  const healthyMeshCount = Object.values(meshStatuses).filter(Boolean).length;
+  const totalMeshCount = Math.max(Object.keys(meshStatuses).length, 10);
+  const recoveredCount = healthPulseLogs.filter((l) => l.status === 'RECOVERED').length;
+  const pulseStatusTone =
+    systemHealthPercent >= 80 ? 'good' : systemHealthPercent > 0 ? 'warn' : 'bad';
 
   // Specific recent clients matching screenshot
   const recentClients = [
@@ -141,13 +114,6 @@ export const DashboardTab: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <button
-            id="client-intake-link-dashboard-btn"
-            onClick={() => setIsClientPortalModalOpen(true)}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-950 rounded-lg transition-colors border border-indigo-200/60 dark:border-indigo-800/50"
-          >
-            <span>Intake Link</span>
-          </button>
-          <button
             id="add-client-dashboard-btn"
             onClick={() => setIsAddClientModalOpen(true)}
             className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
@@ -157,6 +123,52 @@ export const DashboardTab: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Standardized 5-Cell Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Total Clients"
+          primaryValue={clients.length}
+          subtitle="+12% growth this month"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Active Clients"
+          primaryValue={activeClientsCount}
+          subtitle={`${clientRetentionPct}% active retention`}
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Total Projects"
+          primaryValue={projects.length}
+          subtitle={`${pendingProjectsCount} queued in pipeline`}
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Active Projects"
+          primaryValue={activeProjectsCount}
+          subtitle={`${liveProjectsCount} Live • ${inProgressProjectsCount} Building`}
+          status="live"
+        />
+        <SummaryMetricCard
+          id="dashboard-pulse-health-card"
+          title="System & Pulse Health"
+          primaryValue={`${systemHealthPercent}% Healthy`}
+          subtitle={
+            recoveredCount > 0
+              ? `${healthyMeshCount}/${totalMeshCount} Mesh • ${recoveredCount} Self-Healed`
+              : `${healthyMeshCount}/${totalMeshCount} Mesh • Max 3x Heal`
+          }
+          secondaryCaption="External APIs: Checked on Project Start"
+          status={pulseStatusTone}
+          onClick={() => setIsHealthPulseOpen(true)}
+        />
+      </SummaryMetricGrid>
+
+      <HealthPulseModal
+        isOpen={isHealthPulseOpen}
+        onClose={() => setIsHealthPulseOpen(false)}
+      />
 
       {/* Middle Row: Projects Overview (Stacked Area Chart) + Deployment Status (Donut) + System Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

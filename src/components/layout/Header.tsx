@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Theme, ThemeMode, ColorPalette } from '../../types';
-import { checkAllServicesHealth } from '../../services/api';
 
 export const Header: React.FC = () => {
   const { 
@@ -27,20 +26,11 @@ export const Header: React.FC = () => {
     setCurrentTab,
     setIsCommandPaletteOpen,
     setIsAddClientModalOpen,
-    resetDemoState
+    resetDemoState,
+    meshStatuses
   } = useApp();
 
-  const [meshStatus, setMeshStatus] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    checkAllServicesHealth().then(setMeshStatus).catch(() => {});
-    const timer = setInterval(() => {
-      checkAllServicesHealth().then(setMeshStatus).catch(() => {});
-    }, 15000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const liveCount = Object.values(meshStatus).filter(Boolean).length;
+  const liveCount = Object.values(meshStatuses).filter(Boolean).length;
 
   const [showAlertsDropdown, setShowAlertsDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);

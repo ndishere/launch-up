@@ -14,7 +14,13 @@ import {
   initialCampaigns, initialTelemetryPackages, initialFDESystems,
   initialStackPresets, initialConnectedApps, initialRequirementIntakes, initialWorkflows
 } from '../data/mockData';
-import { resetStoredGates } from '../services/api';
+import {
+  resetStoredGates,
+  runTier1InternalHealthPulse,
+  verifyVendorApisOnProjectStart,
+  type HealthPulseLogEntry,
+  type VendorReadinessReport,
+} from '../services/api';
 
 const STATE_PREFIX = 'launchup_state_v1_';
 
@@ -251,6 +257,16 @@ interface AppContextType {
   updateProjectScope: (projectId: string, updater: (prev: ProjectScopeDraft | undefined) => ProjectScopeDraft) => void;
   n8nGraphs: Record<string, N8nProjectGraph>;
   updateN8nGraph: (projectId: string, graph: N8nProjectGraph) => void;
+  // Two-Tier Cost-Safe Health Pulse & Bounded Self-Healing State
+  meshStatuses: Record<string, boolean>;
+  systemHealthPercent: number;
+  lastPulseCheckedAt: string | null;
+  isPulseChecking: boolean;
+  healthPulseLogs: HealthPulseLogEntry[];
+  lastVendorReadiness: VendorReadinessReport | null;
+  triggerInternalHealthPulse: () => Promise<void>;
+  verifyVendorReadiness: (projectName?: string) => Promise<VendorReadinessReport>;
+  clearHealthPulseLogs: () => void;
   resetDemoState: () => void;
 }
 
@@ -593,6 +609,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [n8nGraphs, setN8nGraphs] = useState<Record<string, N8nProjectGraph>>(() =>
     loadPersisted<Record<string, N8nProjectGraph>>('n8nGraphs', {})
   );
+  const [meshStatuses, setMeshStatuses] = useState<Record<string, boolean>>({});
+  const [systemHealthPercent, setSystemHealthPercent] = useState<number>(100);
+  const [lastPulseCheckedAt, setLastPulseCheckedAt] = useState<string | null>(null);
+  const [isPulseChecking, setIsPulseChecking] = useState<boolean>(false);
+  const [healthPulseLogs, setHealthPulseLogs] = useState<HealthPulseLogEntry[]>(() =>
+    loadPersisted<HealthPulseLogEntry[]>('healthPulseLogs', [])
+  );
+  const [lastVendorReadiness, setLastVendorReadiness] = useState<VendorReadinessReport | null>(() =>
+    loadPersisted<VendorReadinessReport | null>('lastVendorReadiness', null)
+  );
 
   // Sync persisted state slices to localStorage
   useEffect(() => {
@@ -642,6 +668,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     savePersisted('liveTelemetryScores', liveTelemetryScores);
     savePersisted('projectScopes', projectScopes);
     savePersisted('n8nGraphs', n8nGraphs);
+    savePersisted('healthPulseLogs', healthPulseLogs.slice(0, 100));
+    savePersisted('lastVendorReadiness', lastVendorReadiness);
   }, [
     figcraftProject,
     activeStudioPlatform,
@@ -649,7 +677,51 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     liveTelemetryScores,
     projectScopes,
     n8nGraphs,
+    healthPulseLogs,
+    lastVendorReadiness,
   ]);
+
+  const triggerInternalHealthPulse = async () => {
+    setIsPulseChecking(true);
+    try {
+      const pulse = await runTier1InternalHealthPulse();
+      setMeshStatuses(pulse.statuses);
+      setSystemHealthPercent(pulse.healthPercent);
+      setLastPulseCheckedAt(new Date().toISOString());
+      if (pulse.logs.length > 0) {
+        setHealthPulseLogs((prev) => [...pulse.logs, ...prev].slice(0, 100));
+      }
+    } finally {
+      setIsPulseChecking(false);
+    }
+  };
+
+  const verifyVendorReadiness = async (projectName?: string): Promise<VendorReadinessReport> => {
+    const report = await verifyVendorApisOnProjectStart(projectName);
+    setLastVendorReadiness(report);
+    return report;
+  };
+
+  const clearHealthPulseLogs = () => {
+    setHealthPulseLogs([]);
+  };
+
+  // Tier 1 Free Internal Mesh Pulse (ports 8004-8013 only; external vendor APIs never polled on idle timers)
+  useEffect(() => {
+    let active = true;
+    const runPulse = async () => {
+      if (!active) return;
+      await triggerInternalHealthPulse();
+    };
+    void runPulse();
+    const timer = setInterval(() => {
+      void runPulse();
+    }, 30000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, []);
 
   const updateProjectScope = (
     projectId: string,
@@ -701,6 +773,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setLiveTelemetryScores(getDefaultTelemetryScores());
     setProjectScopes({});
     setN8nGraphs({});
+    setHealthPulseLogs([]);
+    setLastVendorReadiness(null);
     setActiveCanvasProjectId(null);
     setSelectedClient(null);
     setSelectedProject(null);
@@ -1171,6 +1245,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       },
       ...prev,
     ]);
+
+    // Tier 2 External Vendor Readiness Check triggered strictly on Project Start (zero idle polling)
+    void verifyVendorReadiness(newProj.name);
   };
 
   const triggerDeployment = (
@@ -1361,6 +1438,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateProjectScope,
         n8nGraphs,
         updateN8nGraph,
+        meshStatuses,
+        systemHealthPercent,
+        lastPulseCheckedAt,
+        isPulseChecking,
+        healthPulseLogs,
+        lastVendorReadiness,
+        triggerInternalHealthPulse,
+        verifyVendorReadiness,
+        clearHealthPulseLogs,
         resetDemoState,
       }}
     >

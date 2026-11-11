@@ -2,10 +2,11 @@ import React from 'react';
 import { 
   LayoutDashboard, Users, FolderKanban, Rocket, LayoutTemplate, 
   Layers, BarChart3, Bell, UserCheck, Settings, Crown,
-  Zap, Bot, Network, Cpu, Radio, GitFork
+  Bot, Network, Cpu, Radio, GitFork
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { TabId } from '../../types';
+import { LaunchUpLogo } from '../common/LaunchUpLogo';
 
 interface NavItem {
   id: TabId;
@@ -76,9 +77,7 @@ export const Sidebar: React.FC = () => {
         {/* Brand Header */}
         <div className="h-14 flex items-center justify-between px-3.5 border-b border-slate-200/80 dark:border-slate-800/80 shrink-0">
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0">
-              <Zap className="w-4 h-4 fill-white/90" />
-            </div>
+            <LaunchUpLogo size={34} />
             {!isSidebarCollapsed && (
               <div className="flex flex-col min-w-0">
                 <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 tracking-tight truncate">
