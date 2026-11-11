@@ -362,3 +362,126 @@ export interface TeamMember {
   avatarInitials: string;
   projectsAssigned: number;
 }
+
+// ====================================================================
+// SPRINT 1: PROJECT COMMAND CENTER & HIERARCHICAL AGENT SWARM TYPES
+// ====================================================================
+export type SwarmStageId =
+  | 'ceo'
+  | 'architect'
+  | 'design'
+  | 'coding'
+  | 'testing'
+  | 'integration'
+  | 'uat';
+
+export type SwarmStageStatus = 'pending' | 'running' | 'completed';
+
+export interface ProjectSwarmStage {
+  id: SwarmStageId;
+  title: string;
+  leadAgent: string;
+  summary: string;
+  status: SwarmStageStatus;
+  progressPercent: number;
+  completedAt?: string;
+}
+
+export interface ProjectSwarmLog {
+  id: string;
+  timestamp: string;
+  stageId: SwarmStageId;
+  agentName: string;
+  modelUsed: string;
+  message: string;
+  level: 'info' | 'reasoning' | 'success' | 'warn';
+  tokensUsed?: number;
+}
+
+export interface ProjectComplianceItem {
+  id: string;
+  label: string;
+  checked: boolean;
+}
+
+export type GovernanceFrameworkKey = 'GDPR_EU' | 'DPDP_INDIA' | 'CCPA_US';
+
+export interface ProjectBlueprints {
+  prd: string;
+  tdd: string;
+  designTheme: string;
+  compliance: Record<GovernanceFrameworkKey, ProjectComplianceItem[]>;
+}
+
+export interface ProjectSwarmAgentSlot {
+  id: string;
+  roleTitle: string;
+  agentName: string;
+  specialty: string;
+  status: 'Idle' | 'Active' | 'Completed';
+  activeQueue: number;
+  tokenBudgetUsd: number;
+  tokensSpentUsd: number;
+  assignedBranch: string;
+}
+
+export interface ProjectModelRouting {
+  fastReasoning: string;
+  deepArchitecture: string;
+  uiDesign: string;
+  qaSecurity: string;
+  localEdgeFallback: boolean;
+  temperature: number;
+}
+
+export interface ProjectFinOpsExpense {
+  id: string;
+  category: 'Tooling' | 'API Quota' | 'Cloud Compute' | 'Domain & SSL' | 'Contractor' | 'Other';
+  description: string;
+  amountUsd: number;
+  date: string;
+}
+
+export interface ProjectFinOpsState {
+  clientContractValueUsd: number;
+  llmTokenBudgetUsd: number;
+  estimatedLlmSpendUsd: number;
+  actualLlmSpendUsd: number;
+  containerHours: number;
+  containerRatePerHourUsd: number;
+  agentComputeMinutes: number;
+  agentComputeRatePerMinUsd: number;
+  manualExpenses: ProjectFinOpsExpense[];
+}
+
+export type GitStageBranchName =
+  | 'feature/dev'
+  | 'feature/testing'
+  | 'feature/uat'
+  | 'feature/production';
+
+export interface ProjectGitBranchNode {
+  branch: GitStageBranchName;
+  stageLabel: string;
+  status: 'Active' | 'Ahead' | 'Synced' | 'Pending';
+  lastCommitSha: string;
+  lastCommitMsg: string;
+  containerService: string;
+  containerPort: number;
+  dockerHealth: 'Healthy' | 'Building' | 'Standby';
+  replicas: string;
+}
+
+export interface ProjectWorkspaceState {
+  projectId: string;
+  buildStatus: 'idle' | 'running' | 'completed';
+  currentStageIndex: number;
+  stages: ProjectSwarmStage[];
+  logs: ProjectSwarmLog[];
+  blueprints: ProjectBlueprints;
+  swarmAgents: ProjectSwarmAgentSlot[];
+  modelRouting: ProjectModelRouting;
+  finops: ProjectFinOpsState;
+  gitDocker: ProjectGitBranchNode[];
+  lastUpdatedAt: string;
+}

@@ -13,6 +13,7 @@ export const CreateProjectModal: React.FC = () => {
     setIsCreateProjectModalOpen, 
     clients, 
     addProject, 
+    openProjectWorkspace,
     setCurrentTab 
   } = useApp();
 
@@ -39,10 +40,10 @@ export const CreateProjectModal: React.FC = () => {
   const handleFinish = () => {
     if (!name) return;
 
-    addProject({
+    const createdProject = addProject({
       name,
       type,
-      status: 'Live',
+      status: 'In Progress',
       framework,
       serverTarget,
       repoUrl: repoUrl || `https://github.com/launchup/${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
@@ -64,6 +65,7 @@ export const CreateProjectModal: React.FC = () => {
 
     setIsCreateProjectModalOpen(false);
     setCurrentTab('projects');
+    openProjectWorkspace(createdProject.id);
   };
 
   return (

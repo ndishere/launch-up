@@ -1,0 +1,472 @@
+import React, { useState } from 'react';
+import {
+  DollarSign,
+  Plus,
+  Trash2,
+  GitBranch,
+  Box,
+  ArrowUpRight,
+  Copy,
+  Check,
+  TrendingUp,
+} from 'lucide-react';
+import {
+  GitStageBranchName,
+  Project,
+  ProjectFinOpsExpense,
+  ProjectFinOpsState,
+  ProjectGitBranchNode,
+} from '../../types';
+import { calculateProjectUnitEconomics } from './workspaceDefaults';
+
+interface FinOpsUnitEconomicsViewProps {
+  finops: ProjectFinOpsState;
+  onUpdateFinOps: (patch: Partial<ProjectFinOpsState>) => void;
+  onAddExpense: (expense: Omit<ProjectFinOpsExpense, 'id' | 'date'>) => void;
+  onRemoveExpense: (expenseId: string) => void;
+}
+
+export const FinOpsUnitEconomicsView: React.FC<FinOpsUnitEconomicsViewProps> = ({
+  finops,
+  onUpdateFinOps,
+  onAddExpense,
+  onRemoveExpense,
+}) => {
+  const [category, setCategory] = useState<ProjectFinOpsExpense['category']>('Cloud Compute');
+  const [description, setDescription] = useState('');
+  const [amountUsd, setAmountUsd] = useState('');
+
+  const summary = calculateProjectUnitEconomics(finops);
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    const num = parseFloat(amountUsd);
+    if (!description.trim() || Number.isNaN(num) || num <= 0) return;
+    onAddExpense({
+      category,
+      description: description.trim(),
+      amountUsd: num,
+    });
+    setDescription('');
+    setAmountUsd('');
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Live Profit & Margin Readout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Client Contract Value
+          </span>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+            ${finops.clientContractValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </div>
+          <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
+            M:N Linked Retainer Revenue
+          </span>
+        </div>
+
+        <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Estimated vs Actual Cost
+          </span>
+          <div className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+            ${summary.totalActualCost.toFixed(2)}{' '}
+            <span className="text-xs font-normal text-slate-400">
+              / ${summary.totalEstimatedCost.toFixed(2)} est
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            LLM + Container + Compute + Manual
+          </span>
+        </div>
+
+        <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Net Gross Profit
+          </span>
+          <div
+            className={`text-xl font-bold mt-1 ${
+              summary.grossProfitUsd >= 0
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : 'text-rose-600 dark:text-rose-400'
+            }`}
+          >
+            ${summary.grossProfitUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </div>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Contract Minus Actual Spend
+          </span>
+        </div>
+
+        <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4">
+          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center justify-between">
+            <span>Gross Margin %</span>
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
+          </span>
+          <div
+            className={`text-xl font-bold mt-1 ${
+              summary.profitMarginPercent >= 60
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : summary.profitMarginPercent >= 25
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-rose-600 dark:text-rose-400'
+            }`}
+          >
+            {summary.profitMarginPercent}%
+          </div>
+          <span className="text-[11px] text-emerald-600 dark:text-emerald-400">
+            {summary.profitMarginPercent >= 60 ? 'Healthy Agency Margin' : 'Monitor Unit Cost'}
+          </span>
+        </div>
+      </div>
+
+      {/* Inputs & Cost Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Resource & Rate Calculator (6 cols) */}
+        <div className="lg:col-span-6 bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <DollarSign className="w-4 h-4 text-indigo-500" />
+              Automated Cost & Contract Parameters
+            </h4>
+            <span className="text-[10px] font-mono text-slate-400">Live Formula Sync</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Client Contract Value ($)
+              </label>
+              <input
+                type="number"
+                min={0}
+                step="50"
+                value={finops.clientContractValueUsd}
+                onChange={(e) =>
+                  onUpdateFinOps({ clientContractValueUsd: Math.max(0, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                MOD-10 LLM Token Cap ($)
+              </label>
+              <input
+                type="number"
+                min={1}
+                step="1"
+                value={finops.llmTokenBudgetUsd}
+                onChange={(e) =>
+                  onUpdateFinOps({ llmTokenBudgetUsd: Math.max(1, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Estimated LLM Expense ($)
+              </label>
+              <input
+                type="number"
+                min={0}
+                step="0.25"
+                value={finops.estimatedLlmSpendUsd}
+                onChange={(e) =>
+                  onUpdateFinOps({ estimatedLlmSpendUsd: Math.max(0, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Actual LLM Spend ($)
+              </label>
+              <input
+                type="number"
+                min={0}
+                step="0.10"
+                value={finops.actualLlmSpendUsd}
+                onChange={(e) =>
+                  onUpdateFinOps({ actualLlmSpendUsd: Math.max(0, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Container Hosting Hours (${finops.containerRatePerHourUsd}/hr)
+              </label>
+              <input
+                type="number"
+                min={0}
+                step="0.5"
+                value={finops.containerHours}
+                onChange={(e) =>
+                  onUpdateFinOps({ containerHours: Math.max(0, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-1">
+                Agent Compute Minutes (${finops.agentComputeRatePerMinUsd}/min)
+              </label>
+              <input
+                type="number"
+                min={0}
+                step="1"
+                value={finops.agentComputeMinutes}
+                onChange={(e) =>
+                  onUpdateFinOps({ agentComputeMinutes: Math.max(0, Number(e.target.value)) })
+                }
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1.5 text-xs">
+            <div className="flex justify-between text-slate-500">
+              <span>LLM Tokens (Actual)</span>
+              <span className="font-mono text-slate-900 dark:text-slate-200">${summary.actualLlmCost.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-slate-500">
+              <span>Docker Container Hosting</span>
+              <span className="font-mono text-slate-900 dark:text-slate-200">${summary.containerCost.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-slate-500">
+              <span>Swarm Agent Compute</span>
+              <span className="font-mono text-slate-900 dark:text-slate-200">${summary.agentComputeCost.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-slate-500">
+              <span>Manual Expenses ({finops.manualExpenses.length})</span>
+              <span className="font-mono text-slate-900 dark:text-slate-200">${summary.manualExpensesTotal.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Manual Expense Entry & Ledger (6 cols) */}
+        <div className="lg:col-span-6 bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between space-y-4">
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
+              Manual Project Expenses Ledger
+            </h4>
+
+            <form onSubmit={handleAdd} className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value as ProjectFinOpsExpense['category'])}
+                className="sm:col-span-4 px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200"
+              >
+                <option value="Cloud Compute">Cloud Compute</option>
+                <option value="API Quota">API Quota</option>
+                <option value="Tooling">Tooling</option>
+                <option value="Domain & SSL">Domain & SSL</option>
+                <option value="Contractor">Contractor</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Expense description..."
+                className="sm:col-span-5 px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+              />
+
+              <div className="sm:col-span-3 flex gap-1.5">
+                <input
+                  type="number"
+                  min={0.01}
+                  step="0.01"
+                  value={amountUsd}
+                  onChange={(e) => setAmountUsd(e.target.value)}
+                  placeholder="$0.00"
+                  className="w-full px-2 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+                />
+                <button
+                  type="submit"
+                  className="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shrink-0"
+                  title="Add Expense"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </form>
+
+            <div className="divide-y divide-slate-100 dark:divide-slate-800/70 max-h-56 overflow-y-auto">
+              {finops.manualExpenses.map((exp) => (
+                <div
+                  key={exp.id}
+                  className="py-2.5 flex items-center justify-between gap-2 text-xs"
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        {exp.category}
+                      </span>
+                      <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                        {exp.description}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">{exp.date}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span className="font-mono font-semibold text-slate-900 dark:text-white">
+                      ${exp.amountUsd.toFixed(2)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveExpense(exp.id)}
+                      className="p-1 text-slate-400 hover:text-rose-500 transition-colors"
+                      title="Delete Expense"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {finops.manualExpenses.length === 0 && (
+                <p className="py-6 text-center text-xs text-slate-400">
+                  No manual expenses logged yet.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface GitDockerStagingViewProps {
+  project: Project;
+  branches: ProjectGitBranchNode[];
+  onPromoteBranch: (branch: GitStageBranchName) => void;
+}
+
+export const GitDockerStagingView: React.FC<GitDockerStagingViewProps> = ({
+  project,
+  branches,
+  onPromoteBranch,
+}) => {
+  const [copiedCompose, setCopiedCompose] = useState(false);
+
+  const composeSnippet = `services:
+  web:
+    build: { context: ., dockerfile: Dockerfile }
+    image: launchup/${project.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}:latest
+    ports: ["3000:80"]
+    environment:
+      - TARGET_CLOUD=${project.serverTarget}
+  api-gateway:
+    image: launchup/fastify-rls-core:16
+    ports: ["8004-8013:8004-8013"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]`;
+
+  const copyCompose = () => {
+    navigator.clipboard.writeText(composeSnippet);
+    setCopiedCompose(true);
+    setTimeout(() => setCopiedCompose(false), 2000);
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* 4 Isolated Branch Promotion Pipeline */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {branches.map((node, idx) => (
+          <div
+            key={node.branch}
+            className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800 p-4 flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  <GitBranch className="w-3.5 h-3.5" />
+                  {node.branch}
+                </span>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                    node.dockerHealth === 'Healthy'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                  }`}
+                >
+                  {node.dockerHealth}
+                </span>
+              </div>
+
+              <div className="text-xs font-semibold text-slate-900 dark:text-white">
+                {node.stageLabel}
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                {node.lastCommitMsg}
+              </p>
+            </div>
+
+            <div className="space-y-2 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
+              <div className="flex justify-between">
+                <span className="text-slate-400">HEAD SHA</span>
+                <span className="text-slate-800 dark:text-slate-200">{node.lastCommitSha}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Container</span>
+                <span className="text-slate-800 dark:text-slate-200">{node.containerService}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Port / Replicas</span>
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  :{node.containerPort} · {node.replicas}
+                </span>
+              </div>
+
+              {idx < branches.length - 1 && (
+                <button
+                  type="button"
+                  onClick={() => onPromoteBranch(node.branch)}
+                  className="w-full mt-1 py-1.5 px-2.5 rounded-lg text-[11px] font-sans font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 transition-colors flex items-center justify-center gap-1"
+                >
+                  <span>Promote → {branches[idx + 1].branch}</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Docker & Compose Spec Viewer */}
+      <div className="bg-[#0D111A] rounded-xl border border-slate-800 p-4 space-y-3">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <div className="flex items-center gap-2">
+            <Box className="w-4 h-4 text-indigo-400" />
+            <span className="text-xs font-mono font-semibold text-white">
+              docker-compose.staging.yml · Multi-Container Mesh ({project.serverTarget})
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={copyCompose}
+            className="px-2.5 py-1 text-[11px] font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg inline-flex items-center gap-1"
+          >
+            {copiedCompose ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+            <span>{copiedCompose ? 'Copied' : 'Copy Compose'}</span>
+          </button>
+        </div>
+
+        <pre className="text-xs font-mono text-indigo-200/90 overflow-x-auto leading-relaxed">
+          {composeSnippet}
+        </pre>
+      </div>
+    </div>
+  );
+};

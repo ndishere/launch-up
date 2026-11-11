@@ -5,6 +5,32 @@ interface LaunchUpLogoProps {
   className?: string;
 }
 
+export interface LaunchUpFaviconOptions {
+  isDark?: boolean;
+  accent?: string;
+  shade200?: string;
+  shade300?: string;
+  shade400?: string;
+  shade700?: string;
+}
+
+/**
+ * Generates an SVG data URL matching LaunchUpLogo for dynamic browser favicon syncing.
+ */
+export function buildLaunchUpFaviconDataUrl({
+  isDark = false,
+  accent = '#6366f1',
+  shade200 = '#c7d2fe',
+  shade300 = '#a5b4fc',
+  shade400 = '#818cf8',
+  shade700 = '#4338ca',
+}: LaunchUpFaviconOptions = {}): string {
+  const bg = isDark ? '#0f172a' : '#f8fafc';
+  const border = isDark ? '#334155' : '#e2e8f0';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none"><defs><linearGradient id="p" x1="6" y1="28" x2="26" y2="4" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="${shade700}"/><stop offset="55%" stop-color="${accent}"/><stop offset="100%" stop-color="${shade400}"/></linearGradient><linearGradient id="c" x1="16" y1="8" x2="16" y2="27" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="100%" stop-color="${shade200}" stop-opacity="0.85"/></linearGradient></defs><rect x="0.75" y="0.75" width="32.5" height="32.5" rx="9" fill="${bg}" stroke="${border}" stroke-width="1.2"/><g transform="translate(5, 5) scale(0.75)"><path d="M16 3L6.5 23.5L12.5 21L16 11.5L19.5 21L25.5 23.5L16 3Z" fill="url(#p)"/><path d="M16 3L16 11.5L19.5 21L25.5 23.5L16 3Z" fill="${shade300}" fill-opacity="0.32"/><path d="M16 12.2L12.6 22.8L16 20.8L19.4 22.8L16 12.2Z" fill="url(#c)"/><path d="M11.8 25.4L16 28.8L20.2 25.4L16 26.8L11.8 25.4Z" fill="${accent}"/></g></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 /**
  * Theme-adaptive geometric ascend prism logo for Launch Up.
  * Inherits CSS palette custom properties (--theme-accent, --palette-*)

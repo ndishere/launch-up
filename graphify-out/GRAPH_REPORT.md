@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-11)
 
 ## Corpus Check
-- 177 files · ~130,791 words
+- 183 files · ~138,305 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 13, .example 1, .lock 1)
 
 ## Summary
-- 1819 nodes · 3422 edges · 95 communities (89 shown, 6 thin omitted)
+- 1859 nodes · 3553 edges · 95 communities (89 shown, 6 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 42 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9e0057f8`
+- Built from commit: `49678438`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -84,7 +84,7 @@
 - api.ts
 - whatsapp-service/package.json
 - compilerOptions
-- ScreenAnalyticsHeader
+- ProjectWorkspaceModal.tsx
 - marketing-engine-service
 - NoCodeEditorTab.tsx
 - web-builder-service
@@ -94,12 +94,12 @@
 - marketing-engine-service/src/lib/engine.ts
 - ambient.d.ts
 - postgres
-- AppProvider
+- Sidebar.tsx
 - LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
 - gateway
 - redis
 - verify-mesh-health.ts
-- Sidebar.tsx
+- ref_fastify_helmet
 - governance-service
 - lead-pitch-service
 - qa-secops-service
@@ -112,28 +112,28 @@
 - zod@^4.6.7
 
 ## God Nodes (most connected - your core abstractions)
-1. `useApp()` - 71 edges
-2. `react` - 43 edges
-3. `lucide-react` - 38 edges
-4. `AppLayout()` - 36 edges
-5. `SummaryMetricGrid()` - 35 edges
-6. `SummaryMetricCard()` - 35 edges
-7. `AppContextType` - 27 edges
-8. `services` - 20 edges
-9. `ScreenAnalyticsHeader()` - 19 edges
-10. `N8nWorkflowsTab()` - 19 edges
+1. `useApp()` - 73 edges
+2. `react` - 47 edges
+3. `lucide-react` - 42 edges
+4. `AppLayout()` - 37 edges
+5. `SummaryMetricCard()` - 37 edges
+6. `SummaryMetricGrid()` - 37 edges
+7. `AppContextType` - 28 edges
+8. `N8nWorkflowsTab()` - 21 edges
+9. `services` - 20 edges
+10. `ScreenAnalyticsHeader()` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
+- ``MOD-08`: WhatsApp Marketing & CRM RAG Engine` --references--> `Mod08WhatsAppRequest`  [INFERRED]
+  contracts/module_input_output_contracts.md → services/whatsapp-service/src/types/index.ts
+- ``MOD-08`: WhatsApp Marketing & CRM RAG Engine` --references--> `Mod08WhatsAppResponse`  [INFERRED]
+  contracts/module_input_output_contracts.md → services/whatsapp-service/src/types/index.ts
 - `TypeScript 5.x` --references--> `Client`  [INFERRED]
-  TECH_STACK.md → src/types/index.ts
-- `TypeScript 5.x` --references--> `DeploymentLog`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
 - `TypeScript 5.x` --references--> `Project`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
-- `TypeScript 5.x` --references--> `SystemAlert`  [INFERRED]
+- `TypeScript 5.x` --references--> `DeploymentLog`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
-- ``MOD-02`: BA Intake & Scope Synthesizer` --references--> `Mod02IntakeRequest`  [INFERRED]
-  contracts/module_input_output_contracts.md → services/ba-intake-service/src/types/index.ts
 
 ## Import Cycles
 - None detected.
@@ -141,16 +141,16 @@
 ## Communities (95 total, 6 thin omitted)
 
 ### Community 0 - "AppContext.tsx"
-Cohesion: 0.08
-Nodes (58): AppContext, AppContextType, DEFAULT_FIGCRAFT_PROJECT, DEFAULT_STUDIO_COMPLIANCE, N8nProjectGraph, ProjectScopeDraft, initialAgents, initialAlerts (+50 more)
+Cohesion: 0.07
+Nodes (65): AppContext, AppContextType, DEFAULT_FIGCRAFT_PROJECT, DEFAULT_STUDIO_COMPLIANCE, N8nProjectGraph, PALETTE_DEFINITIONS, ProjectScopeDraft, initialAgents (+57 more)
 
 ### Community 1 - "environment"
 Cohesion: 0.22
 Nodes (24): environment, environment, environment, environment, BCRYPT_ROUNDS, DATABASE_URL, JWT_REFRESH_SECRET, JWT_SECRET (+16 more)
 
 ### Community 2 - "ba-intake-service/src/lib/engine.ts"
-Cohesion: 0.19
-Nodes (19): `MOD-02`: BA Intake & Scope Synthesizer, detectSemanticConflicts(), generateOpenApiYaml(), generateSqlMigration(), processBaIntake(), resolveComplianceFlags(), synthesizePrd(), VALID_COUNTRIES (+11 more)
+Cohesion: 0.16
+Nodes (22): `MOD-02`: BA Intake & Scope Synthesizer, detectSemanticConflicts(), generateOpenApiYaml(), generateSqlMigration(), processBaIntake(), resolveComplianceFlags(), synthesizePrd(), VALID_COUNTRIES (+14 more)
 
 ### Community 3 - "package.json"
 Cohesion: 0.10
@@ -305,23 +305,23 @@ Cohesion: 0.12
 Nodes (15): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+7 more)
 
 ### Community 43 - "sre-healing-service/src/lib/engine.ts"
-Cohesion: 0.21
-Nodes (17): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), ForbiddenFileTouchError (+9 more)
+Cohesion: 0.18
+Nodes (19): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), buildApp() (+11 more)
 
 ### Community 44 - "auth-service"
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, auth-service
 
 ### Community 45 - "qa-secops-service/src/lib/engine.ts"
-Cohesion: 0.22
-Nodes (16): `MOD-06`: Autonomous QA, SecOps & Compliance Verifier, processQAVerification(), runPlaywrightE2E(), runSecurityAudit(), validateLighthouseScores(), qaVerifyRequestSchema, userStorySchema, E2EAssertionFailError (+8 more)
+Cohesion: 0.18
+Nodes (19): `MOD-06`: Autonomous QA, SecOps & Compliance Verifier, processQAVerification(), runPlaywrightE2E(), runSecurityAudit(), validateLighthouseScores(), qaSecopsRoutes(), qaVerifyRequestSchema, userStorySchema (+11 more)
 
 ### Community 46 - "backend-api-service/package.json"
 Cohesion: 0.08
 Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
 
 ### Community 47 - "backend-api-service/src/lib/engine.ts"
-Cohesion: 0.21
+Cohesion: 0.20
 Nodes (18): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+10 more)
 
 ### Community 48 - "compilerOptions"
@@ -389,16 +389,16 @@ Cohesion: 0.13
 Nodes (15): checkPort(), cleanup(), __dirname, __filename, main(), processes, rootDir, SERVICES (+7 more)
 
 ### Community 64 - "App.tsx"
-Cohesion: 0.13
-Nodes (42): lucide-react, react, @xyflow/react, AppLayout(), BADGE_STYLES, DOT_STYLES, SummaryMetricCard(), SummaryMetricCardProps (+34 more)
+Cohesion: 0.11
+Nodes (49): lucide-react, react, @xyflow/react, AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, BADGE_STYLES (+41 more)
 
 ### Community 65 - "whatsapp-service/src/lib/engine.ts"
-Cohesion: 0.24
-Nodes (15): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), MetaApiRejectError, Mod08EventType, Mod08MessagePayload (+7 more)
+Cohesion: 0.26
+Nodes (13): check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), MetaApiRejectError, Mod08EventType, Mod08MessagePayload, Mod08WhatsAppRequest, Mod08WhatsAppResponse (+5 more)
 
 ### Community 66 - "api.ts"
-Cohesion: 0.13
-Nodes (34): GenerateLeadModal(), GenerateLeadModalProps, INDUSTRY_PRESETS, DeploymentsTab(), MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab() (+26 more)
+Cohesion: 0.12
+Nodes (35): GenerateLeadModalProps, INDUSTRY_PRESETS, HealthPulseModalProps, DeploymentsTab(), MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab() (+27 more)
 
 ### Community 67 - "whatsapp-service/package.json"
 Cohesion: 0.08
@@ -408,9 +408,9 @@ Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet
 Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+8 more)
 
-### Community 69 - "ScreenAnalyticsHeader"
-Cohesion: 0.22
-Nodes (10): MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, MetricStatusTone, ConnectedAppsTab(), FDESystemsTab(), SLMLabTab(), TelemetryHubTab() (+2 more)
+### Community 69 - "ProjectWorkspaceModal.tsx"
+Cohesion: 0.13
+Nodes (28): BuildAreaView(), BuildAreaViewProps, FinOpsUnitEconomicsView(), FinOpsUnitEconomicsViewProps, GitDockerStagingView(), GitDockerStagingViewProps, ProjectWorkspaceModal(), WorkspaceTabId (+20 more)
 
 ### Community 70 - "marketing-engine-service"
 Cohesion: 0.33
@@ -448,9 +448,9 @@ Nodes (3): bcrypt, drizzle-kit, @fastify/rate-limit
 Cohesion: 0.18
 Nodes (11): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, container_name, environment, image, networks, ports (+3 more)
 
-### Community 79 - "AppProvider"
-Cohesion: 0.25
-Nodes (6): App(), AppProvider(), getDefaultTelemetryScores(), loadPersisted(), savePersisted(), resetStoredGates()
+### Community 79 - "Sidebar.tsx"
+Cohesion: 0.14
+Nodes (12): App(), buildLaunchUpFaviconDataUrl(), LaunchUpFaviconOptions, LaunchUpLogo(), LaunchUpLogoProps, NavItem, Sidebar(), AppProvider() (+4 more)
 
 ### Community 80 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
 Cohesion: 0.29
@@ -468,9 +468,9 @@ Nodes (8): command, container_name, image, networks, ports, restart, volumes, re
 Cohesion: 0.50
 Nodes (4): main(), probe(), ProbeTarget, TARGETS
 
-### Community 84 - "Sidebar.tsx"
-Cohesion: 0.43
-Nodes (5): LaunchUpLogo(), LaunchUpLogoProps, NavItem, Sidebar(), TabId
+### Community 84 - "ref_fastify_helmet"
+Cohesion: 0.50
+Nodes (3): leadPitchRoutes(), buildApp(), PORT
 
 ### Community 85 - "governance-service"
 Cohesion: 0.33
@@ -485,12 +485,12 @@ Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
 
 ### Community 88 - "agency-concurrency.perf.test.ts"
-Cohesion: 0.11
-Nodes (17): baIntakeRoutes(), buildApp(), PORT, leadPitchRoutes(), buildApp(), PORT, qaSecopsRoutes(), buildApp() (+9 more)
+Cohesion: 0.22
+Nodes (7): whatsappRoutes(), buildApp(), PORT, buildMod01(), buildMod02(), LiveEndpoint, MOCK_PROSPECTS
 
 ### Community 90 - "2. Module-by-Module JSON Input/Output Contracts"
-Cohesion: 0.50
-Nodes (3): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT)
+Cohesion: 0.40
+Nodes (4): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-08`: WhatsApp Marketing & CRM RAG Engine
 
 ### Community 91 - "express@^4.21.2"
 Cohesion: 0.33
@@ -498,23 +498,23 @@ Nodes (4): express@^4.21.2, @types/canvas-confetti@^1.9.0, express, @types/canva
 
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 746 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 754 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `services` connect `services` to `marketing-engine-service`, `web-admin`, `governance-service`, `web-builder-service`, `minio`, `auth-service`, `postgres`, `gateway`, `redis`, `governance-service`, `lead-pitch-service`, `qa-secops-service`, `sre-healing-service`, `environment`, `mobile-app-service`, `whatsapp-service`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `createDefaultProjectWorkspace()` connect `ProjectWorkspaceModal.tsx` to `AppContext.tsx`, `Sidebar.tsx`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `AppContext.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.08090117767537122 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `api.ts`, `package.json`, `ScreenAnalyticsHeader`, `NoCodeEditorTab.tsx`, `AppProvider`, `Sidebar.tsx`, `dependencies`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _Cohesion score 0.06881287726358148 - nodes in this community are weakly interconnected._
+- **Why does `services` connect `services` to `marketing-engine-service`, `web-admin`, `governance-service`, `web-builder-service`, `minio`, `auth-service`, `postgres`, `gateway`, `redis`, `governance-service`, `lead-pitch-service`, `qa-secops-service`, `sre-healing-service`, `environment`, `mobile-app-service`, `whatsapp-service`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.10052910052910052 - nodes in this community are weakly interconnected._
-- **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `lucide-react` connect `App.tsx` to `AppContext.tsx`, `api.ts`, `package.json`, `ProjectWorkspaceModal.tsx`, `NoCodeEditorTab.tsx`, `Sidebar.tsx`, `dependencies`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Should `auth-service/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._

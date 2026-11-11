@@ -13,6 +13,7 @@ export const ClientDetailDrawer: React.FC = () => {
     triggerDeployment,
     createManualBackup,
     setActiveCanvasProjectId,
+    openProjectWorkspace,
     setCurrentTab,
   } = useApp();
 
@@ -130,12 +131,12 @@ export const ClientDetailDrawer: React.FC = () => {
                         <button
                           onClick={() => {
                             setActiveCanvasProjectId(p.id);
-                            setCurrentTab('project-canvas');
                             setSelectedClient(null);
+                            openProjectWorkspace(p.id);
                           }}
                           className="px-2.5 py-1 text-[11px] font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 rounded-md transition-colors"
                         >
-                          Open Studios
+                          Open Workspace
                         </button>
 
                         <button

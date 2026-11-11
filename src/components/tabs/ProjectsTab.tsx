@@ -33,6 +33,7 @@ export const ProjectsTab: React.FC = () => {
     restoreGitStableBuild,
     createManualBackup,
     setActiveCanvasProjectId,
+    openProjectWorkspace,
     setCurrentTab,
   } = useApp();
 
@@ -130,7 +131,7 @@ export const ProjectsTab: React.FC = () => {
 
   const handleOpenWorkspace = (projectId: string) => {
     setActiveCanvasProjectId(projectId);
-    setCurrentTab('project-canvas');
+    openProjectWorkspace(projectId);
   };
 
   return (

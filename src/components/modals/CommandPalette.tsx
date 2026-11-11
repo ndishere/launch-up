@@ -19,6 +19,7 @@ export const CommandPalette: React.FC = () => {
     setSelectedClient,
     setSelectedProject,
     setActiveCanvasProjectId,
+    openProjectWorkspace,
     toggleTheme,
     theme,
     themeMode,
@@ -418,7 +419,7 @@ export const CommandPalette: React.FC = () => {
         run: () => {
           setSelectedProject(p);
           setActiveCanvasProjectId(p.id);
-          setCurrentTab('project-canvas');
+          openProjectWorkspace(p.id);
           setIsCommandPaletteOpen(false);
         }
       }));

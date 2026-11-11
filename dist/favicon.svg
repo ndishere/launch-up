@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" fill="none">
+  <style>
+    .badge-bg {
+      fill: #f8fafc;
+      stroke: #e2e8f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      .badge-bg {
+        fill: #0f172a;
+        stroke: #334155;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="launchup-fav-prism" x1="6" y1="28" x2="26" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4338ca" />
+      <stop offset="55%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <linearGradient id="launchup-fav-core" x1="16" y1="8" x2="16" y2="27" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#c7d2fe" stop-opacity="0.85" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded Badge Container matching LaunchUpLogo -->
+  <rect class="badge-bg" x="0.75" y="0.75" width="32.5" height="32.5" rx="9" stroke-width="1.2" />
+
+  <!-- Centered 32x32 Ascend Prism at 0.75 scale (24px inside 34px) -->
+  <g transform="translate(5, 5) scale(0.75)">
+    <path
+      d="M16 3L6.5 23.5L12.5 21L16 11.5L19.5 21L25.5 23.5L16 3Z"
+      fill="url(#launchup-fav-prism)"
+    />
+    <path
+      d="M16 3L16 11.5L19.5 21L25.5 23.5L16 3Z"
+      fill="#a5b4fc"
+      fill-opacity="0.32"
+    />
+    <path
+      d="M16 12.2L12.6 22.8L16 20.8L19.4 22.8L16 12.2Z"
+      fill="url(#launchup-fav-core)"
+    />
+    <path
+      d="M11.8 25.4L16 28.8L20.2 25.4L16 26.8L11.8 25.4Z"
+      fill="#6366f1"
+    />
+  </g>
+</svg>

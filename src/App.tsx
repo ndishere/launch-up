@@ -37,6 +37,7 @@ import { ClientDetailDrawer } from './components/modals/ClientDetailDrawer';
 import { CommandPalette } from './components/modals/CommandPalette';
 import { UpgradePlanModal } from './components/modals/UpgradePlanModal';
 import { ClientPortalModal } from './components/modals/ClientPortalModal';
+import { ProjectWorkspaceModal } from './components/workspace/ProjectWorkspaceModal';
 
 const AppLayout: React.FC = () => {
   const { currentTab } = useApp();
@@ -122,6 +123,7 @@ const AppLayout: React.FC = () => {
       <ClientDetailDrawer />
       <CommandPalette />
       <UpgradePlanModal />
+      <ProjectWorkspaceModal />
     </div>
   );
 };

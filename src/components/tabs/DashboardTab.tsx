@@ -23,6 +23,7 @@ export const DashboardTab: React.FC = () => {
     setCurrentTab, 
     setIsAddClientModalOpen,
     setActiveCanvasProjectId,
+    openProjectWorkspace,
     setSelectedClient,
     triggerDeployment,
     createManualBackup,
@@ -584,7 +585,16 @@ export const DashboardTab: React.FC = () => {
 
                       {/* Project */}
                       <td className="py-3.5 font-medium text-slate-700 dark:text-slate-300">
-                        {item.project}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const matched = projects.find((p) => p.name === item.project) || projects[0];
+                            if (matched) openProjectWorkspace(matched.id);
+                          }}
+                          className="text-left hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline transition-colors"
+                        >
+                          {item.project}
+                        </button>
                       </td>
 
                       {/* Status badge */}

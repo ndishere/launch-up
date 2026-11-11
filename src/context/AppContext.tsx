@@ -4,8 +4,10 @@ import {
   BackupRecord, Invoice, Template, Integration, TeamMember,
   AutonomousAgent, BusinessAutomationIntake, SLMModel, MarketingCampaign,
   RemoteTelemetryPackage, FDESystemArchitecture,
-  TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow
+  TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow,
+  ProjectWorkspaceState,
 } from '../types';
+import { createDefaultProjectWorkspace } from '../components/workspace/workspaceDefaults';
 import { FigCraftProjectSchema, DEFAULT_FIGCRAFT_TOKENS } from '../lib/figcraft-adapter';
 import { 
   initialClients, initialProjects, initialAlerts, initialDeployments, 
@@ -21,6 +23,7 @@ import {
   type HealthPulseLogEntry,
   type VendorReadinessReport,
 } from '../services/api';
+import { buildLaunchUpFaviconDataUrl } from '../components/common/LaunchUpLogo';
 
 const STATE_PREFIX = 'launchup_state_v1_';
 
@@ -169,7 +172,7 @@ interface AppContextType {
 
   // Actions
   addClient: (client: Omit<Client, 'id' | 'initials' | 'joinedDate' | 'totalSpend'>) => void;
-  addProject: (project: Omit<Project, 'id' | 'lastBackupDate' | 'backupStatus' | 'healthPercent'>) => void;
+  addProject: (project: Omit<Project, 'id' | 'lastBackupDate' | 'backupStatus' | 'healthPercent'>) => Project;
   triggerDeployment: (projectId: string, environment?: 'Production' | 'Staging' | 'Preview') => void;
   createManualBackup: (projectId: string) => void;
   markAlertAsRead: (alertId: string) => void;
@@ -257,6 +260,17 @@ interface AppContextType {
   updateProjectScope: (projectId: string, updater: (prev: ProjectScopeDraft | undefined) => ProjectScopeDraft) => void;
   n8nGraphs: Record<string, N8nProjectGraph>;
   updateN8nGraph: (projectId: string, graph: N8nProjectGraph) => void;
+
+  // Sprint 1: Immersive Project Command Center & Hierarchical Swarm Workspace
+  projectWorkspaces: Record<string, ProjectWorkspaceState>;
+  updateProjectWorkspace: (
+    projectId: string,
+    updater: (prev: ProjectWorkspaceState) => ProjectWorkspaceState
+  ) => void;
+  isProjectWorkspaceOpen: boolean;
+  workspaceProjectId: string | null;
+  openProjectWorkspace: (projectId: string) => void;
+  closeProjectWorkspace: () => void;
   // Two-Tier Cost-Safe Health Pulse & Bounded Self-Healing State
   meshStatuses: Record<string, boolean>;
   systemHealthPercent: number;
@@ -494,7 +508,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     root.style.setProperty('--chart-tertiary', pal.chart.tertiary);
     root.style.setProperty('--chart-traffic', pal.chart.traffic);
 
-    // 4. Save preferences
+    // 4. Keep browser favicon synchronized with active LaunchUpLogo theme & palette
+    const faviconEl = document.querySelector<HTMLLinkElement>('link#app-favicon, link[rel="icon"]');
+    if (faviconEl) {
+      faviconEl.href = buildLaunchUpFaviconDataUrl({
+        isDark: resolvedTheme === 'dark',
+        accent: pal.accent,
+        shade200: pal.colors[200],
+        shade300: pal.colors[300],
+        shade400: pal.colors[400],
+        shade700: pal.colors[700],
+      });
+    }
+
+    // 5. Save preferences
     localStorage.setItem('launchup_theme_mode', themeMode);
     localStorage.setItem('launchup_palette', palette);
     localStorage.setItem('launchup_theme', resolvedTheme);
@@ -609,6 +636,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [n8nGraphs, setN8nGraphs] = useState<Record<string, N8nProjectGraph>>(() =>
     loadPersisted<Record<string, N8nProjectGraph>>('n8nGraphs', {})
   );
+  const [projectWorkspaces, setProjectWorkspaces] = useState<Record<string, ProjectWorkspaceState>>(() =>
+    loadPersisted<Record<string, ProjectWorkspaceState>>('projectWorkspaces', {})
+  );
+  const [isProjectWorkspaceOpen, setIsProjectWorkspaceOpen] = useState<boolean>(false);
+  const [workspaceProjectId, setWorkspaceProjectId] = useState<string | null>(null);
   const [meshStatuses, setMeshStatuses] = useState<Record<string, boolean>>({});
   const [systemHealthPercent, setSystemHealthPercent] = useState<number>(100);
   const [lastPulseCheckedAt, setLastPulseCheckedAt] = useState<string | null>(null);
@@ -668,6 +700,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     savePersisted('liveTelemetryScores', liveTelemetryScores);
     savePersisted('projectScopes', projectScopes);
     savePersisted('n8nGraphs', n8nGraphs);
+    savePersisted('projectWorkspaces', projectWorkspaces);
     savePersisted('healthPulseLogs', healthPulseLogs.slice(0, 100));
     savePersisted('lastVendorReadiness', lastVendorReadiness);
   }, [
@@ -677,6 +710,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     liveTelemetryScores,
     projectScopes,
     n8nGraphs,
+    projectWorkspaces,
     healthPulseLogs,
     lastVendorReadiness,
   ]);
@@ -740,6 +774,68 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
   };
 
+  const ensureWorkspaceHydrated = (projectId: string) => {
+    setProjectWorkspaces((prev) => {
+      if (prev[projectId]) return prev;
+      const targetProj = projects.find((p) => p.id === projectId);
+      if (!targetProj) return prev;
+      const linked = clients.filter((c) => targetProj.clientIds.includes(c.id));
+      return {
+        ...prev,
+        [projectId]: createDefaultProjectWorkspace(targetProj, linked),
+      };
+    });
+  };
+
+  const updateProjectWorkspace = (
+    projectId: string,
+    updater: (prev: ProjectWorkspaceState) => ProjectWorkspaceState
+  ) => {
+    setProjectWorkspaces((prev) => {
+      const targetProj = projects.find((p) => p.id === projectId) || projects[0];
+      const linked = targetProj ? clients.filter((c) => targetProj.clientIds.includes(c.id)) : [];
+      const base =
+        prev[projectId] ||
+        (targetProj
+          ? createDefaultProjectWorkspace(targetProj, linked)
+          : createDefaultProjectWorkspace(
+              {
+                id: projectId,
+                name: 'Launch Up Project',
+                type: 'SaaS Platform',
+                status: 'In Progress',
+                healthPercent: 98,
+                repoUrl: 'https://github.com/launchup/project',
+                branch: 'main',
+                framework: 'React 19 + Fastify',
+                serverTarget: 'Vercel',
+                lastBackupDate: 'Just now',
+                backupStatus: 'Healthy',
+                clientIds: [],
+              },
+              []
+            ));
+      return {
+        ...prev,
+        [projectId]: {
+          ...updater(base),
+          lastUpdatedAt: new Date().toISOString(),
+        },
+      };
+    });
+  };
+
+  const openProjectWorkspace = (projectId: string) => {
+    ensureWorkspaceHydrated(projectId);
+    setActiveCanvasProjectId(projectId);
+    setWorkspaceProjectId(projectId);
+    setIsProjectWorkspaceOpen(true);
+  };
+
+  const closeProjectWorkspace = () => {
+    setIsProjectWorkspaceOpen(false);
+  };
+
   const resetDemoState = () => {
     try {
       Object.keys(localStorage).forEach((key) => {
@@ -773,6 +869,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setLiveTelemetryScores(getDefaultTelemetryScores());
     setProjectScopes({});
     setN8nGraphs({});
+    setProjectWorkspaces({});
+    setIsProjectWorkspaceOpen(false);
+    setWorkspaceProjectId(null);
     setHealthPulseLogs([]);
     setLastVendorReadiness(null);
     setActiveCanvasProjectId(null);
@@ -1208,7 +1307,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
   };
 
-  const addProject = (projectData: Omit<Project, 'id' | 'lastBackupDate' | 'backupStatus' | 'healthPercent'>) => {
+  const addProject = (projectData: Omit<Project, 'id' | 'lastBackupDate' | 'backupStatus' | 'healthPercent'>): Project => {
     const newId = `proj-${Date.now()}`;
     const newProj: Project = {
       ...projectData,
@@ -1219,6 +1318,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     setProjects((prev) => [newProj, ...prev]);
+
+    const linkedClients = clients.filter((cl) => newProj.clientIds.includes(cl.id));
+    setProjectWorkspaces((prev) => ({
+      ...prev,
+      [newId]: createDefaultProjectWorkspace(newProj, linkedClients),
+    }));
 
     setClients((prevClients) =>
       prevClients.map((cl) => {
@@ -1248,6 +1353,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Tier 2 External Vendor Readiness Check triggered strictly on Project Start (zero idle polling)
     void verifyVendorReadiness(newProj.name);
+
+    return newProj;
   };
 
   const triggerDeployment = (
@@ -1438,6 +1545,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateProjectScope,
         n8nGraphs,
         updateN8nGraph,
+        projectWorkspaces,
+        updateProjectWorkspace,
+        isProjectWorkspaceOpen,
+        workspaceProjectId,
+        openProjectWorkspace,
+        closeProjectWorkspace,
         meshStatuses,
         systemHealthPercent,
         lastPulseCheckedAt,
