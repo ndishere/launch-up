@@ -106,7 +106,7 @@ export const ClientsTab: React.FC = () => {
             <button
               id="share-intake-link-btn"
               onClick={() => setIsClientPortalModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all"
             >
               <Link className="w-4 h-4" />
               <span>Share Client Intake Link</span>
@@ -124,7 +124,7 @@ export const ClientsTab: React.FC = () => {
       />
 
       {/* MOD-01: Autonomous Lead Discovery & Canva Pro Pitch Engine */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400">
@@ -159,7 +159,7 @@ export const ClientsTab: React.FC = () => {
           <button
             type="submit"
             disabled={isAuditing}
-            className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
+            className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0"
           >
             {isAuditing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
             <span>Run Audit & Generate Pitch</span>
@@ -174,7 +174,7 @@ export const ClientsTab: React.FC = () => {
                 <span>Audit & Proposal Synthesis Complete</span>
               </span>
               <span className={`text-[10px] font-mono font-bold ${leadResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {leadResult.isLive ? 'â—  Live Fastify 8005' : 'â—‹ In-Memory Fallback'}
+                {leadResult.isLive ? '●  Live Fastify 8005' : '● ‹ In-Memory Fallback'}
               </span>
             </div>
 
@@ -215,7 +215,7 @@ export const ClientsTab: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -271,7 +271,7 @@ export const ClientsTab: React.FC = () => {
           return (
             <div
               key={client.id}
-              className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group"
+              className="bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group"
             >
               <div>
                 {/* Top Row: Avatar + Tier + Status */}

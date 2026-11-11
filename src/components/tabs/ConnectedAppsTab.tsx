@@ -103,7 +103,7 @@ export const ConnectedAppsTab: React.FC = () => {
             {activeSubView === 'stacks' && (
               <button
                 onClick={() => setShowAddStackModal(true)}
-                className="px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-xl shadow-xs hover:bg-indigo-700 transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>+ Add Stack</span>
@@ -119,7 +119,7 @@ export const ConnectedAppsTab: React.FC = () => {
           {connectedApps.map((plugin) => (
             <div
               key={plugin.id}
-              className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+              className="bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-3">
@@ -180,7 +180,7 @@ export const ConnectedAppsTab: React.FC = () => {
             {stackPresets.map((stack) => (
               <div
                 key={stack.id}
-                className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+                className="bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
@@ -243,7 +243,7 @@ export const ConnectedAppsTab: React.FC = () => {
           {/* Add Stack Modal */}
           {showAddStackModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
-              <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 max-w-lg w-full shadow-2xl space-y-4">
+              <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200 dark:border-slate-800 max-w-lg w-full shadow-lg space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-slate-900 dark:text-white text-base">Add New Tech Stack Preset</h3>
                   <button onClick={() => setShowAddStackModal(false)} className="text-slate-400 hover:text-slate-600">

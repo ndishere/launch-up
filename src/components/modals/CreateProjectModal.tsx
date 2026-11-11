@@ -68,7 +68,7 @@ export const CreateProjectModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl w-full max-w-xl shadow-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -304,7 +304,7 @@ export const CreateProjectModal: React.FC = () => {
               type="button"
               disabled={step === 1 && !name}
               onClick={() => setStep((s) => (s < 4 ? ((s + 1) as any) : s))}
-              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all disabled:opacity-40 flex items-center gap-1.5"
+              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all disabled:opacity-40 flex items-center gap-1.5"
             >
               <span>Next</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -313,7 +313,7 @@ export const CreateProjectModal: React.FC = () => {
             <button
               type="button"
               onClick={handleFinish}
-              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all flex items-center gap-1.5"
+              className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-1.5"
             >
               <Rocket className="w-3.5 h-3.5" />
               <span>Scaffold & Launch Project</span>

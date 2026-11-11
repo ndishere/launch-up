@@ -105,7 +105,7 @@ export const ClientPortalModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl w-full max-w-2xl shadow-lg overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export const ClientPortalModal: React.FC = () => {
             onClick={() => setActiveMode('link')}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
               activeMode === 'link'
-                ? 'bg-indigo-600 text-white shadow-2xs'
+                ? 'bg-indigo-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -148,7 +148,7 @@ export const ClientPortalModal: React.FC = () => {
             onClick={() => setActiveMode('manual')}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
               activeMode === 'manual'
-                ? 'bg-indigo-600 text-white shadow-2xs'
+                ? 'bg-indigo-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -160,7 +160,7 @@ export const ClientPortalModal: React.FC = () => {
             onClick={() => setActiveMode('api-wiring')}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
               activeMode === 'api-wiring'
-                ? 'bg-indigo-600 text-white shadow-2xs'
+                ? 'bg-indigo-600 text-white'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -196,7 +196,7 @@ export const ClientPortalModal: React.FC = () => {
                   />
                   <button
                     onClick={handleCopyLink}
-                    className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 shrink-0"
+                    className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
                   >
                     {copiedLink ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
                     <span>{copiedLink ? 'Copied Link!' : 'Copy Link'}</span>
@@ -205,7 +205,7 @@ export const ClientPortalModal: React.FC = () => {
               </div>
 
               {/* Live Preview of What the Client Sees */}
-              <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-[#0B0F17]/60 space-y-3">
+              <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-[#090B10]/60 space-y-3">
                 <div className="flex items-center justify-between text-xs border-b border-slate-200 dark:border-slate-800 pb-2">
                   <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
@@ -444,7 +444,7 @@ export const ClientPortalModal: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all flex items-center gap-1.5"
+                  className="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-1.5"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Securely Save Intake & Pull into Launch Up</span>
@@ -471,7 +471,7 @@ export const ClientPortalModal: React.FC = () => {
                 </pre>
               </div>
 
-              <div className="bg-white dark:bg-[#111622] rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+              <div className="bg-white dark:bg-[#111318] rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
                 <h4 className="font-bold text-slate-900 dark:text-white">Database & Vault Wiring Architecture</h4>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                   Every intake is hashed with an AES-256-GCM token and stored in PostgreSQL <code className="text-indigo-600 dark:text-indigo-400 font-mono">launchup_core.client_intakes</code> table. Role-Based Access Control (RBAC) ensures only designated team members or owners can read financial budget details.

@@ -1,482 +1,426 @@
-import React, { useState } from 'react';
-import { 
-  FolderKanban, Plus, Search, Filter, Rocket, Database, 
-  ExternalLink, GitBranch, Server, CheckCircle2, Clock, 
-  AlertCircle, ArrowUpRight, ShieldCheck, Users, RefreshCw,
-  Sparkles, Play, Code, Box, Smartphone, Layout, FileCode2
+import React, { useState, useMemo } from 'react';
+import {
+  Search,
+  Plus,
+  ExternalLink,
+  RefreshCw,
+  GitBranch,
+  Database,
+  Play,
+  Layers,
+  AlertTriangle,
+  Smartphone,
+  Shield,
+  Globe,
+  Terminal,
+  Sparkles,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Project, ProjectStatus } from '../../types';
 import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
-import { 
-  synthesizeScope, 
-  buildLandingWeb, 
-  buildMobileApp, 
-  buildBackendAPI 
+import {
+  synthesizeScope,
+  buildLandingWeb,
+  buildMobileApp,
+  buildBackendAPI,
 } from '../../services/api';
 
 export const ProjectsTab: React.FC = () => {
-  const { 
-    projects, 
-    clients, 
-    setIsCreateProjectModalOpen, 
-    triggerDeployment, 
+  const {
+    projects,
+    clients,
+    setIsCreateProjectModalOpen,
+    triggerDeployment,
+    restoreGitStableBuild,
     createManualBackup,
-    setSelectedProject,
     setActiveCanvasProjectId,
-    setCurrentTab
+    setCurrentTab,
   } = useApp();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('All');
-  const [clientFilter, setClientFilter] = useState<string>('All');
+  const [localSearch, setLocalSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [clientFilter, setClientFilter] = useState('All');
 
-  // Interactive Microservices Trigger State (MOD-02 to MOD-05)
-  const [activeActionLoading, setActiveActionLoading] = useState<string | null>(null);
-  const [factoryResult, setFactoryResult] = useState<any>(null);
+  // MOD-02..05 Autonomous Factory State
+  const [factoryRunning, setFactoryRunning] = useState(false);
+  const [factoryBrief, setFactoryBrief] = useState(
+    'Multi-vendor logistics platform with instant WhatsApp parcel tracking and DPDP privacy export.'
+  );
+  const [factoryCountry, setFactoryCountry] = useState<'IN' | 'US' | 'DE'>('IN');
+  const [factoryOutput, setFactoryOutput] = useState<{
+    mode: string;
+    prdSummary: string;
+    webUrl: string;
+    androidPackage: string;
+    rlsPoliciesCount: number;
+    gateId: string;
+  } | null>(null);
 
-  const handleSynthesizeScope = async () => {
-    setActiveActionLoading('scope');
-    setFactoryResult(null);
+  const handleRunAutonomousFactory = async () => {
+    setFactoryRunning(true);
     try {
-      const res = await synthesizeScope({
-        project_id: projects[0]?.id || 'proj-0002-0000-0000-000000000001',
-        interview_transcript: 'Client requires express package booking with OTP verification, multi-currency wallet, and real-time fleet telemetry.',
-        target_countries: ['IN', 'DE', 'US'],
-        requested_modules: ['MOD-03', 'MOD-04', 'MOD-05'],
+      const targetProjId = projects[0]?.id || '11111111-1111-4111-8111-111111111111';
+      const scopeRes = await synthesizeScope({
+        project_id: targetProjId,
+        interview_transcript: factoryBrief,
+        target_countries: [factoryCountry],
+        requested_modules: ['web', 'android', 'backend'],
       });
-      setFactoryResult({ type: 'MOD-02 BA Scope Synthesizer', ...res });
-    } catch (err: any) {
-      setFactoryResult({ error: err.message });
+
+      const webRes = await buildLandingWeb({
+        project_id: targetProjId,
+        brand_kit: { name: 'LaunchUp Client Brand', primary_color: '#6366f1' },
+        routes: ['/', '/pricing', '/privacy'],
+        seo_metadata: { title: 'Autonomous Web Presence' },
+        compliance_flags: factoryCountry === 'IN' ? ['DPDP_INDIA'] : ['GDPR_EU'],
+      });
+
+      const mobileRes = await buildMobileApp({
+        project_id: targetProjId,
+        app_name: 'Client Logistics App',
+        package_id: 'com.launchup.logistics',
+        openapi_spec_url: 'https://api.example.com/openapi.json',
+        brand_kit: { name: 'LaunchUp Client Brand' },
+      });
+
+      const backendRes = await buildBackendAPI({
+        project_id: targetProjId,
+        sql_ddl: scopeRes.data.sql_ddl,
+        rbac_matrix: { admin: ['*'], user: ['read'] },
+        openapi_spec_url: 'https://api.example.com/openapi.json',
+      });
+
+      setFactoryOutput({
+        mode: scopeRes.isLive ? 'live' : 'fallback',
+        prdSummary: scopeRes.data.prd_markdown || 'Synthesized PRD & PostgreSQL Schema',
+        webUrl: webRes.data.staging_url,
+        androidPackage: mobileRes.data.signed_aab_url,
+        rlsPoliciesCount: backendRes.data.rls_tables_verified_count ?? 6,
+        gateId: scopeRes.data.approval_gate_id,
+      });
     } finally {
-      setActiveActionLoading(null);
+      setFactoryRunning(false);
     }
   };
 
-  const handleBuildWeb = async () => {
-    setActiveActionLoading('web');
-    setFactoryResult(null);
-    try {
-      const res = await buildLandingWeb({
-        project_id: projects[0]?.id || 'proj-0003-0000-0000-000000000001',
-        brand_kit: { primary_color_hex: '#6366F1' },
-        routes: ['/', '/pricing', '/tracking'],
-        seo_metadata: { title: 'Fast Logistics' },
-        ga4_measurement_id: 'G-12345678',
-        compliance_flags: ['DPDP_INDIA', 'GDPR_EU'],
-      });
-      setFactoryResult({ type: 'MOD-03 Responsive Web Builder', ...res });
-    } catch (err: any) {
-      setFactoryResult({ error: err.message });
-    } finally {
-      setActiveActionLoading(null);
-    }
+  const getClientNames = (clientIds: string[]) => {
+    const names = clients.filter((c) => clientIds.includes(c.id)).map((c) => c.name);
+    return names.length > 0 ? names.join(', ') : 'Agency Internal';
   };
 
-  const handleBuildMobile = async () => {
-    setActiveActionLoading('mobile');
-    setFactoryResult(null);
-    try {
-      const res = await buildMobileApp({
-        project_id: projects[0]?.id || 'proj-0004-0000-0000-000000000001',
-        app_name: 'LaunchUp Fleet Rider',
-        package_id: 'com.launchup.fleet',
-        openapi_spec_url: 'https://api.launchup.internal/openapi.yaml',
-        brand_kit: { primary_color_hex: '#10B981' },
-      });
-      setFactoryResult({ type: 'MOD-04 Android Mobile App Builder', ...res });
-    } catch (err: any) {
-      setFactoryResult({ error: err.message });
-    } finally {
-      setActiveActionLoading(null);
-    }
-  };
+  const filteredProjects = useMemo(() => {
+    return projects.filter((p) => {
+      const clientNames = getClientNames(p.clientIds).toLowerCase();
+      const matchesSearch =
+        !localSearch.trim() ||
+        p.name.toLowerCase().includes(localSearch.toLowerCase()) ||
+        clientNames.includes(localSearch.toLowerCase()) ||
+        (p.framework && p.framework.toLowerCase().includes(localSearch.toLowerCase()));
+      const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
+      const matchesClient = clientFilter === 'All' || p.clientIds.includes(clientFilter);
+      return matchesSearch && matchesStatus && matchesClient;
+    });
+  }, [projects, clients, localSearch, statusFilter, clientFilter]);
 
-  const handleBuildBackend = async () => {
-    setActiveActionLoading('backend');
-    setFactoryResult(null);
-    try {
-      const res = await buildBackendAPI({
-        project_id: projects[0]?.id || 'proj-0005-0000-0000-000000000001',
-        sql_ddl: 'CREATE TABLE orders (id UUID PRIMARY KEY, tenant_id UUID NOT NULL); ALTER TABLE orders ENABLE ROW LEVEL SECURITY;',
-        rbac_matrix: { admin: ['read', 'write'], customer: ['read'] },
-        openapi_spec_url: 'https://api.launchup.internal/openapi.yaml',
-      });
-      setFactoryResult({ type: 'MOD-05 Backend API & RLS Engine', ...res });
-    } catch (err: any) {
-      setFactoryResult({ error: err.message });
-    } finally {
-      setActiveActionLoading(null);
-    }
-  };
+  const liveProjects = projects.filter((p) => p.status === 'Live').length;
+  const activeProjects = projects.filter((p) => p.status === 'In Progress').length;
+  const avgHealth =
+    projects.length > 0
+      ? Math.round(projects.reduce((acc, p) => acc + p.healthPercent, 0) / projects.length)
+      : 100;
 
-  const liveProjects = projects.filter(p => p.status === 'Live').length;
-  const inProgressProjects = projects.filter(p => p.status === 'In Progress').length;
-
-  const filteredProjects = projects.filter((p) => {
-    const matchesSearch = 
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.framework.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
-    const matchesClient = clientFilter === 'All' || p.clientIds.includes(clientFilter);
-    return matchesSearch && matchesStatus && matchesClient;
-  });
-
-  const handleOpenCanvas = (projectId: string) => {
+  const handleOpenWorkspace = (projectId: string) => {
     setActiveCanvasProjectId(projectId);
     setCurrentTab('project-canvas');
   };
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Top Combined Analytics Section with Live Success/Error Rates */}
+    <div className="space-y-5 pb-10 animate-in fade-in duration-150">
       <ScreenAnalyticsHeader
-        title="Projects Orchestrator & Multi-Stack SDLC"
-        badge="Parallel Build Mesh Active"
-        description="Connect clients to projects, configure git repositories, selected stacks (MERN, MEAN, Kafka, Android KMP), and launch the AI Project Canvas for autonomous agent code generation and Docker shipping."
+        title="Projects"
+        badge="SDLC & Studios"
+        description="Open any built project to inspect Scope & ER diagrams, FigCraft UI, multi-viewport previews, and n8n automations."
         metrics={[
-          {
-            label: 'Total Projects',
-            value: projects.length,
-            subValue: `${liveProjects} Live • ${inProgressProjects} In Dev`,
-            status: 'good',
-          },
-          {
-            label: 'Live Success Rate',
-            value: '99.94%',
-            subValue: 'Across edge & cloud runs',
-            status: 'live',
-          },
-          {
-            label: 'Active Error Rate',
-            value: '0.06%',
-            subValue: 'Auto-rollback protected',
-            status: 'good',
-          },
-          {
-            label: 'Docker Sandboxes',
-            value: `${projects.length} / ${projects.length}`,
-            subValue: '100% Synced',
-            status: 'good',
-          },
-          {
-            label: 'Git Mirror Backups',
-            value: 'Continuous',
-            subValue: 'Disaster proof S3/Git',
-            status: 'good',
-          },
+          { label: 'Total Projects', value: projects.length, subValue: `${liveProjects} live`, status: 'good' },
+          { label: 'In Progress', value: activeProjects, subValue: 'CI/CD active', status: activeProjects > 0 ? 'live' : 'neutral' },
+          { label: 'Avg Health', value: `${avgHealth}%`, subValue: 'AST verified', status: avgHealth >= 90 ? 'good' : 'warn' },
+          { label: 'Rollback Guard', value: '100%', subValue: 'Snapshot ready', status: 'good' },
+          { label: 'Container Sync', value: `${projects.length}/${projects.length}`, subValue: 'Zero drift', status: 'good' },
         ]}
         actions={
           <button
-            id="create-project-btn"
             onClick={() => setIsCreateProjectModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all"
+            className="px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" />
-            <span>Create New Project</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>New Project</span>
           </button>
         }
       />
 
-      {/* MOD-02 to MOD-05: Autonomous Scope & Code Factory */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400">
-              <Code className="w-4 h-4" />
-            </span>
+      {/* Compact MOD-02..05 Autonomous Factory Strip */}
+      <div className="bg-white dark:bg-[#111318] rounded-xl p-4 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                Autonomous SDLC & Microservices Factory (MOD-02 to MOD-05)
-              </h2>
+              <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                Autonomous App Factory (MOD-02 → MOD-05)
+              </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Directly trigger microservice code synthesis, responsive web layouts, Android builds, and PostgreSQL RLS engines.
+                Synthesize scope, web layout, Android package, and RLS backend from a quick brief.
               </p>
             </div>
           </div>
-          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300">
-            Ports 8006 - 8009 Active
-          </span>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={factoryCountry}
+              onChange={(e) => setFactoryCountry(e.target.value as 'IN' | 'US' | 'DE')}
+              className="px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+            >
+              <option value="IN">India (DPDP)</option>
+              <option value="DE">Germany (GDPR)</option>
+              <option value="US">USA (CCPA)</option>
+            </select>
+
+            <input
+              type="text"
+              value={factoryBrief}
+              onChange={(e) => setFactoryBrief(e.target.value)}
+              placeholder="Client brief..."
+              className="w-64 sm:w-80 px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+            />
+
+            <button
+              onClick={handleRunAutonomousFactory}
+              disabled={factoryRunning}
+              className="px-3.5 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Terminal className={`w-3.5 h-3.5 ${factoryRunning ? 'animate-spin' : ''}`} />
+              <span>{factoryRunning ? 'Building...' : 'Build Full Stack'}</span>
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <button
-            onClick={handleSynthesizeScope}
-            disabled={activeActionLoading !== null}
-            className="p-3 bg-slate-50 dark:bg-slate-900/70 hover:bg-indigo-50/50 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition-all group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300">
-                MOD-02 : 8006
-              </span>
-              {activeActionLoading === 'scope' && <RefreshCw className="w-3.5 h-3.5 animate-spin text-purple-600" />}
+        {factoryOutput && (
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800">
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-medium text-slate-800 dark:text-slate-200 inline-flex items-center gap-1">
+                  <Globe className="w-3.5 h-3.5 text-indigo-500" /> Web Preview
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {factoryOutput.mode === 'live' ? '● Live' : '○ Fallback'}
+                </span>
+              </div>
+              <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                {factoryOutput.webUrl}
+              </p>
             </div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600">
-              BA Scope Synthesizer
-            </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Generate PRD, SQL DDL with RLS, & Gate 2
-            </p>
-          </button>
 
-          <button
-            onClick={handleBuildWeb}
-            disabled={activeActionLoading !== null}
-            className="p-3 bg-slate-50 dark:bg-slate-900/70 hover:bg-indigo-50/50 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition-all group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300">
-                MOD-03 : 8007
-              </span>
-              {activeActionLoading === 'web' && <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-600" />}
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800">
+              <div className="font-medium text-slate-800 dark:text-slate-200 mb-1 inline-flex items-center gap-1">
+                <Smartphone className="w-3.5 h-3.5 text-emerald-500" /> Android AAB
+              </div>
+              <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                {factoryOutput.androidPackage}
+              </p>
             </div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600">
-              Responsive Web Builder
-            </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Verify 375px-1920px viewports & GA4 tags
-            </p>
-          </button>
 
-          <button
-            onClick={handleBuildMobile}
-            disabled={activeActionLoading !== null}
-            className="p-3 bg-slate-50 dark:bg-slate-900/70 hover:bg-indigo-50/50 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition-all group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300">
-                MOD-04 : 8008
-              </span>
-              {activeActionLoading === 'mobile' && <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-600" />}
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800">
+              <div className="font-medium text-slate-800 dark:text-slate-200 mb-1 inline-flex items-center gap-1">
+                <Shield className="w-3.5 h-3.5 text-amber-500" /> RLS Backend
+              </div>
+              <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                {factoryOutput.rlsPoliciesCount} Policies · Gate {factoryOutput.gateId}
+              </p>
             </div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600">
-              Android App Builder
-            </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Compile signed APK/AAB & Data Safety CSV
-            </p>
-          </button>
-
-          <button
-            onClick={handleBuildBackend}
-            disabled={activeActionLoading !== null}
-            className="p-3 bg-slate-50 dark:bg-slate-900/70 hover:bg-indigo-50/50 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 text-left transition-all group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300">
-                MOD-05 : 8009
-              </span>
-              {activeActionLoading === 'backend' && <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600" />}
-            </div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600">
-              Backend API & RLS Engine
-            </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              PostgreSQL RLS verification & Privacy APIs
-            </p>
-          </button>
-        </div>
-
-        {factoryResult && (
-          <div className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>{factoryResult.type} Output</span>
-              </span>
-              <span className={`text-[10px] font-mono font-bold ${factoryResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {factoryResult.isLive ? 'â—  Live Microservice' : 'â—‹ In-Memory Fallback'}
-              </span>
-            </div>
-            <pre className="p-3 bg-white dark:bg-slate-800/90 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-mono overflow-x-auto max-h-48 whitespace-pre-wrap text-slate-800 dark:text-slate-200">
-              {JSON.stringify(factoryResult.data || factoryResult, null, 2)}
-            </pre>
           </div>
         )}
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Filter Toolbar */}
+      <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+        <div className="relative flex-1 max-w-md">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <Search className="w-3.5 h-3.5" />
+          </div>
           <input
             type="text"
-            placeholder="Search projects, framework, stack..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            placeholder="Filter projects..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          {/* Status Filter */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-slate-400">Status:</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none"
-            >
-              <option value="All">All Statuses</option>
-              <option value="Live">Live</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Pending">Pending</option>
-              <option value="On Hold">On Hold</option>
-            </select>
-          </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-2.5 py-1.5 text-xs bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="All">All Statuses</option>
+            <option value="Live">Live</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Pending">Pending</option>
+            <option value="On Hold">On Hold</option>
+          </select>
 
-          {/* Client Filter */}
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-slate-400">Linked Client:</span>
-            <select
-              value={clientFilter}
-              onChange={(e) => setClientFilter(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none"
-            >
-              <option value="All">All Clients</option>
-              {clients.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={clientFilter}
+            onChange={(e) => setClientFilter(e.target.value)}
+            className="px-2.5 py-1.5 text-xs bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
+          >
+            <option value="All">All Clients</option>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Minimalist Project Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredProjects.map((project) => {
-          // Find all clients linked to this project (Many-to-Many!)
-          const linkedClients = clients.filter((c) => project.clientIds.includes(c.id));
+          const clientLabel = getClientNames(project.clientIds);
+          const statusStyles =
+            project.status === 'Live'
+              ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400'
+              : project.status === 'In Progress'
+              ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400'
+              : project.status === 'On Hold'
+              ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
 
           return (
             <div
               key={project.id}
-              className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group"
+              onClick={() => handleOpenWorkspace(project.id)}
+              className="bg-white dark:bg-[#111318] rounded-xl p-4 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 transition-colors flex flex-col justify-between cursor-pointer group"
             >
               <div>
-                {/* Header: Project Name + Status */}
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-base group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                      {project.name}
-                    </h3>
-                    <p className="text-xs text-slate-400">{project.type}</p>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {project.name}
+                      </h3>
+                      <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                      {clientLabel} · {project.framework || 'React + Fastify'}
+                    </p>
                   </div>
 
-                  <span
-                    className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold ${
-                      project.status === 'Live'
-                        ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60'
-                        : project.status === 'In Progress'
-                        ? 'bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/60'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
-                    }`}
-                  >
+                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium shrink-0 ${statusStyles}`}>
                     {project.status}
                   </span>
                 </div>
 
-                {/* Many-to-Many: Linked Clients Badge Row */}
-                <div className="mb-4 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/60">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
-                    <Users className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Linked Stakeholders / Clients ({linkedClients.length})</span>
+                {/* Key Metrics */}
+                <div className="grid grid-cols-2 gap-2.5 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/50 text-xs mb-3">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">Target</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200 truncate block">{project.serverTarget}</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {linkedClients.map((client) => (
-                      <span
-                        key={client.id}
-                        className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                        {client.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Tech Stack & Environment details */}
-                <div className="space-y-2 text-xs py-2 border-y border-slate-100 dark:border-slate-800/80 mb-4">
-                  <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <Server className="w-3.5 h-3.5 text-indigo-400" />
-                      Server Target:
-                    </span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-200">
-                      {project.serverTarget}
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">Health</span>
+                    <span
+                      className={`font-medium ${
+                        project.healthPercent >= 90 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600'
+                      }`}
+                    >
+                      {project.healthPercent}%
                     </span>
                   </div>
-
-                  <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <GitBranch className="w-3.5 h-3.5 text-slate-400" />
-                      Branch:
-                    </span>
-                    <span className="font-mono text-[11px] text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">Branch</span>
+                    <span className="font-medium font-mono text-slate-800 dark:text-slate-200 truncate block">
                       {project.branch}
                     </span>
                   </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">Backup</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200 truncate block">
+                      {project.backupStatus}
+                    </span>
+                  </div>
+                </div>
 
-                  <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <Database className="w-3.5 h-3.5 text-emerald-500" />
-                      Git & DB Backup:
-                    </span>
-                    <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" />
-                      {project.lastBackupDate}
-                    </span>
+                {/* Health Progress Bar */}
+                <div className="mb-3">
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+                    <span>System Health</span>
+                    <span>{project.healthPercent}%</span>
+                  </div>
+                  <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${
+                        project.healthPercent < 80 ? 'bg-amber-500' : 'bg-indigo-600'
+                      }`}
+                      style={{ width: `${project.healthPercent}%` }}
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons: Deploy & Backup & Open Canvas */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              {/* Footer Actions */}
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2"
+              >
                 <button
-                  onClick={() => handleOpenCanvas(project.id)}
-                  className="w-full py-1.5 px-3 rounded-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors flex items-center justify-center gap-1.5 border border-indigo-200/60 dark:border-indigo-800/60"
+                  onClick={() => handleOpenWorkspace(project.id)}
+                  className="w-full py-1.5 px-3 rounded-lg text-xs font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 transition-colors flex items-center justify-center gap-1.5"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Open AI Project Canvas (SDLC & Agents)</span>
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Open Workspace & Studios</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-1.5">
                   <button
                     onClick={() => triggerDeployment(project.id, 'Production')}
-                    className="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-2xs shadow-indigo-600/30 flex items-center justify-center gap-1.5"
+                    className="flex-1 py-1 px-2 rounded-md text-[11px] font-medium bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors flex items-center justify-center gap-1 border border-slate-200/70 dark:border-slate-800"
                   >
-                    <Rocket className="w-3.5 h-3.5" />
+                    <Play className="w-3 h-3" />
                     <span>Deploy</span>
                   </button>
 
                   <button
-                    onClick={() => createManualBackup(project.id)}
-                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                    title="Run Git & Snapshot Backup"
+                    onClick={() => restoreGitStableBuild(project.id)}
+                    className="flex-1 py-1 px-2 rounded-md text-[11px] font-medium bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors flex items-center justify-center gap-1 border border-slate-200/70 dark:border-slate-800"
+                    title="Rollback to last stable Git commit"
                   >
-                    <Database className="w-4 h-4 text-emerald-500" />
+                    <GitBranch className="w-3 h-3" />
+                    <span>Rollback</span>
                   </button>
 
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                      title="Open Live URL"
-                    >
-                      <ExternalLink className="w-4 h-4 text-indigo-400" />
-                    </a>
-                  )}
+                  <button
+                    onClick={() => createManualBackup(project.id)}
+                    className="p-1.5 rounded-md text-[11px] bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors border border-slate-200/70 dark:border-slate-800"
+                    title="Take Snapshot"
+                  >
+                    <Database className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+
+      {filteredProjects.length === 0 && (
+        <div className="bg-white dark:bg-[#111318] rounded-xl p-10 text-center border border-slate-200/80 dark:border-slate-800/80">
+          <AlertTriangle className="w-7 h-7 text-slate-400 mx-auto mb-2" />
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">No projects found</h3>
+          <p className="text-xs text-slate-400 mt-1">Adjust search filters or create a new project.</p>
+        </div>
+      )}
     </div>
   );
 };

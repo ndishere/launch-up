@@ -110,7 +110,7 @@ export const SLMLabTab: React.FC = () => {
         actions={
           <button
             onClick={() => setShowCreateModelModal(true)}
-            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-500/25 transition-all flex items-center gap-2"
+            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
             <span>+ Train New Domain SLM</span>
@@ -138,7 +138,7 @@ export const SLMLabTab: React.FC = () => {
                 <div
                   key={model.id}
                   onClick={() => setSelectedModel(model)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-[#111622] shadow-2xs relative flex flex-col justify-between ${
+                  className={`p-4 rounded-xl border transition-all cursor-pointer bg-white dark:bg-[#111318] relative flex flex-col justify-between ${
                     isSelected
                       ? 'border-purple-500 ring-2 ring-purple-500/20'
                       : 'border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
@@ -159,7 +159,7 @@ export const SLMLabTab: React.FC = () => {
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 ${
                           model.status === 'Ready'
                             ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400'
-                            : 'bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 animate-pulse'
+                            : 'bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400'
                         }`}
                       >
                         {model.status}
@@ -208,7 +208,7 @@ export const SLMLabTab: React.FC = () => {
         </div>
 
         {/* Right: Interactive Model Inference & Benchmarking (5 cols) */}
-        <div className="lg:col-span-5 bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
@@ -261,7 +261,7 @@ export const SLMLabTab: React.FC = () => {
                   Model Output Stream
                 </span>
                 {isInferencing && (
-                  <span className="text-[10px] text-purple-500 font-mono animate-pulse">
+                  <span className="text-[10px] text-purple-500 font-mono">
                     Generating at {selectedModel.tokensPerSec} tps...
                   </span>
                 )}
@@ -283,7 +283,7 @@ export const SLMLabTab: React.FC = () => {
             <button
               onClick={handleTestInference}
               disabled={isInferencing}
-              className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl transition-colors flex items-center gap-1.5"
             >
               <Play className="w-3.5 h-3.5" />
               <span>Run Local Inference</span>
@@ -295,7 +295,7 @@ export const SLMLabTab: React.FC = () => {
       {/* Create SLM Modal */}
       {showCreateModelModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#111622] rounded-2xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-xl space-y-4 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#111318] rounded-xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-lg space-y-4 animate-in fade-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <Cpu className="w-5 h-5 text-purple-500" />
@@ -409,7 +409,7 @@ export const SLMLabTab: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl"
                 >
                   Compile & Train SLM
                 </button>

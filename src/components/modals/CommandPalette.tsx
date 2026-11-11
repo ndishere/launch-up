@@ -18,6 +18,7 @@ export const CommandPalette: React.FC = () => {
     setIsUpgradeModalOpen,
     setSelectedClient,
     setSelectedProject,
+    setActiveCanvasProjectId,
     toggleTheme,
     theme,
     themeMode,
@@ -416,7 +417,8 @@ export const CommandPalette: React.FC = () => {
         badge: p.status,
         run: () => {
           setSelectedProject(p);
-          setCurrentTab('projects');
+          setActiveCanvasProjectId(p.id);
+          setCurrentTab('project-canvas');
           setIsCommandPaletteOpen(false);
         }
       }));
@@ -458,7 +460,7 @@ export const CommandPalette: React.FC = () => {
       }}
     >
       <div 
-        className="bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col transition-all"
+        className="bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl w-full max-w-xl shadow-lg overflow-hidden flex flex-col transition-all"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search input header */}
@@ -498,19 +500,19 @@ export const CommandPalette: React.FC = () => {
         </div>
 
         {/* Quick Filter / Summary Row */}
-        <div className="px-4 py-2 bg-slate-50 dark:bg-[#0B0F17]/60 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-[#090B10]/60 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <span className="font-medium">
             {filteredItems.length} result{filteredItems.length === 1 ? '' : 's'} {query ? `for "${query}"` : 'available'}
           </span>
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline">
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] shadow-2xs">↑↓</kbd> navigate
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px]">↑↓</kbd> navigate
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] shadow-2xs">↵</kbd> select
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px]">↵</kbd> select
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] shadow-2xs">ESC</kbd> close
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px]">ESC</kbd> close
             </span>
           </div>
         </div>
@@ -535,14 +537,14 @@ export const CommandPalette: React.FC = () => {
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left transition-all group ${
                     isSelected 
-                      ? 'bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs' 
+                      ? 'bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80' 
                       : 'hover:bg-slate-100/80 dark:hover:bg-slate-800/60 border border-transparent'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                       isSelected
-                        ? 'bg-indigo-600 text-white shadow-xs'
+                        ? 'bg-indigo-600 text-white'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                     }`}>
                       <Icon className="w-4 h-4" />

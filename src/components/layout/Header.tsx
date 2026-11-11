@@ -74,42 +74,42 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-16 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#0D111A]/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between transition-colors">
+    <header className="sticky top-0 z-30 h-14 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0D1017]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between transition-colors">
       {/* Left: Sidebar Toggle & Microservices Mesh Pill */}
       <div className="flex items-center gap-3">
         <button
           id="sidebar-toggle-btn"
           onClick={() => setIsSidebarCollapsed((prev: boolean) => !prev)}
-          className="p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-colors focus:outline-none"
+          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors focus:outline-none"
           title="Toggle Navigation Menu"
           aria-label="Toggle Navigation Menu"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4" />
         </button>
 
         <button
           onClick={() => setCurrentTab('team')}
-          className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-slate-700 transition-colors cursor-pointer"
           title="Microservices Mesh Control: Click to view Governance Gates & RBAC"
         >
-          <span className={`w-2 h-2 rounded-full ${liveCount > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-          <span className="font-mono">
-            Mesh: {liveCount > 0 ? `${liveCount}/10 Microservices Live` : 'Control Plane Mesh Ready'}
+          <span className={`w-1.5 h-1.5 rounded-full ${liveCount > 0 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+          <span className="font-mono text-[11px]">
+            {liveCount > 0 ? `${liveCount}/10 Services Live` : 'Mesh Ready'}
           </span>
         </button>
       </div>
 
       {/* Center/Right: Search, Quick Actions, Theme, Alerts, Profile */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        {/* Search Bar matching screenshot */}
-        <div className="relative w-48 sm:w-72 md:w-80">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-            <Search className="w-4 h-4" />
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Search Bar */}
+        <div className="relative w-48 sm:w-64 md:w-72">
+          <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+            <Search className="w-3.5 h-3.5" />
           </div>
           <input
             id="global-search-input"
             type="text"
-            placeholder={`Search clients, projects... (${shortcutLabel})`}
+            placeholder={`Search... (${shortcutLabel})`}
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -117,15 +117,15 @@ export const Header: React.FC = () => {
             }}
             onClick={() => setIsCommandPaletteOpen(true)}
             onFocus={() => setIsCommandPaletteOpen(true)}
-            className="w-full pl-9 pr-16 py-1.5 text-sm bg-slate-100/80 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 placeholder-slate-400 rounded-lg border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-[#111827] focus:outline-none transition-all cursor-pointer"
+            className="w-full pl-8 pr-14 py-1.5 text-xs bg-slate-50 dark:bg-slate-900/80 text-slate-800 dark:text-slate-200 placeholder-slate-400 rounded-lg border border-slate-200/80 dark:border-slate-800 focus:border-indigo-500 focus:bg-white dark:focus:bg-[#111318] focus:outline-none transition-colors cursor-pointer"
           />
           <button
             onClick={() => setIsCommandPaletteOpen(true)}
-            className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer"
+            className="absolute inset-y-0 right-0 pr-1.5 flex items-center cursor-pointer"
             title={`Open search & command palette (${shortcutLabel})`}
             aria-label={`Open search & command palette (${shortcutLabel})`}
           >
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">
               {shortcutLabel}
             </span>
           </button>
@@ -142,13 +142,13 @@ export const Header: React.FC = () => {
           >
             <Palette className="w-5 h-5 text-palette" />
             <span 
-              className="w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-[#0B0F17] shadow-xs"
+              className="w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-[#0B0F17]"
               style={{ backgroundColor: 'var(--theme-accent)' }}
             />
           </button>
 
           {showThemeMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#121824] border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl z-50 p-2.5 animate-in fade-in duration-150">
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg z-50 p-2.5 animate-in fade-in duration-150">
               {/* Mode Selector */}
               <div className="mb-3">
                 <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider block mb-1.5 px-1">
@@ -160,7 +160,7 @@ export const Header: React.FC = () => {
                     onClick={() => setThemeMode('light')}
                     className={`py-1.5 px-2 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
                       themeMode === 'light'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -172,7 +172,7 @@ export const Header: React.FC = () => {
                     onClick={() => setThemeMode('dark')}
                     className={`py-1.5 px-2 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
                       themeMode === 'dark'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -184,7 +184,7 @@ export const Header: React.FC = () => {
                     onClick={() => setThemeMode('system')}
                     className={`py-1.5 px-2 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
                       themeMode === 'system'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-bold'
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -214,7 +214,7 @@ export const Header: React.FC = () => {
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span 
-                          className="w-3.5 h-3.5 rounded-full shrink-0 shadow-2xs border border-black/10 dark:border-white/10" 
+                          className="w-3.5 h-3.5 rounded-full shrink-0 border border-black/10 dark:border-white/10" 
                           style={{ backgroundColor: opt.color }}
                         />
                         <div className="truncate">
@@ -263,7 +263,7 @@ export const Header: React.FC = () => {
           >
             <Bell className="w-5 h-5" />
             {unreadAlerts.length > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 text-[10px] font-bold text-white bg-indigo-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900 animate-pulse">
+              <span className="absolute top-1 right-1 w-4 h-4 text-[10px] font-bold text-white bg-indigo-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
                 {unreadAlerts.length}
               </span>
             )}
@@ -271,7 +271,7 @@ export const Header: React.FC = () => {
 
           {/* Alerts Popup Menu */}
           {showAlertsDropdown && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#121824] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
               <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-sm text-slate-900 dark:text-white">System Alerts</span>
@@ -344,7 +344,7 @@ export const Header: React.FC = () => {
 
           {/* Profile Dropdown */}
           {showProfileDropdown && (
-            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#121824] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 p-1.5 animate-in fade-in duration-150">
+            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg z-50 p-1.5 animate-in fade-in duration-150">
               <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-semibold text-slate-900 dark:text-white">Alex Doe</p>
                 <p className="text-[11px] text-slate-400 truncate">admin@launchup.io</p>

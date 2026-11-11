@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -17,136 +17,137 @@ import {
   FileText,
   Code2,
   Play,
-  CheckCircle2,
-  AlertTriangle,
   Globe,
   Layers,
-  ChevronRight,
-  Send,
-  Lock,
   Smartphone,
   Copy,
-  Check
+  Check,
 } from 'lucide-react';
 
 import { synthesizeScope, buildBackendAPI } from '../../services/api';
 import { useApp } from '../../context/AppContext';
 
-// Initial ER Diagram Nodes (Showing Tables, Columns, and RLS Badges)
-const INITIAL_ER_NODES: Node[] = [
-  {
-    id: 'table-clients',
-    position: { x: 40, y: 80 },
-    data: {
-      label: (
-        <div className="text-left font-mono text-xs">
-          <div className="flex items-center justify-between pb-1.5 border-b border-slate-700 font-bold text-sky-400">
-            <span>clients</span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              RLS ACTIVE
-            </span>
+interface ProjectBuilderTabProps {
+  projectId?: string;
+  projectName?: string;
+  embedded?: boolean;
+}
+
+const buildErNodes = (isDark: boolean): Node[] => {
+  const cardBg = isDark ? '#141821' : '#ffffff';
+  const cardBorder = isDark ? '#272f40' : '#e2e8f0';
+  const dividerClass = isDark ? 'border-slate-800' : 'border-slate-100';
+  const textMuted = isDark ? 'text-slate-300' : 'text-slate-600';
+
+  return [
+    {
+      id: 'table-clients',
+      position: { x: 40, y: 70 },
+      data: {
+        label: (
+          <div className="text-left font-mono text-xs">
+            <div className={`flex items-center justify-between pb-1.5 border-b ${dividerClass} font-semibold text-indigo-500`}>
+              <span>clients</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                RLS
+              </span>
+            </div>
+            <div className={`pt-1.5 space-y-1 text-[11px] ${textMuted}`}>
+              <div className="text-amber-600 dark:text-amber-400 font-medium">PK id: UUID</div>
+              <div>company_name: VARCHAR</div>
+              <div>country_code: CHAR(2)</div>
+              <div>billing_tier: VARCHAR</div>
+            </div>
           </div>
-          <div className="pt-1.5 space-y-1 text-[11px] text-slate-300">
-            <div className="text-amber-400 font-semibold">🔑 id: UUID [PK]</div>
-            <div>company_name: VARCHAR(255)</div>
-            <div>country_code: CHAR(2)</div>
-            <div>billing_tier: VARCHAR(50)</div>
-            <div>created_at: TIMESTAMPTZ</div>
-          </div>
-        </div>
-      ),
+        ),
+      },
+      style: { background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 12, width: 220 },
     },
-    style: { background: '#0f172a', border: '1.5px solid #38bdf8', borderRadius: 12, padding: 12, width: 230 },
-  },
-  {
-    id: 'table-projects',
-    position: { x: 340, y: 80 },
-    data: {
-      label: (
-        <div className="text-left font-mono text-xs">
-          <div className="flex items-center justify-between pb-1.5 border-b border-slate-700 font-bold text-indigo-400">
-            <span>projects</span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              RLS ACTIVE
-            </span>
+    {
+      id: 'table-projects',
+      position: { x: 330, y: 70 },
+      data: {
+        label: (
+          <div className="text-left font-mono text-xs">
+            <div className={`flex items-center justify-between pb-1.5 border-b ${dividerClass} font-semibold text-indigo-500`}>
+              <span>projects</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                RLS
+              </span>
+            </div>
+            <div className={`pt-1.5 space-y-1 text-[11px] ${textMuted}`}>
+              <div className="text-amber-600 dark:text-amber-400 font-medium">PK id: UUID</div>
+              <div>name: VARCHAR</div>
+              <div>monthly_budget_usd: NUM</div>
+              <div>status: VARCHAR</div>
+            </div>
           </div>
-          <div className="pt-1.5 space-y-1 text-[11px] text-slate-300">
-            <div className="text-amber-400 font-semibold">🔑 id: UUID [PK]</div>
-            <div>name: VARCHAR(255)</div>
-            <div>monthly_budget_usd: NUMERIC</div>
-            <div>tokens_spent_usd: NUMERIC</div>
-            <div>status: VARCHAR(50)</div>
-          </div>
-        </div>
-      ),
+        ),
+      },
+      style: { background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 12, width: 220 },
     },
-    style: { background: '#0f172a', border: '1.5px solid #6366f1', borderRadius: 12, padding: 12, width: 230 },
-  },
-  {
-    id: 'table-orders',
-    position: { x: 640, y: 80 },
-    data: {
-      label: (
-        <div className="text-left font-mono text-xs">
-          <div className="flex items-center justify-between pb-1.5 border-b border-slate-700 font-bold text-emerald-400">
-            <span>project_orders</span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              RLS ACTIVE
-            </span>
+    {
+      id: 'table-orders',
+      position: { x: 620, y: 70 },
+      data: {
+        label: (
+          <div className="text-left font-mono text-xs">
+            <div className={`flex items-center justify-between pb-1.5 border-b ${dividerClass} font-semibold text-indigo-500`}>
+              <span>project_orders</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                RLS
+              </span>
+            </div>
+            <div className={`pt-1.5 space-y-1 text-[11px] ${textMuted}`}>
+              <div className="text-amber-600 dark:text-amber-400 font-medium">PK id: UUID</div>
+              <div className="text-indigo-500">FK project_id: UUID</div>
+              <div>order_status: VARCHAR</div>
+              <div>payload: JSONB</div>
+            </div>
           </div>
-          <div className="pt-1.5 space-y-1 text-[11px] text-slate-300">
-            <div className="text-amber-400 font-semibold">🔑 id: UUID [PK]</div>
-            <div className="text-purple-400">🔗 project_id: UUID [FK]</div>
-            <div>customer_id: UUID</div>
-            <div>order_status: VARCHAR(50)</div>
-            <div>payload: JSONB</div>
-          </div>
-        </div>
-      ),
+        ),
+      },
+      style: { background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 12, width: 220 },
     },
-    style: { background: '#0f172a', border: '1.5px solid #10b981', borderRadius: 12, padding: 12, width: 230 },
-  },
-  {
-    id: 'table-principals',
-    position: { x: 190, y: 280 },
-    data: {
-      label: (
-        <div className="text-left font-mono text-xs">
-          <div className="flex items-center justify-between pb-1.5 border-b border-slate-700 font-bold text-purple-400">
-            <span>principals (Human / AI)</span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              RBAC ACTIVE
-            </span>
+    {
+      id: 'table-principals',
+      position: { x: 185, y: 260 },
+      data: {
+        label: (
+          <div className="text-left font-mono text-xs">
+            <div className={`flex items-center justify-between pb-1.5 border-b ${dividerClass} font-semibold text-indigo-500`}>
+              <span>principals</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                RBAC
+              </span>
+            </div>
+            <div className={`pt-1.5 space-y-1 text-[11px] ${textMuted}`}>
+              <div className="text-amber-600 dark:text-amber-400 font-medium">PK id: UUID</div>
+              <div>type: HUMAN | AI_AGENT</div>
+              <div>role: VARCHAR</div>
+            </div>
           </div>
-          <div className="pt-1.5 space-y-1 text-[11px] text-slate-300">
-            <div className="text-amber-400 font-semibold">🔑 id: UUID [PK]</div>
-            <div>principal_type: HUMAN | AI_AGENT</div>
-            <div>role: CLIENT_APPROVER | AGENT</div>
-            <div>is_super_admin: BOOLEAN</div>
-          </div>
-        </div>
-      ),
+        ),
+      },
+      style: { background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 12, width: 220 },
     },
-    style: { background: '#0f172a', border: '1.5px solid #a855f7', borderRadius: 12, padding: 12, width: 240 },
-  },
-];
+  ];
+};
 
 const INITIAL_ER_EDGES: Edge[] = [
   {
     id: 'e-clients-projects',
     source: 'table-clients',
     target: 'table-projects',
-    animated: true,
-    label: '1 : N (client_project_links)',
-    style: { stroke: '#38bdf8' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#38bdf8' },
+    label: '1 : N',
+    style: { stroke: '#6366f1' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#6366f1' },
   },
   {
     id: 'e-projects-orders',
     source: 'table-projects',
     target: 'table-orders',
-    animated: true,
-    label: '1 : N (project_id)',
+    label: '1 : N',
     style: { stroke: '#6366f1' },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#6366f1' },
   },
@@ -154,25 +155,35 @@ const INITIAL_ER_EDGES: Edge[] = [
     id: 'e-principals-projects',
     source: 'table-principals',
     target: 'table-projects',
-    animated: true,
-    label: 'M : N (project_memberships)',
-    style: { stroke: '#a855f7' },
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#a855f7' },
+    label: 'M : N',
+    style: { stroke: '#94a3b8' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' },
   },
 ];
 
-export const ProjectBuilderTab: React.FC = () => {
-  const { projects } = useApp();
+export const ProjectBuilderTab: React.FC<ProjectBuilderTabProps> = ({
+  projectId,
+  projectName,
+  embedded = false,
+}) => {
+  const { projects, activeCanvasProjectId, resolvedTheme } = useApp();
+  const isDark = resolvedTheme === 'dark';
+
+  const resolvedProject =
+    projects.find((p) => p.id === (projectId || activeCanvasProjectId)) || projects[0];
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(
+    resolvedProject?.id || 'proj-0001'
+  );
+
+  useEffect(() => {
+    if (projectId) setSelectedProjectId(projectId);
+  }, [projectId]);
 
   const [activeSubTab, setActiveSubTab] = useState<'intake' | 'er-diagram' | 'stories' | 'openapi'>('intake');
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || 'proj-0001');
 
-  // Intake Questionnaire State
   const [transcript, setTranscript] = useState<string>(
-    'Cross-border freight delivery platform operating in India, Germany, and the United States. ' +
-    'Requires real-time parcel dispatch tracking, responsive web dashboard (375px to 1920px), ' +
-    'native Android mobile application with account deletion settings, and PostgreSQL 16 backend ' +
-    'enforcing Row-Level Security and DPDP/GDPR data export compliance.'
+    `${projectName || resolvedProject?.name || 'Enterprise platform'} operating across India, Germany, and the United States. ` +
+      'Requires real-time tracking, responsive web UI (375px-1920px), Android mobile app with account deletion, and PostgreSQL 16 backend with RLS.'
   );
 
   const [complianceFlags, setComplianceFlags] = useState<{ [key: string]: boolean }>({
@@ -189,7 +200,6 @@ export const ProjectBuilderTab: React.FC = () => {
     marketing: true,
   });
 
-  // Synthesized PRD Output
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [synthesizedOutput, setSynthesizedOutput] = useState<{
     executiveSummary: string;
@@ -199,12 +209,15 @@ export const ProjectBuilderTab: React.FC = () => {
     gateId?: string;
   } | null>(null);
 
-  // OpenAPI Tester State
   const [selectedEndpoint, setSelectedEndpoint] = useState<string>('/api/v1/orders');
-  const [testPayload, setTestPayload] = useState<string>('{\n  "customer_id": "cust-84920",\n  "package_weight_kg": 4.5,\n  "destination_city": "Berlin"\n}');
+  const [testPayload, setTestPayload] = useState<string>(
+    '{\n  "customer_id": "cust-84920",\n  "package_weight_kg": 4.5,\n  "destination_city": "Berlin"\n}'
+  );
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [isTestingApi, setIsTestingApi] = useState<boolean>(false);
   const [copiedSql, setCopiedSql] = useState(false);
+
+  const erNodes = useMemo(() => buildErNodes(isDark), [isDark]);
 
   const toggleCompliance = (flag: string) => {
     setComplianceFlags((prev) => ({ ...prev, [flag]: !prev[flag] }));
@@ -214,7 +227,6 @@ export const ProjectBuilderTab: React.FC = () => {
     setTargetModules((prev) => ({ ...prev, [mod]: !prev[mod] }));
   };
 
-  // Run BA Intake Synthesis (MOD-02 & MOD-05)
   const handleSynthesize = async () => {
     setIsSynthesizing(true);
     try {
@@ -234,7 +246,6 @@ export const ProjectBuilderTab: React.FC = () => {
         requested_modules: requestedMods,
       });
 
-      // Build Backend API with RLS (MOD-05)
       await buildBackendAPI({
         project_id: selectedProjectId,
         sql_ddl: intakeRes.data.sql_ddl,
@@ -243,30 +254,30 @@ export const ProjectBuilderTab: React.FC = () => {
       });
 
       setSynthesizedOutput({
-        executiveSummary: `Synthesized scope for ${selectedProjectId} across jurisdictions [${activeCountries.join(', ')}] with multi-tenant PostgreSQL 16 RLS policies and OpenAPI 3.1 specification.`,
+        executiveSummary: `Synthesized scope for ${selectedProjectId} across [${activeCountries.join(', ')}] with PostgreSQL 16 RLS policies and OpenAPI 3.1 contract.`,
         stories: [
           {
             id: 'US-001',
-            title: 'Real-Time Order & Dispatch Tracking',
-            criteria: ['Returns 200 OK with live telemetry', 'Supports 375px to 1920px responsive viewports'],
+            title: 'Real-Time Dispatch & Status Tracking',
+            criteria: ['Returns 200 OK telemetry', 'Responsive across 375px-1920px viewports'],
             status: 'READY_FOR_DEV',
           },
           {
             id: 'US-002',
             title: 'PostgreSQL 16 M:N Row-Level Security',
-            criteria: ['100% of tables enforce ENABLE ROW LEVEL SECURITY', 'Zero data leakage across client boundaries'],
+            criteria: ['ENABLE ROW LEVEL SECURITY on all tenant tables', 'Zero cross-tenant data leakage'],
             status: 'READY_FOR_DEV',
           },
           {
             id: 'US-003',
-            title: 'DPDP & GDPR Data Portability & Erasure',
-            criteria: ['/api/v1/privacy/me/export returns JSON archive', '/api/v1/privacy/me/erase provides cryptographic proof'],
+            title: 'DPDP & GDPR Privacy Export & Erasure',
+            criteria: ['/api/v1/privacy/me/export JSON archive', '/api/v1/privacy/me/erase proof'],
             status: 'READY_FOR_DEV',
           },
           {
             id: 'US-004',
             title: 'Google Play Data Safety & Account Deletion',
-            criteria: ['In-app /settings/delete-account route active', 'CSV declarations matched with permissions'],
+            criteria: ['/settings/delete-account route active', 'CSV matched to permissions'],
             status: 'READY_FOR_DEV',
           },
         ],
@@ -285,11 +296,10 @@ export const ProjectBuilderTab: React.FC = () => {
 
   const handleTestApi = async () => {
     setIsTestingApi(true);
-    await new Promise((r) => setTimeout(r, 600));
+    await new Promise((r) => setTimeout(r, 450));
     setApiResponse({
       status: 201,
       message: 'Order created with Row-Level Security isolation.',
-      tenant_id: 'tenant-amritsar-logistics-01',
       project_id: selectedProjectId,
       order_id: 'ord-' + Math.floor(10000 + Math.random() * 90000),
       rls_policy_verified: 'project_orders_tenant_isolation [PASS]',
@@ -305,357 +315,314 @@ export const ProjectBuilderTab: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4.5rem)] bg-slate-950 text-slate-100 overflow-hidden">
-      {/* Header & Sub-Tab Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md z-10">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30">
-            <Database className="w-5 h-5" />
-          </div>
+    <div
+      className={`flex flex-col bg-white dark:bg-[#111318] text-slate-900 dark:text-slate-100 rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden ${
+        embedded ? 'min-h-[620px]' : 'h-[calc(100vh-5.5rem)]'
+      }`}
+    >
+      {/* Clean Studio Header & Sub-Tabs */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-[#0D1017]">
+        <div className="flex items-center gap-2.5">
+          <Database className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
           <div>
-            <h1 className="text-base font-bold text-white flex items-center gap-2">
-              Project Builder: BA Scope, ER Diagram & OpenAPI Studio
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                MOD-02 & MOD-05
-              </span>
-            </h1>
-            <p className="text-xs text-slate-400">
-              Interactive client intake, PostgreSQL 16 RLS policies, and OpenAPI 3.1 specification.
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              Scope, ER Schema & OpenAPI Studio
+            </h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              MOD-02 & MOD-05 · PostgreSQL RLS & OpenAPI 3.1 contract synthesis
             </p>
           </div>
         </div>
 
-        {/* Sub-Tabs Switcher */}
-        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
-          <button
-            onClick={() => setActiveSubTab('intake')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
-              activeSubTab === 'intake'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <FileText className="w-3.5 h-3.5" />
-            BA Intake & Scope
-          </button>
-
-          <button
-            onClick={() => setActiveSubTab('er-diagram')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
-              activeSubTab === 'er-diagram'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Database className="w-3.5 h-3.5" />
-            Visual ER & RLS
-          </button>
-
-          <button
-            onClick={() => setActiveSubTab('stories')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
-              activeSubTab === 'stories'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            User Stories ({synthesizedOutput?.stories.length || 0})
-          </button>
-
-          <button
-            onClick={() => setActiveSubTab('openapi')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all ${
-              activeSubTab === 'openapi'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            OpenAPI 3.1 Studio
-          </button>
+        <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-lg border border-slate-200/80 dark:border-slate-800">
+          {[
+            { id: 'intake', label: 'Intake & Scope', icon: FileText },
+            { id: 'er-diagram', label: 'ER & RLS Graph', icon: Database },
+            { id: 'stories', label: `Stories (${synthesizedOutput?.stories.length || 0})`, icon: Layers },
+            { id: 'openapi', label: 'OpenAPI Tester', icon: Code2 },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveSubTab(tab.id as any)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${
+                  activeSubTab === tab.id
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-6">
-        {/* TAB 1: BA INTAKE & SCOPE SYNTHESIZER */}
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto p-5">
         {activeSubTab === 'intake' && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-              <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-400" />
-                Client Intake Transcript & Requirements
-              </h2>
-              <p className="text-xs text-slate-400 mb-4">
-                Paste raw client meeting notes, voice transcripts, or specification briefs. The BA agent synthesizes PRD user stories, SQL RLS migrations, and OpenAPI 3.1 endpoints.
-              </p>
-
+          <div className="max-w-3xl mx-auto space-y-5">
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                Client Scope & Requirements Brief
+              </label>
               <textarea
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
-                rows={5}
-                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-sm focus:outline-none focus:border-indigo-500 font-sans leading-relaxed"
+                rows={4}
+                className="w-full p-3 rounded-lg bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:border-indigo-500 leading-relaxed"
                 placeholder="Enter client scope notes..."
               />
+            </div>
 
-              {/* Compliance Framework Toggles */}
-              <div className="mt-6">
-                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-3">
-                  Regulatory Compliance Engines
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {[
-                    { key: 'DPDP_INDIA', label: 'DPDP India 2023', desc: 'Consent & Erasure' },
-                    { key: 'GDPR_EU', label: 'EU GDPR Art. 50', desc: 'AI Label & Export' },
-                    { key: 'CCPA_US', label: 'California CCPA', desc: 'Do-Not-Sell PII' },
-                    { key: 'GOOGLE_PLAY_DATA_SAFETY', label: 'Google Play Safety', desc: 'Account Deletion' },
-                  ].map((c) => (
+            <div>
+              <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                Compliance Frameworks
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {[
+                  { key: 'DPDP_INDIA', label: 'DPDP India', desc: 'Consent & Erasure' },
+                  { key: 'GDPR_EU', label: 'EU GDPR', desc: 'AI Label & Export' },
+                  { key: 'CCPA_US', label: 'US CCPA', desc: 'Do-Not-Sell PII' },
+                  { key: 'GOOGLE_PLAY_DATA_SAFETY', label: 'Play Safety', desc: 'Account Deletion' },
+                ].map((c) => (
+                  <button
+                    key={c.key}
+                    onClick={() => toggleCompliance(c.key)}
+                    className={`p-2.5 rounded-lg border text-left transition-colors ${
+                      complianceFlags[c.key]
+                        ? 'bg-indigo-50/80 dark:bg-indigo-950/50 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300'
+                        : 'bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    <div className="text-xs font-medium">{c.label}</div>
+                    <div className="text-[10px] opacity-75 mt-0.5">{c.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                Target Generation Modules
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {[
+                  { key: 'web', label: 'Responsive Web', icon: Globe },
+                  { key: 'android', label: 'Android Suite', icon: Smartphone },
+                  { key: 'backend', label: 'RLS Backend', icon: Database },
+                  { key: 'marketing', label: 'Canva Marketing', icon: Sparkles },
+                ].map((m) => {
+                  const Icon = m.icon;
+                  return (
                     <button
-                      key={c.key}
-                      onClick={() => toggleCompliance(c.key)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
-                        complianceFlags[c.key]
-                          ? 'bg-indigo-600/15 border-indigo-500/40 text-indigo-300'
-                          : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-700'
+                      key={m.key}
+                      onClick={() => toggleModule(m.key)}
+                      className={`p-2.5 rounded-lg border flex items-center gap-2 transition-colors text-left ${
+                        targetModules[m.key]
+                          ? 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300'
+                          : 'bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400'
                       }`}
                     >
-                      <div className="text-xs font-bold">{c.label}</div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{c.desc}</div>
+                      <Icon className="w-3.5 h-3.5 shrink-0" />
+                      <span className="text-xs font-medium truncate">{m.label}</span>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Target Engine Modules */}
-              <div className="mt-6">
-                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block mb-3">
-                  Target Generation Modules
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {[
-                    { key: 'web', label: 'MOD-03: Responsive Web', icon: Globe },
-                    { key: 'android', label: 'MOD-04: Android Suite', icon: Smartphone },
-                    { key: 'backend', label: 'MOD-05: RLS Backend', icon: Database },
-                    { key: 'marketing', label: 'MOD-07: Canva Pro', icon: Sparkles },
-                  ].map((m) => {
-                    const Icon = m.icon;
-                    return (
-                      <button
-                        key={m.key}
-                        onClick={() => toggleModule(m.key)}
-                        className={`p-3 rounded-xl border flex items-center gap-2.5 transition-all ${
-                          targetModules[m.key]
-                            ? 'bg-emerald-600/15 border-emerald-500/40 text-emerald-300'
-                            : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-700'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-xs font-semibold">{m.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={handleSynthesize}
-                  disabled={isSynthesizing}
-                  className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all hover:scale-[1.02]"
-                >
-                  <Sparkles className={`w-4 h-4 ${isSynthesizing ? 'animate-spin' : ''}`} />
-                  {isSynthesizing ? 'Synthesizing Blueprint & RLS Policies...' : 'Synthesize Scope & Architecture (MOD-02)'}
-                </button>
-              </div>
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={handleSynthesize}
+                disabled={isSynthesizing}
+                className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-medium text-xs flex items-center gap-1.5 transition-colors"
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${isSynthesizing ? 'animate-spin' : ''}`} />
+                <span>{isSynthesizing ? 'Synthesizing...' : 'Synthesize Scope & RLS (MOD-02)'}</span>
+              </button>
             </div>
           </div>
         )}
 
-        {/* TAB 2: VISUAL ER DATABASE SCHEMA & RLS DIAGRAM */}
         {activeSubTab === 'er-diagram' && (
-          <div className="h-[calc(100vh-12rem)] flex flex-col space-y-4">
+          <div className="h-[520px] flex flex-col space-y-3">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  PostgreSQL 16 M:N Tenancy & Row-Level Security Graph
-                </h2>
-                <p className="text-xs text-slate-400">
-                  Every tenant table is protected with <code className="text-emerald-400">ENABLE ROW LEVEL SECURITY</code> and isolated via session tokens.
-                </p>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  PostgreSQL 16 Row-Level Security Schema
+                </span>
               </div>
 
               {synthesizedOutput?.sqlMigration && (
                 <button
                   onClick={() => copyToClipboard(synthesizedOutput.sqlMigration)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1.5"
+                  className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 flex items-center gap-1.5"
                 >
-                  {copiedSql ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copiedSql ? 'Copied SQL' : 'Copy DDL Migration'}
+                  {copiedSql ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedSql ? 'Copied' : 'Copy SQL DDL'}</span>
                 </button>
               )}
             </div>
 
-            <div className="flex-1 rounded-2xl border border-slate-800 overflow-hidden relative">
+            <div className="flex-1 rounded-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden">
               <ReactFlow
-                defaultNodes={INITIAL_ER_NODES}
+                defaultNodes={erNodes}
                 defaultEdges={INITIAL_ER_EDGES}
+                colorMode={isDark ? 'dark' : 'light'}
                 fitView
-                className="bg-slate-950"
               >
-                <Background color="#334155" gap={20} size={1} />
-                <Controls className="!bg-slate-900 !border-slate-800 !text-slate-300" />
-                <MiniMap className="!bg-slate-900 !border-slate-800" />
+                <Background gap={20} size={1} />
+                <Controls />
+                <MiniMap />
               </ReactFlow>
             </div>
           </div>
         )}
 
-        {/* TAB 3: USER STORIES BOARD */}
         {activeSubTab === 'stories' && (
-          <div className="max-w-5xl mx-auto space-y-4">
+          <div className="max-w-4xl mx-auto space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-white">Synthesized PRD User Stories</h2>
-                <p className="text-xs text-slate-400">
-                  Executive blueprint translated into verified agile deliverables with acceptance criteria.
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  PRD User Stories
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Verified agile deliverables with acceptance criteria.
                 </p>
               </div>
-
               {synthesizedOutput?.gateId && (
-                <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
-                  Gate 2 ID: {synthesizedOutput.gateId.slice(0, 18)}...
-                </div>
+                <span className="px-2 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/60 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-[11px] font-mono">
+                  Gate 2: {synthesizedOutput.gateId.slice(0, 14)}
+                </span>
               )}
             </div>
 
             {synthesizedOutput ? (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 leading-relaxed">
-                  <span className="font-bold text-indigo-400">Executive Summary: </span>
+                <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+                  <span className="font-semibold text-indigo-600 dark:text-indigo-400">Summary: </span>
                   {synthesizedOutput.executiveSummary}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {synthesizedOutput.stories.map((story) => (
-                    <div key={story.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono font-bold text-indigo-400">{story.id}</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <div
+                      key={story.id}
+                      className="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800"
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400">
+                          {story.id}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">
                           {story.status}
                         </span>
                       </div>
-                      <h3 className="text-sm font-bold text-white mb-2">{story.title}</h3>
-                      <div className="space-y-1">
-                        <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Acceptance Criteria:</span>
-                        <ul className="text-xs text-slate-400 space-y-1 list-disc list-inside">
-                          {story.criteria.map((c, i) => (
-                            <li key={i}>{c}</li>
-                          ))}
-                        </ul>
-                      </div>
+                      <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                        {story.title}
+                      </h4>
+                      <ul className="text-[11px] text-slate-500 dark:text-slate-400 space-y-1 list-disc list-inside">
+                        {story.criteria.map((c, i) => (
+                          <li key={i}>{c}</li>
+                        ))}
+                      </ul>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <div className="text-center py-16 border border-dashed border-slate-800 rounded-2xl">
-                <FileText className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                <p className="text-sm text-slate-400">No PRD synthesized yet.</p>
+              <div className="text-center py-14 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                <FileText className="w-7 h-7 text-slate-400 mx-auto mb-2" />
+                <p className="text-xs text-slate-500 dark:text-slate-400">No PRD synthesized yet.</p>
                 <button
                   onClick={() => setActiveSubTab('intake')}
-                  className="mt-3 px-4 py-2 rounded-lg bg-indigo-600 text-xs font-semibold text-white"
+                  className="mt-3 px-3.5 py-1.5 rounded-lg bg-indigo-600 text-xs font-medium text-white"
                 >
-                  Go to Intake Form
+                  Open Intake Form
                 </button>
               </div>
             )}
           </div>
         )}
 
-        {/* TAB 4: OPENAPI 3.1 STUDIO & TESTER */}
         {activeSubTab === 'openapi' && (
-          <div className="max-w-5xl mx-auto space-y-6">
-            <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-indigo-400" />
-                OpenAPI 3.1 REST API Studio & RLS Policy Tester
-              </h2>
-              <p className="text-xs text-slate-400">
-                Execute live requests against synthesized microservice contracts with tenant context headers.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Endpoint Request Builder */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Target Endpoint</label>
-                  <div className="mt-1 flex gap-2">
-                    <span className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold border border-emerald-500/30">
-                      POST
-                    </span>
-                    <input
-                      type="text"
-                      value={selectedEndpoint}
-                      onChange={(e) => setSelectedEndpoint(e.target.value)}
-                      className="flex-1 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 font-mono text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Headers (RLS Context)</label>
-                  <pre className="mt-1 p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-indigo-300 font-mono text-[11px]">
-{`Content-Type: application/json
-X-Tenant-Project-ID: ${selectedProjectId}
-Authorization: Bearer rls_session_token_signed_jwt`}
-                  </pre>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">JSON Request Payload</label>
-                  <textarea
-                    value={testPayload}
-                    onChange={(e) => setTestPayload(e.target.value)}
-                    rows={6}
-                    className="w-full mt-1 p-3 rounded-lg bg-slate-950 border border-slate-800 text-emerald-400 font-mono text-xs focus:outline-none focus:border-indigo-500"
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 space-y-3">
+              <div>
+                <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Endpoint
+                </label>
+                <div className="mt-1 flex gap-2">
+                  <span className="px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-200/60 dark:border-emerald-800">
+                    POST
+                  </span>
+                  <input
+                    type="text"
+                    value={selectedEndpoint}
+                    onChange={(e) => setSelectedEndpoint(e.target.value)}
+                    className="flex-1 px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-mono text-xs focus:outline-none focus:border-indigo-500"
                   />
                 </div>
-
-                <button
-                  onClick={handleTestApi}
-                  disabled={isTestingApi}
-                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-md"
-                >
-                  <Play className={`w-3.5 h-3.5 ${isTestingApi ? 'animate-spin' : ''}`} />
-                  {isTestingApi ? 'Executing API Call...' : 'Send Request'}
-                </button>
               </div>
 
-              {/* Endpoint Live Response */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Response Output</label>
-                  {apiResponse && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                      HTTP {apiResponse.status}
-                    </span>
-                  )}
-                </div>
+              <div>
+                <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  RLS Context Headers
+                </label>
+                <pre className="mt-1 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-indigo-600 dark:text-indigo-400 font-mono text-[11px] overflow-x-auto">
+{`Content-Type: application/json
+X-Tenant-Project-ID: ${selectedProjectId}`}
+                </pre>
+              </div>
 
-                <div className="h-80 rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs overflow-auto">
-                  {apiResponse ? (
-                    <pre className="text-emerald-400 leading-relaxed text-[11px]">
-                      {JSON.stringify(apiResponse, null, 2)}
-                    </pre>
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-slate-600 text-xs">
-                      Send a request to see the live microservice response.
-                    </div>
-                  )}
-                </div>
+              <div>
+                <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  JSON Body
+                </label>
+                <textarea
+                  value={testPayload}
+                  onChange={(e) => setTestPayload(e.target.value)}
+                  rows={5}
+                  className="w-full mt-1 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-emerald-400 font-mono text-xs focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <button
+                onClick={handleTestApi}
+                disabled={isTestingApi}
+                className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Play className={`w-3.5 h-3.5 ${isTestingApi ? 'animate-spin' : ''}`} />
+                <span>{isTestingApi ? 'Executing...' : 'Send Request'}</span>
+              </button>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 flex flex-col">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Response
+                </label>
+                {apiResponse && (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">
+                    HTTP {apiResponse.status}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 min-h-[260px] rounded-lg bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 p-3 font-mono text-xs overflow-auto">
+                {apiResponse ? (
+                  <pre className="text-emerald-700 dark:text-emerald-400 leading-relaxed text-[11px]">
+                    {JSON.stringify(apiResponse, null, 2)}
+                  </pre>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-slate-400 text-xs">
+                    Send a request to inspect live JSON response.
+                  </div>
+                )}
               </div>
             </div>
           </div>

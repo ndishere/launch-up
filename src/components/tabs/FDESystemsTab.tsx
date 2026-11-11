@@ -82,7 +82,7 @@ export const FDESystemsTab: React.FC = () => {
         actions={
           <button
             onClick={() => setShowDeployModal(true)}
-            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-500/25 transition-all flex items-center gap-2"
+            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
             <span>+ Synthesize New Service</span>
@@ -100,7 +100,7 @@ export const FDESystemsTab: React.FC = () => {
           {fdeSystems.map((sys) => (
             <div
               key={sys.id}
-              className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between space-y-4 hover:border-cyan-300 dark:hover:border-slate-700 transition-all"
+              className="bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between space-y-4 hover:border-cyan-300 dark:hover:border-slate-700 transition-all"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -112,7 +112,7 @@ export const FDESystemsTab: React.FC = () => {
                   </div>
 
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     {sys.status}
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export const FDESystemsTab: React.FC = () => {
       {/* Synthesis Modal */}
       {showDeployModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#111622] rounded-2xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-xl space-y-4 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#111318] rounded-xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-lg space-y-4 animate-in fade-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <Network className="w-5 h-5 text-cyan-500" />
@@ -283,7 +283,7 @@ export const FDESystemsTab: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs"
+                  className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl"
                 >
                   Deploy FDE Architecture
                 </button>

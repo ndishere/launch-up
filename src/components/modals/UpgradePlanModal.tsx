@@ -9,7 +9,7 @@ export const UpgradePlanModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl shadow-lg overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -37,7 +37,7 @@ export const UpgradePlanModal: React.FC = () => {
         {/* Pricing Cards Grid */}
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Pro Plan */}
-          <div className="rounded-2xl p-5 border-2 border-indigo-500/80 bg-indigo-50/20 dark:bg-indigo-950/20 flex flex-col justify-between relative">
+          <div className="rounded-xl p-5 border-2 border-indigo-500/80 bg-indigo-50/20 dark:bg-indigo-950/20 flex flex-col justify-between relative">
             <span className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-600 text-white uppercase tracking-wider">
               Current Plan
             </span>
@@ -81,7 +81,7 @@ export const UpgradePlanModal: React.FC = () => {
           </div>
 
           {/* Enterprise Plan */}
-          <div className="rounded-2xl p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151C2C] flex flex-col justify-between">
+          <div className="rounded-xl p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151C2C] flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-white">Enterprise Sovereign</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -117,7 +117,7 @@ export const UpgradePlanModal: React.FC = () => {
                 alert('Enterprise plan inquiry received. A Launch Up architect will contact your primary email within 2 hours.');
                 setIsUpgradeModalOpen(false);
               }}
-              className="mt-6 w-full py-2 px-3 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-xs shadow-indigo-600/30"
+              className="mt-6 w-full py-2 px-3 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
             >
               Upgrade to Enterprise
             </button>

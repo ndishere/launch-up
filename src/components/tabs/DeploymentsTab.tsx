@@ -101,7 +101,7 @@ export const DeploymentsTab: React.FC = () => {
           },
         ]}
         actions={
-          <div className="flex items-center gap-2 bg-white dark:bg-[#111622] p-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+          <div className="flex items-center gap-2 bg-white dark:bg-[#111318] p-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
@@ -126,7 +126,7 @@ export const DeploymentsTab: React.FC = () => {
             <button
               id="trigger-deploy-quick-btn"
               onClick={handleQuickDeploy}
-              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs shadow-indigo-600/30 transition-all flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all flex items-center gap-1.5"
             >
               <Rocket className="w-3.5 h-3.5" />
               <span>Deploy</span>
@@ -136,7 +136,7 @@ export const DeploymentsTab: React.FC = () => {
       />
 
       {/* MOD-06: Autonomous QA, SecOps & Gate 3 Verifier */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400">
@@ -154,7 +154,7 @@ export const DeploymentsTab: React.FC = () => {
           <button
             onClick={handleRunQA}
             disabled={runningQA}
-            className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
+            className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
           >
             {runningQA ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
             <span>Run QA & SecOps Verification</span>
@@ -169,7 +169,7 @@ export const DeploymentsTab: React.FC = () => {
                 <span>Verification Results: Gate 3 Approved</span>
               </span>
               <span className={`text-[10px] font-mono font-bold ${qaResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {qaResult.isLive ? 'â—  Live Fastify 8010' : 'â—‹ In-Memory Fallback'}
+                {qaResult.isLive ? '●  Live Fastify 8010' : '● ‹ In-Memory Fallback'}
               </span>
             </div>
 
@@ -202,7 +202,7 @@ export const DeploymentsTab: React.FC = () => {
 
             <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
               <span>Approval Gate Certificate: <strong className="font-mono text-slate-700 dark:text-slate-300">{qaResult.data?.approval_gate_id}</strong></span>
-              <span className="text-emerald-600 font-semibold">Ready for Staging Promotion âœ“</span>
+              <span className="text-emerald-600 font-semibold">Ready for Staging Promotion ✓</span>
             </div>
           </div>
         )}
@@ -210,7 +210,7 @@ export const DeploymentsTab: React.FC = () => {
 
       {/* Cluster Status Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span>Production Releases</span>
             <Server className="w-4 h-4 text-indigo-500" />
@@ -219,7 +219,7 @@ export const DeploymentsTab: React.FC = () => {
           <p className="text-[11px] text-emerald-600 mt-1">100% Zero-downtime routing</p>
         </div>
 
-        <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span>Avg Build Time</span>
             <Clock className="w-4 h-4 text-purple-500" />
@@ -228,7 +228,7 @@ export const DeploymentsTab: React.FC = () => {
           <p className="text-[11px] text-indigo-500 mt-1">Docker layer caching enabled</p>
         </div>
 
-        <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span>Edge SSL & DNS</span>
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
@@ -237,7 +237,7 @@ export const DeploymentsTab: React.FC = () => {
           <p className="text-[11px] text-slate-400 mt-1">Let's Encrypt Wildcard</p>
         </div>
 
-        <div className="bg-white dark:bg-[#111622] p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+        <div className="bg-white dark:bg-[#111318] p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span>Server Ingress Status</span>
             <Cpu className="w-4 h-4 text-amber-500" />
@@ -248,7 +248,7 @@ export const DeploymentsTab: React.FC = () => {
       </div>
 
       {/* Deployments History Table with Terminal Drawer Trigger */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs overflow-hidden">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden">
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <h2 className="font-bold text-slate-900 dark:text-white text-base">
             Deployment History & Audit Trail

@@ -72,8 +72,9 @@ const AppLayout: React.FC = () => {
       case 'services':
       case 'fde-systems':
         return <FDESystemsTab />;
-      case 'n8n-workflows':
       case 'workflows':
+        return <WorkflowsTab />;
+      case 'n8n-workflows':
         return <N8nWorkflowsTab />;
       case 'project-builder':
         return <ProjectBuilderTab />;
@@ -100,7 +101,7 @@ const AppLayout: React.FC = () => {
 
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-50/80 dark:bg-[#090B10] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
       {/* Sidebar Navigation */}
       <Sidebar />
 
@@ -108,7 +109,7 @@ const AppLayout: React.FC = () => {
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <Header />
 
-        <main className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 max-w-7xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-7 py-5 max-w-7xl w-full mx-auto">
           {renderActiveTab()}
         </main>
       </div>

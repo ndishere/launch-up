@@ -76,7 +76,7 @@ initLaunchUpWatcher({
         actions={
           <button
             onClick={() => triggerAutoUpdate(selectedPkg.id)}
-            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-500/25 transition-all flex items-center gap-2"
+            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Trigger Hotfix Auto-Update</span>
@@ -102,7 +102,7 @@ initLaunchUpWatcher({
                 <div
                   key={pkg.id}
                   onClick={() => setSelectedPkg(pkg)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-white dark:bg-[#111622] shadow-2xs ${
+                  className={`p-4 rounded-xl border transition-all cursor-pointer bg-white dark:bg-[#111318] ${
                     isSelected
                       ? 'border-emerald-500 ring-2 ring-emerald-500/20'
                       : 'border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
@@ -121,7 +121,7 @@ initLaunchUpWatcher({
                         pkg.autoUpdateStatus === 'In Sync'
                           ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400'
                           : pkg.autoUpdateStatus === 'Deploying Update'
-                          ? 'bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 animate-pulse'
+                          ? 'bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400'
                           : 'bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400'
                       }`}
                     >
@@ -156,7 +156,7 @@ initLaunchUpWatcher({
                           e.stopPropagation();
                           triggerAutoUpdate(pkg.id);
                         }}
-                        className="px-2.5 py-1 text-[11px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors flex items-center gap-1 shadow-2xs"
+                        className="px-2.5 py-1 text-[11px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors flex items-center gap-1"
                       >
                         <RefreshCw className="w-3 h-3" />
                         <span>Push {pkg.latestVersionAvailable}</span>
@@ -170,7 +170,7 @@ initLaunchUpWatcher({
         </div>
 
         {/* Right: Live Terminal Stream & Auto-Update Controller (7 cols) */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
@@ -251,7 +251,7 @@ initLaunchUpWatcher({
             </span>
             <button
               onClick={() => triggerAutoUpdate(selectedPkg.id)}
-              className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors flex items-center gap-1.5"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Push Autonomous Update Now</span>

@@ -121,14 +121,14 @@ export const TeamTab: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={refreshGates}
-              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#111622] hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs transition-all"
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#111318] hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl transition-all"
             >
               <RefreshCw className="w-3.5 h-3.5 text-indigo-500" />
               <span>Refresh Gates</span>
             </button>
             <button
               onClick={() => alert('Invite member flow: opens invitation link generator.')}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs shadow-indigo-600/30 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all"
             >
               <Plus className="w-4 h-4" />
               <span>Invite Team Member</span>
@@ -157,7 +157,7 @@ export const TeamTab: React.FC = () => {
             <span>{feedbackMsg.text}</span>
           </div>
           <button onClick={() => setFeedbackMsg(null)} className="text-slate-400 hover:text-slate-600">
-            âœ•
+            ×
           </button>
         </div>
       )}
@@ -165,7 +165,7 @@ export const TeamTab: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* SECTION 1: GOVERNANCE GATES APPROVAL HUB (Gates 1 through 5)  */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -188,7 +188,7 @@ export const TeamTab: React.FC = () => {
                 onClick={() => setGateFilter(tab)}
                 className={`px-3 py-1 rounded-lg transition-all ${
                   gateFilter === tab
-                    ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-2xs font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                 }`}
               >
@@ -218,7 +218,7 @@ export const TeamTab: React.FC = () => {
                 className={`p-4 rounded-xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                   isPending
                     ? 'bg-slate-50/70 dark:bg-slate-900/50 border-amber-200/80 dark:border-amber-900/50'
-                    : 'bg-white dark:bg-[#111622] border-slate-200/80 dark:border-slate-800/80'
+                    : 'bg-white dark:bg-[#111318] border-slate-200/80 dark:border-slate-800/80'
                 }`}
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
@@ -261,7 +261,7 @@ export const TeamTab: React.FC = () => {
                     <Clock className="w-3 h-3" />
                     <span>Created: {new Date(gate.created_at).toLocaleString()}</span>
                     {gate.decided_by && (
-                      <span>â€¢ Decided by: {gate.decided_by} at {new Date(gate.decided_at!).toLocaleTimeString()}</span>
+                      <span>· Decided by: {gate.decided_by} at {new Date(gate.decided_at!).toLocaleTimeString()}</span>
                     )}
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export const TeamTab: React.FC = () => {
                       <button
                         disabled={actionLoading === gate.gate_id}
                         onClick={() => handleGateDecision(gate.gate_id, 'APPROVED')}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs shadow-emerald-600/30 flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/30 flex items-center gap-1.5 transition-colors"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Approve Gate</span>
@@ -295,7 +295,7 @@ export const TeamTab: React.FC = () => {
                     </>
                   ) : (
                     <span className="text-xs font-medium text-slate-400 italic">
-                      Decision Locked âœ“
+                      Decision Locked ✓
                     </span>
                   )}
                 </div>
@@ -314,7 +314,7 @@ export const TeamTab: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* SECTION 2: INTERACTIVE RBAC & TOKEN BUDGET SIMULATOR          */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-3">
           <Key className="w-4 h-4 text-indigo-500" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -352,7 +352,7 @@ export const TeamTab: React.FC = () => {
             <button
               onClick={handleTestGovernance}
               disabled={verifying}
-              className="w-full py-2 px-3 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-2xs shadow-indigo-600/30 transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2 px-3 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all flex items-center justify-center gap-1.5"
             >
               {verifying ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />}
               <span>Verify Permissions via MOD-10</span>
@@ -365,7 +365,7 @@ export const TeamTab: React.FC = () => {
             <div className="flex items-center justify-between mb-1.5 text-slate-400 text-[11px]">
               <span>MOD-10 Auth Response Payload:</span>
               <span className={verifyResult.isLive ? 'text-emerald-500 font-bold' : 'text-amber-500'}>
-                {verifyResult.isLive ? 'â— Live Microservice 8004' : 'â—‹ In-Memory Fallback'}
+                {verifyResult.isLive ? '● Live Microservice 8004' : '○ In-Memory Fallback'}
               </span>
             </div>
             <pre className="text-slate-800 dark:text-slate-200 overflow-x-auto whitespace-pre-wrap">
@@ -386,7 +386,7 @@ export const TeamTab: React.FC = () => {
           {teamMembers.map((member) => (
             <div
               key={member.id}
-              className="bg-white dark:bg-[#111622] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+              className="bg-white dark:bg-[#111318] rounded-xl p-5 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-4">

@@ -113,7 +113,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
               System Design & SDLC Architecture
             </h1>
             <span className="px-2.5 py-0.5 text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 rounded-full">
@@ -127,7 +127,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
 
         {/* Sub-tab Navigation */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="inline-flex p-1 bg-white dark:bg-[#111622] rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-x-auto max-w-full">
+          <div className="inline-flex p-1 bg-white dark:bg-[#111318] rounded-xl border border-slate-200 dark:border-slate-800 overflow-x-auto max-w-full">
             {[
               { id: 'schema', label: 'Database Schema & ERD', icon: Database },
               { id: 'tech-stack', label: 'Tech Stack & Topics', icon: Cpu },
@@ -142,7 +142,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
                   onClick={() => setActiveSubTab(tab.id as any)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${
                     activeSubTab === tab.id
-                      ? 'bg-indigo-600 text-white shadow-xs'
+                      ? 'bg-indigo-600 text-white'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -160,7 +160,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
               href="/tech-stack.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap"
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-1 whitespace-nowrap"
             >
               <span>Tech Stack</span>
               <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -169,7 +169,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
               href="/requirements.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap"
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors flex items-center gap-1 whitespace-nowrap"
             >
               <span>Requirements</span>
               <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -178,7 +178,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
               href="/system-design.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap"
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center gap-1 whitespace-nowrap"
             >
               <span>System Design</span>
               <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -187,7 +187,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
               href="/wireframes.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111622] border border-slate-200 dark:border-slate-800 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap"
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1 whitespace-nowrap"
             >
               <span>Wireframes</span>
               <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -200,7 +200,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
       {activeSubTab === 'schema' && (
         <div className="space-y-6">
           {/* Visual Entity Relationship Diagram Card */}
-          <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+          <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80">
             <h2 className="text-base font-bold text-slate-900 dark:text-white mb-2">
               Entity Relationship Diagram (Many-to-Many Architecture)
             </h2>
@@ -281,7 +281,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
           </div>
 
           {/* DDL Code Viewer */}
-          <div className="bg-[#0D111A] text-slate-200 rounded-2xl p-5 border border-slate-800 shadow-md">
+          <div className="bg-[#0D111A] text-slate-200 rounded-xl p-5 border border-slate-800">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
               <div className="flex items-center gap-2">
                 <Terminal className="w-4 h-4 text-indigo-400" />
@@ -307,7 +307,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
       {/* Subtab Content: Tech Stack & Topics Mapping */}
       {activeSubTab === 'tech-stack' && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+          <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -326,7 +326,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
                   href="/tech-stack.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all"
                   title="Open standalone HTML tech document in new tab"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -534,7 +534,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
 
       {/* Subtab Content: 2. SDLC Roadmap */}
       {activeSubTab === 'sdlc' && (
-        <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-6">
+        <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 space-y-6">
           <h2 className="text-base font-bold text-slate-900 dark:text-white">
             Software Development Life Cycle (SDLC) Blueprint
           </h2>
@@ -607,7 +607,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
       {/* Subtab Content: 3. Security */}
       {activeSubTab === 'security' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+          <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
             <div className="flex items-center gap-2">
               <Lock className="w-5 h-5 text-indigo-500" />
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
@@ -637,7 +637,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
             </ul>
           </div>
 
-          <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+          <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
             <div className="flex items-center gap-2">
               <Key className="w-5 h-5 text-purple-500" />
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
@@ -667,7 +667,7 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
 
       {/* Subtab Content: 4. Backups */}
       {activeSubTab === 'backups' && (
-        <div className="bg-white dark:bg-[#111622] rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-4">
+        <div className="bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 space-y-4">
           <div className="flex items-center gap-2">
             <HardDrive className="w-5 h-5 text-emerald-500" />
             <h2 className="text-base font-bold text-slate-900 dark:text-white">

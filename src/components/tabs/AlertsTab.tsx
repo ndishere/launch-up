@@ -44,7 +44,7 @@ export const AlertsTab: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
               System Alerts & Monitoring
             </h1>
             <span className="px-2.5 py-0.5 text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 rounded-full">
@@ -58,7 +58,7 @@ export const AlertsTab: React.FC = () => {
 
         <button
           onClick={() => alerts.forEach((a) => markAlertAsRead(a.id))}
-          className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#111622] hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xs transition-all"
+          className="inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#111318] hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl transition-all"
         >
           <CheckCheck className="w-4 h-4 text-emerald-500" />
           <span>Mark All as Read</span>
@@ -66,7 +66,7 @@ export const AlertsTab: React.FC = () => {
       </div>
 
       {/* MOD-09: Autonomous SRE & Self-Healing Backend Operations */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs p-5 space-y-4">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400">
@@ -118,7 +118,7 @@ export const AlertsTab: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isHealing}
-                  className="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-xs shadow-amber-600/30 transition-all flex items-center gap-1.5 shrink-0"
+                  className="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-amber-600/30 transition-all flex items-center gap-1.5 shrink-0"
                 >
                   {isHealing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   <span>Trigger SRE Remediation</span>
@@ -136,7 +136,7 @@ export const AlertsTab: React.FC = () => {
                 <span>Incident Remediation Verified: Gate 5 Generated</span>
               </span>
               <span className={`text-[10px] font-mono font-bold ${sreResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
-                {sreResult.isLive ? 'â—  Live Fastify 8013' : 'â—‹ In-Memory Fallback'}
+                {sreResult.isLive ? '●  Live Fastify 8013' : '● ‹ In-Memory Fallback'}
               </span>
             </div>
 
@@ -150,7 +150,7 @@ export const AlertsTab: React.FC = () => {
               <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                 <span className="text-[10px] text-slate-400 block">Sandbox Regression</span>
                 <span className="text-xs font-bold text-emerald-600">
-                  Passed 100% âœ“
+                  Passed 100% ✓
                 </span>
               </div>
               <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
@@ -185,7 +185,7 @@ export const AlertsTab: React.FC = () => {
       </div>
 
       {/* Alerts Feed */}
-      <div className="bg-white dark:bg-[#111622] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xs divide-y divide-slate-100 dark:divide-slate-800">
+      <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 divide-y divide-slate-100 dark:divide-slate-800">
         {alerts.map((alert) => (
           <div
             key={alert.id}

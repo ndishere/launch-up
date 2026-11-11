@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-11)
 
 ## Corpus Check
-- 169 files · ~126,209 words
+- 169 files · ~124,222 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 13, .example 1, .lock 1)
 
 ## Summary
-- 1723 nodes · 3159 edges · 84 communities (80 shown, 4 thin omitted)
+- 1736 nodes · 3186 edges · 84 communities (80 shown, 4 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 39 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2338664c`
+- Built from commit: `509a8036`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -90,10 +90,10 @@
 - web-builder-service
 - vite.config.ts
 - scripts
-- Header.tsx
+- react-dom
 - agency-full-lifecycle.system.test.ts
 - marketing-engine-service/src/lib/engine.ts
-- @types/canvas-confetti@^1.9.0
+- express@^4.21.2
 - lead-pitch-service/src/routes/index.ts
 - LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
 - backend-api-service
@@ -101,13 +101,13 @@
 - 2. Module-by-Module JSON Input/Output Contracts
 
 ## God Nodes (most connected - your core abstractions)
-1. `useApp()` - 65 edges
+1. `useApp()` - 67 edges
 2. `react` - 39 edges
-3. `lucide-react` - 36 edges
-4. `AppLayout()` - 35 edges
+3. `AppLayout()` - 36 edges
+4. `lucide-react` - 35 edges
 5. `AppContextType` - 25 edges
-6. `ScreenAnalyticsHeader()` - 21 edges
-7. `services` - 20 edges
+6. `services` - 20 edges
+7. `ScreenAnalyticsHeader()` - 19 edges
 8. `test` - 18 edges
 9. `interval` - 18 edges
 10. `timeout` - 18 edges
@@ -131,7 +131,7 @@
 
 ### Community 0 - "AppContext.tsx"
 Cohesion: 0.10
-Nodes (51): NavItem, AppContext, AppContextType, PALETTE_DEFINITIONS, initialAgents, initialAlerts, initialBackups, initialCampaigns (+43 more)
+Nodes (49): NavItem, AppContext, AppContextType, initialAgents, initialAlerts, initialBackups, initialCampaigns, initialClients (+41 more)
 
 ### Community 1 - "environment"
 Cohesion: 0.22
@@ -294,7 +294,7 @@ Cohesion: 0.13
 Nodes (14): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+6 more)
 
 ### Community 43 - "sre-healing-service/src/lib/engine.ts"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (19): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), buildApp() (+11 more)
 
 ### Community 44 - "auth-service"
@@ -362,8 +362,8 @@ Cohesion: 0.29
 Nodes (7): whatsapp-service, build, container_name, networks, ports, restart, volumes
 
 ### Community 60 - "dependencies"
-Cohesion: 0.12
-Nodes (17): dependencies, canvas-confetti@^1.9.4, dotenv@^17.2.3, express@^4.21.2, @google/genai@^2.4.0, lucide-react@^0.546.0, motion@^12.23.24, react@^19.0.1 (+9 more)
+Cohesion: 0.11
+Nodes (18): dependencies, canvas-confetti@^1.9.4, dotenv@^17.2.3, fastify@^5.12.8, @fastify/cors@^11.4.1, @google/genai@^2.4.0, lucide-react@^0.546.0, react@^19.0.1 (+10 more)
 
 ### Community 61 - "compilerOptions"
 Cohesion: 0.14
@@ -378,16 +378,16 @@ Cohesion: 0.13
 Nodes (13): checkPort(), __dirname, __filename, main(), processes, rootDir, SERVICES, ServiceSpec (+5 more)
 
 ### Community 64 - "App.tsx"
-Cohesion: 0.12
-Nodes (31): App(), AppLayout(), Sidebar(), AddClientModal(), ClientDetailDrawer(), ClientPortalModal(), CommandPalette(), CreateProjectModal() (+23 more)
+Cohesion: 0.11
+Nodes (35): lucide-react, react, App(), AppLayout(), Sidebar(), AddClientModal(), ClientDetailDrawer(), ClientPortalModal() (+27 more)
 
 ### Community 65 - "whatsapp-service/src/lib/engine.ts"
-Cohesion: 0.19
+Cohesion: 0.20
 Nodes (17): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), buildApp(), PORT, MetaApiRejectError (+9 more)
 
 ### Community 66 - "api.ts"
-Cohesion: 0.18
-Nodes (26): MarketingEngineTab(), N8nWorkflowsTab(), TEMPLATES, WorkflowNodeData, INITIAL_ER_EDGES, INITIAL_ER_NODES, ProjectsTab(), TeamTab() (+18 more)
+Cohesion: 0.14
+Nodes (32): @xyflow/react, Header(), MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab(), N8nWorkflowsTabProps, WorkflowNodeData (+24 more)
 
 ### Community 67 - "whatsapp-service/package.json"
 Cohesion: 0.08
@@ -398,16 +398,16 @@ Cohesion: 0.13
 Nodes (14): compilerOptions, declaration, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, outDir (+6 more)
 
 ### Community 69 - "react"
-Cohesion: 0.22
-Nodes (10): lucide-react, react, MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, ViewportMode, WorkflowsTab(), ClientStatus (+2 more)
+Cohesion: 0.19
+Nodes (11): MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, ClientsTab(), ConnectedAppsTab(), DeploymentsTab(), FDESystemsTab(), SLMLabTab() (+3 more)
 
 ### Community 70 - "marketing-engine-service"
 Cohesion: 0.29
 Nodes (7): build, container_name, networks, ports, restart, volumes, marketing-engine-service
 
 ### Community 71 - "NoCodeEditorTab.tsx"
-Cohesion: 0.27
-Nodes (10): NoCodeEditorTab(), compileFigCraftToReact(), DEFAULT_FIGCRAFT_TOKENS, FigCraftColorToken, FigCraftComponentNode, FigCraftDesignTokens, FigCraftTypographyToken, generateFigCraftSvgDiagram() (+2 more)
+Cohesion: 0.22
+Nodes (12): NoCodeEditorTab(), NoCodeEditorTabProps, compileFigCraftToReact(), DEFAULT_FIGCRAFT_TOKENS, FigCraftColorToken, FigCraftComponentNode, FigCraftDesignTokens, FigCraftProjectSchema (+4 more)
 
 ### Community 72 - "web-builder-service"
 Cohesion: 0.29
@@ -421,9 +421,9 @@ Nodes (6): @tailwindcss/vite@^4.3.3, vite@^8.3.0, @vitejs/plugin-react@^6.1.1, @
 Cohesion: 0.25
 Nodes (8): scripts, build, clean, dev, dev:all, lint, preview, test
 
-### Community 75 - "Header.tsx"
-Cohesion: 0.67
-Nodes (3): Header(), checkAllServicesHealth(), checkServiceHealth()
+### Community 75 - "react-dom"
+Cohesion: 0.33
+Nodes (4): motion@^12.23.24, react-dom@^19.0.1, motion, react-dom
 
 ### Community 76 - "agency-full-lifecycle.system.test.ts"
 Cohesion: 0.13
@@ -451,7 +451,7 @@ Nodes (3): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`)
 
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 704 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 709 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -462,12 +462,12 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `AppContext.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.0955837870538415 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10235690235690235 - nodes in this community are weakly interconnected._
 - **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.11594202898550725 - nodes in this community are weakly interconnected._
-- **Why does `@fastify/rate-limit` connect `auth-service/package.json` to `auth-service/src/server.ts`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `auth-service/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._
+- **Should `client-service/package.json` be split into smaller, more focused modules?**
+  _Cohesion score 0.06387921022067364 - nodes in this community are weakly interconnected._
