@@ -17,7 +17,33 @@ import {
   CircularTenancyError,
 } from '../lib/verify_permission.js';
 import { detectCircularTenancy } from '../lib/circular_tenancy_check.js';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import fs from 'node:fs';
 import { verifyApiConnectionEngine } from '../engine.js';
+import {
+  scanLocalModelWeights,
+  scanGoldenTemplatesDir,
+  scanWorkspacesDir,
+  importProjectFolderOnServer,
+} from '../local-scanner.js';
+
+function resolveRepoRoot(): string {
+  if (fs.existsSync(path.join(process.cwd(), 'golden-templates'))) {
+    return process.cwd();
+  }
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  return path.resolve(here, '../../../..');
+}
+
+const importProjectFolderSchema = z.object({
+  folderPath: z.string().min(1),
+  sourceTool: z.enum(['Claude Code', 'ChatGPT Codex', 'Cursor', 'Launch Up Template']).default('Claude Code'),
+  clientId: z.string().optional(),
+  projectName: z.string().optional(),
+  projectType: z.string().optional(),
+  autoBootstrap: z.boolean().optional().default(true),
+});
 
 // ── Validation Schemas ────────────────────────────────
 const verifyApiConnectionSchema = z.object({
@@ -157,11 +183,49 @@ export async function governanceRoutes(app: FastifyInstance) {
 
     const result = await verifyApiConnectionEngine(parseResult.data);
     if (result.status === 'CONNECTED') {
+      const localProviders = new Set(['ollama', 'ik_llama_cpp', 'airllm', 'lmstudio']);
+      if (localProviders.has(parseResult.data.provider)) {
+        const localScan = scanLocalModelWeights();
+        if (localScan.discoveredModels.length > 0) {
+          result.discoveredModels = Array.from(
+            new Set([...(result.discoveredModels ?? []), ...localScan.discoveredModels])
+          ).slice(0, 30);
+        }
+      }
       return reply.status(200).send(result);
     }
 
     const httpCode = result.errorCode === 'ERR_API_AUTH_FAILED' ? 401 : 502;
     return reply.status(httpCode).send(result);
+  });
+
+  // ── MOD-10: Scan Local Model Weights (D:\models\weights) ──
+  app.get('/api/v1/governance/local-models', async () => {
+    return scanLocalModelWeights();
+  });
+
+  // ── Drop-In Golden Template Auto-Scanner (`*.launchup.json`) ──
+  app.get('/api/v1/templates/scan', async () => {
+    return scanGoldenTemplatesDir(resolveRepoRoot());
+  });
+
+  // ── External Workspace Folder Auto-Scanner (`workspaces/*`) ──
+  app.get('/api/v1/workspaces/scan', async () => {
+    return scanWorkspacesDir(resolveRepoRoot());
+  });
+
+  // ── Direct Local Project Folder Pull & Auto-Bootstrapper ──
+  app.post('/api/v1/projects/import-folder', async (request, reply) => {
+    const parseResult = importProjectFolderSchema.safeParse(request.body);
+    if (!parseResult.success) {
+      return reply.status(400).send({
+        success: false,
+        error: 'Invalid project folder import payload',
+        details: parseResult.error.format(),
+      });
+    }
+    const imported = importProjectFolderOnServer(resolveRepoRoot(), parseResult.data);
+    return reply.status(200).send(imported);
   });
 
   // ── Approval Gates: List ───────────────────────────

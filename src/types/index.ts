@@ -274,6 +274,96 @@ export interface Project {
   deploymentStatus?: 'Provisioned' | 'Building Docker' | 'Canary Rollout' | 'Healthy Live' | 'Auto-Patched';
   sandboxSynced?: boolean;
   sandboxSyncTimestamp?: string;
+  // External Project Pull & Golden Template Adapter metadata
+  sourceTool?: ExternalBuilderTool;
+  localFolderPath?: string;
+  localDevPort?: number;
+  previewUrl?: string;
+  pulledManifest?: ProjectLaunchupManifest;
+}
+
+export type ExternalBuilderTool =
+  | 'Claude Code'
+  | 'ChatGPT Codex'
+  | 'Cursor'
+  | 'Launch Up Template';
+
+export interface ProjectLaunchupRuntimeAndDeploy {
+  dockerfile: string;
+  composeFile: string;
+  buildCommand: string;
+  startCommand: string;
+  localDevPort: number;
+  previewUrl: string;
+  gitBranches: string[];
+}
+
+export interface ProjectLaunchupManifest {
+  schemaVersion: string;
+  projectId: string;
+  name: string;
+  description: string;
+  sourceTool: ExternalBuilderTool;
+  projectType: ProjectType;
+  framework: string;
+  folderPath: string;
+  clientId?: string;
+  bootstrapped: boolean;
+  createdAt: string;
+  runtimeAndDeploy: ProjectLaunchupRuntimeAndDeploy;
+  layers: {
+    coreLocked: string[];
+    slotsMutable: string[];
+    uiLayer: string[];
+  };
+  lockedFiles: string[];
+  complianceFrameworks: GovernanceFrameworkKey[];
+  graphify: {
+    reportPath: string;
+    nodesCount: number;
+    edgesCount: number;
+    entryNodes: string[];
+  };
+}
+
+export interface GoldenTemplateManifest {
+  schemaVersion: string;
+  id: string;
+  name: string;
+  version: string;
+  category: Template['category'];
+  description: string;
+  stars: number;
+  deployTime: string;
+  previewImage: string;
+  techStack: string[];
+  deltaCloneRatio: number;
+  folderPath?: string;
+  layers: {
+    coreLocked: {
+      rootPath: string;
+      zeroTokenCost: boolean;
+      summary: string;
+      files: string[];
+    };
+    slotsMutable: {
+      rootPath: string;
+      files: string[];
+      sqlSlots: string[];
+      apiSlots: string[];
+    };
+    uiLayer: {
+      rootPath: string;
+      tokensFile: string;
+      components: string[];
+    };
+  };
+  lockedFiles: string[];
+  graphifyChain: {
+    databaseSchemaRoot: string;
+    apiRouterRoot: string;
+    featureRegistryRoot: string;
+  };
 }
 
 export interface DeploymentLog {

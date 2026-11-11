@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "fullstack-saas-engine",
+  "name": "Fullstack SaaS Engine",
+  "version": "4.0.0",
+  "category": "B2B SaaS",
+  "description": "Enterprise M:N multi-tenant SaaS engine with locked PostgreSQL 16 Row-Level Security, Fastify RBAC middleware, Stripe/API slots, and decoupled theme tokens.",
+  "stars": 5.0,
+  "deployTime": "< 3 mins",
+  "previewImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+  "techStack": ["React 19", "Fastify 5", "PostgreSQL 16 RLS", "Docker Compose"],
+  "deltaCloneRatio": 0.88,
+  "layers": {
+    "coreLocked": {
+      "rootPath": "core-locked/",
+      "zeroTokenCost": true,
+      "summary": "Immutable PostgreSQL 16 RLS tenant isolation policies and Fastify RBAC middleware.",
+      "files": [
+        "golden-templates/fullstack-saas-engine/core-locked/rls-policy.sql",
+        "golden-templates/fullstack-saas-engine/core-locked/rbac-middleware.ts"
+      ]
+    },
+    "slotsMutable": {
+      "rootPath": "slots-mutable/",
+      "files": [
+        "golden-templates/fullstack-saas-engine/slots-mutable/feature-routes.ts",
+        "golden-templates/fullstack-saas-engine/slots-mutable/domain-schema.sql"
+      ],
+      "sqlSlots": ["tenant_work_orders", "billing_usage_events"],
+      "apiSlots": ["POST /api/v1/domain/orders", "GET /api/v1/domain/metrics"]
+    },
+    "uiLayer": {
+      "rootPath": "ui-layer/",
+      "tokensFile": "golden-templates/fullstack-saas-engine/ui-layer/theme.tokens.json",
+      "components": [
+        "golden-templates/fullstack-saas-engine/ui-layer/TenantBillingPanel.tsx"
+      ]
+    }
+  },
+  "lockedFiles": [
+    "golden-templates/fullstack-saas-engine/core-locked/rls-policy.sql",
+    "golden-templates/fullstack-saas-engine/core-locked/rbac-middleware.ts"
+  ],
+  "graphifyChain": {
+    "databaseSchemaRoot": "core-locked/rls-policy.sql::DatabaseSchemaRoot",
+    "apiRouterRoot": "core-locked/rbac-middleware.ts::ApiRouterRoot",
+    "featureRegistryRoot": "slots-mutable/feature-routes.ts::FeatureRegistryRoot"
+  }
+}

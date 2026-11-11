@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "landing-page-launchpad",
+  "name": "Landing Page Launchpad",
+  "version": "2.4.0",
+  "category": "Marketing",
+  "description": "High-converting multi-section marketing shell with pre-wired SEO metadata, lead capture webhook slot, and DPDP/GDPR consent guard.",
+  "stars": 4.9,
+  "deployTime": "< 90s",
+  "previewImage": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+  "techStack": ["React 19", "Tailwind v4", "Vite 8", "PostgreSQL Lead Slot"],
+  "deltaCloneRatio": 0.88,
+  "layers": {
+    "coreLocked": {
+      "rootPath": "core-locked/",
+      "zeroTokenCost": true,
+      "summary": "Immutable SEO SSR router, DPDP/GDPR consent banner state & security headers.",
+      "files": [
+        "golden-templates/landing-page-launchpad/core-locked/router.ts",
+        "golden-templates/landing-page-launchpad/core-locked/compliance.ts"
+      ]
+    },
+    "slotsMutable": {
+      "rootPath": "slots-mutable/",
+      "files": [
+        "golden-templates/landing-page-launchpad/slots-mutable/api-leads.ts",
+        "golden-templates/landing-page-launchpad/slots-mutable/seo-meta.sql"
+      ],
+      "sqlSlots": ["leads_capture_table", "utm_attribution_view"],
+      "apiSlots": ["POST /api/v1/public/leads", "GET /api/v1/public/pricing"]
+    },
+    "uiLayer": {
+      "rootPath": "ui-layer/",
+      "tokensFile": "golden-templates/landing-page-launchpad/ui-layer/theme.tokens.json",
+      "components": [
+        "golden-templates/landing-page-launchpad/ui-layer/HeroSection.tsx"
+      ]
+    }
+  },
+  "lockedFiles": [
+    "golden-templates/landing-page-launchpad/core-locked/router.ts",
+    "golden-templates/landing-page-launchpad/core-locked/compliance.ts"
+  ],
+  "graphifyChain": {
+    "databaseSchemaRoot": "slots-mutable/seo-meta.sql::leads_capture",
+    "apiRouterRoot": "core-locked/router.ts::LandingRouterRoot",
+    "featureRegistryRoot": "slots-mutable/api-leads.ts::LeadCaptureFeatureRegistry"
+  }
+}

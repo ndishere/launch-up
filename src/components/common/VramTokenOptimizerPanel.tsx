@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Cpu,
   HardDrive,
@@ -9,6 +9,7 @@ import {
   Zap,
   CheckCircle2,
   AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { calculateBlendedCostPer1MTokens } from '../../lib/custom-api-gateway';
@@ -39,7 +40,19 @@ export const VramTokenOptimizerPanel: React.FC<VramTokenOptimizerPanelProps> = (
     updateTokenOptimizer,
     customApiProviders,
     agentModelAssignments,
+    localWeightsScan,
+    scanLocalWeights,
   } = useApp();
+  const [scanningWeights, setScanningWeights] = useState(false);
+
+  const handleScanWeights = async () => {
+    setScanningWeights(true);
+    try {
+      await scanLocalWeights();
+    } finally {
+      setScanningWeights(false);
+    }
+  };
 
   const blendedRate = calculateBlendedCostPer1MTokens(
     customApiProviders,
@@ -285,6 +298,41 @@ export const VramTokenOptimizerPanel: React.FC<VramTokenOptimizerPanelProps> = (
           <span className="text-slate-400 mr-1.5">SYSTEM_RULE:</span>
           {getCavemanSystemPrompt(tokenOptimizer.cavemanMode)}
         </div>
+      </div>
+
+      {/* D:\models\weights Local Weight Auto-Discovery Strip */}
+      <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
+            <HardDrive className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Local Model Registry (`{localWeightsScan?.weightsDir || 'D:\\models\\weights'}`)</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+              {localWeightsScan?.discoveredModels.length ?? 0} model(s) · {localWeightsScan?.blobCount ?? 0} blob(s)
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {(localWeightsScan?.discoveredModels.length
+              ? localWeightsScan.discoveredModels
+              : ['qwen2.5-coder:7b-instruct-q4_K_M', 'phi3.5:3.8b']
+            ).map((m) => (
+              <span
+                key={m}
+                className="px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-[10px] text-slate-700 dark:text-slate-300"
+              >
+                {m}
+              </span>
+            ))}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleScanWeights}
+          disabled={scanningWeights}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 border border-indigo-200/70 dark:border-indigo-800/60 inline-flex items-center gap-1.5 shrink-0"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${scanningWeights ? 'animate-spin' : ''}`} />
+          <span>Scan D:\models\weights</span>
+        </button>
       </div>
     </div>
   );

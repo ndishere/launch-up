@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "frontend-modular-ui",
+  "name": "Frontend Modular UI Kit",
+  "version": "3.1.0",
+  "category": "Client Portal",
+  "description": "Multi-tenant client portal frontend with immutable RBAC session guards, hot-swappable widget slots, and adaptive Light/Dark/System design tokens.",
+  "stars": 4.8,
+  "deployTime": "< 2 mins",
+  "previewImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+  "techStack": ["React 19", "TypeScript 5.8", "Tailwind v4", "Modular Slots"],
+  "deltaCloneRatio": 0.88,
+  "layers": {
+    "coreLocked": {
+      "rootPath": "core-locked/",
+      "zeroTokenCost": true,
+      "summary": "Immutable JWT auth guard and multi-tenant workspace isolation provider.",
+      "files": [
+        "golden-templates/frontend-modular-ui/core-locked/auth-guard.ts",
+        "golden-templates/frontend-modular-ui/core-locked/tenant-context.ts"
+      ]
+    },
+    "slotsMutable": {
+      "rootPath": "slots-mutable/",
+      "files": [
+        "golden-templates/frontend-modular-ui/slots-mutable/dashboard-widgets.ts",
+        "golden-templates/frontend-modular-ui/slots-mutable/billing-hooks.sql"
+      ],
+      "sqlSlots": ["portal_widgets", "subscription_webhooks"],
+      "apiSlots": ["GET /api/v1/portal/widgets", "POST /api/v1/portal/preferences"]
+    },
+    "uiLayer": {
+      "rootPath": "ui-layer/",
+      "tokensFile": "golden-templates/frontend-modular-ui/ui-layer/theme.tokens.json",
+      "components": [
+        "golden-templates/frontend-modular-ui/ui-layer/DashboardShell.tsx"
+      ]
+    }
+  },
+  "lockedFiles": [
+    "golden-templates/frontend-modular-ui/core-locked/auth-guard.ts",
+    "golden-templates/frontend-modular-ui/core-locked/tenant-context.ts"
+  ],
+  "graphifyChain": {
+    "databaseSchemaRoot": "slots-mutable/billing-hooks.sql::portal_widgets",
+    "apiRouterRoot": "core-locked/auth-guard.ts::verifyPortalSession",
+    "featureRegistryRoot": "slots-mutable/dashboard-widgets.ts::PortalWidgetRegistry"
+  }
+}

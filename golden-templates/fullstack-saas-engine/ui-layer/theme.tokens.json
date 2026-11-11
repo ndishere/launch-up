@@ -1,0 +1,13 @@
+{
+  "brandName": "Enterprise Indigo SaaS",
+  "colors": {
+    "primary": "#4f46e5",
+    "surface": "#090b10",
+    "accent": "#22c55e"
+  },
+  "typography": {
+    "display": "Plus Jakarta Sans",
+    "body": "Inter"
+  },
+  "radius": "0.875rem"
+}

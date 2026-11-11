@@ -6,7 +6,7 @@ import {
   RemoteTelemetryPackage, FDESystemArchitecture,
   TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow,
   ProjectWorkspaceState, CustomApiProviderConfig, AgentModelAssignments, SwarmAgentRoleKey,
-  TokenOptimizerSettings,
+  TokenOptimizerSettings, GoldenTemplateManifest,
 } from '../types';
 import { createDefaultProjectWorkspace } from '../components/workspace/workspaceDefaults';
 import {
@@ -14,6 +14,13 @@ import {
   getDefaultCustomApiProviders,
 } from '../lib/custom-api-gateway';
 import { DEFAULT_TOKEN_OPTIMIZER_SETTINGS } from '../lib/token-compressor';
+import { BUILTIN_GOLDEN_TEMPLATES, toCatalogTemplate } from '../lib/template-loader';
+import {
+  BUILTIN_WORKSPACE_SAMPLES,
+  normalizePulledProjectToLaunchUp,
+  type PullFolderRequest,
+  type PullFolderResponse,
+} from '../lib/project-folder-adapter';
 import { FigCraftProjectSchema, DEFAULT_FIGCRAFT_TOKENS } from '../lib/figcraft-adapter';
 import { 
   initialClients, initialProjects, initialAlerts, initialDeployments, 
@@ -27,9 +34,15 @@ import {
   runTier1InternalHealthPulse,
   verifyApiConnection,
   verifyVendorApisOnProjectStart,
+  scanGoldenTemplates,
+  scanWorkspaceFolders,
+  importProjectFromFolder,
+  scanLocalModelWeightsApi,
   type HealthPulseLogEntry,
   type VendorReadinessReport,
   type VerifyApiConnectionResponse,
+  type DiscoveredWorkspaceFolder,
+  type LocalModelWeightsScanResponse,
 } from '../services/api';
 import { buildLaunchUpFaviconDataUrl } from '../components/common/LaunchUpLogo';
 
@@ -302,6 +315,16 @@ interface AppContextType {
   // RTX 3050 (6GB VRAM) Optimizer & 4-Layer Token Compression
   tokenOptimizer: TokenOptimizerSettings;
   updateTokenOptimizer: (patch: Partial<TokenOptimizerSettings>) => void;
+  // Drop-In Golden Template Auto-Scanner, External Folder Pull & D:\models\weights
+  goldenTemplates: GoldenTemplateManifest[];
+  refreshGoldenTemplates: () => Promise<void>;
+  discoveredWorkspaces: DiscoveredWorkspaceFolder[];
+  refreshWorkspaces: () => Promise<void>;
+  importProjectFolder: (
+    payload: PullFolderRequest
+  ) => Promise<{ project: Project; importResult: PullFolderResponse }>;
+  localWeightsScan: LocalModelWeightsScanResponse | null;
+  scanLocalWeights: () => Promise<LocalModelWeightsScanResponse>;
   resetDemoState: () => void;
 }
 
@@ -687,6 +710,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       DEFAULT_TOKEN_OPTIMIZER_SETTINGS
     )
   );
+  const [goldenTemplates, setGoldenTemplates] = useState<GoldenTemplateManifest[]>(
+    BUILTIN_GOLDEN_TEMPLATES
+  );
+  const [discoveredWorkspaces, setDiscoveredWorkspaces] = useState<DiscoveredWorkspaceFolder[]>(() =>
+    BUILTIN_WORKSPACE_SAMPLES.map((sample) => ({
+      folderPath: sample.folderPath,
+      folderName: 'sample-claude-code-app',
+      hasManifest: true,
+      manifest: sample,
+      hasDockerfile: true,
+      hasCompose: true,
+      hasCheckpoint: true,
+      hasGraphifyReport: true,
+    }))
+  );
+  const [localWeightsScan, setLocalWeightsScan] =
+    useState<LocalModelWeightsScanResponse | null>(null);
 
   // Sync persisted state slices to localStorage
   useEffect(() => {
@@ -870,6 +910,108 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...patch,
     }));
   };
+
+  const refreshGoldenTemplates = async () => {
+    const res = await scanGoldenTemplates();
+    if (res.data.templates.length > 0) {
+      setGoldenTemplates(res.data.templates);
+    }
+  };
+
+  const refreshWorkspaces = async () => {
+    const res = await scanWorkspaceFolders();
+    if (res.data.workspaces.length > 0) {
+      setDiscoveredWorkspaces(res.data.workspaces);
+    }
+  };
+
+  const scanLocalWeights = async (): Promise<LocalModelWeightsScanResponse> => {
+    const res = await scanLocalModelWeightsApi();
+    setLocalWeightsScan(res.data);
+    if (res.data.discoveredModels.length > 0) {
+      const localTypes = new Set(['ollama', 'ik_llama_cpp', 'airllm', 'lmstudio']);
+      setCustomApiProviders((prev) =>
+        prev.map((p) =>
+          localTypes.has(p.provider)
+            ? {
+                ...p,
+                discoveredModels: Array.from(
+                  new Set([...(p.discoveredModels ?? []), ...res.data.discoveredModels])
+                ).slice(0, 30),
+              }
+            : p
+        )
+      );
+    }
+    return res.data;
+  };
+
+  const importProjectFolder = async (
+    payload: PullFolderRequest
+  ): Promise<{ project: Project; importResult: PullFolderResponse }> => {
+    const res = await importProjectFromFolder(payload);
+    const pulled = normalizePulledProjectToLaunchUp(res.data.manifest, payload.clientId);
+
+    setProjects((prev) => {
+      const filtered = prev.filter((p) => p.id !== pulled.id);
+      return [pulled, ...filtered];
+    });
+
+    const linkedClients = clients.filter((cl) => pulled.clientIds.includes(cl.id));
+    const baseWorkspace = createDefaultProjectWorkspace(pulled, linkedClients);
+    baseWorkspace.blueprints.prd = res.data.checkpointMarkdown || baseWorkspace.blueprints.prd;
+    if (pulled.pulledManifest) {
+      const branches = pulled.pulledManifest.runtimeAndDeploy.gitBranches;
+      baseWorkspace.logs = [
+        {
+          id: `log-pull-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString(),
+          stageId: 'ceo',
+          agentName: 'External Folder Adapter',
+          modelUsed: pulled.sourceTool || 'Claude Code',
+          message: `Pulled ${pulled.name} from ${pulled.localFolderPath} (bootstrapped: ${res.data.bootstrapped ? 'YES' : 'existing manifest'}, branches: ${branches.join(', ')}, Graphify nodes: ${pulled.pulledManifest.graphify.nodesCount}).`,
+          level: 'success',
+        },
+        ...baseWorkspace.logs,
+      ];
+    }
+
+    setProjectWorkspaces((prev) => ({
+      ...prev,
+      [pulled.id]: baseWorkspace,
+    }));
+
+    setClients((prevClients) =>
+      prevClients.map((cl) =>
+        pulled.clientIds.includes(cl.id)
+          ? { ...cl, projectIds: [...new Set([...cl.projectIds, pulled.id])] }
+          : cl
+      )
+    );
+
+    setAlerts((prev) => [
+      {
+        id: `alert-pull-${Date.now()}`,
+        title: `Pulled ${pulled.sourceTool || 'External'} Project`,
+        description: `"${pulled.name}" imported from ${pulled.localFolderPath} and bound to Deployments, MOD-06 QA, MOD-09 SRE & FinOps.`,
+        type: 'success',
+        timeAgo: 'Just now',
+        timestamp: new Date().toISOString(),
+        read: false,
+        relatedEntity: pulled.name,
+      },
+      ...prev,
+    ]);
+
+    void verifyVendorReadiness(pulled.name);
+    return { project: pulled, importResult: res.data };
+  };
+
+  useEffect(() => {
+    void refreshGoldenTemplates();
+    void refreshWorkspaces();
+    void scanLocalWeights();
+  }, []);
 
   // Tier 1 Free Internal Mesh Pulse (ports 8004-8013 only; external vendor APIs never polled on idle timers)
   useEffect(() => {
@@ -1609,7 +1751,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deployments,
         backups,
         invoices,
-        templates,
+        templates: [
+          ...goldenTemplates.map(toCatalogTemplate),
+          ...templates.filter(
+            (t) => !goldenTemplates.some((gt) => gt.id === t.id)
+          ),
+        ],
         integrations,
         teamMembers,
         agents,
@@ -1703,6 +1850,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setAgentModelAssignment,
         tokenOptimizer,
         updateTokenOptimizer,
+        goldenTemplates,
+        refreshGoldenTemplates,
+        discoveredWorkspaces,
+        refreshWorkspaces,
+        importProjectFolder,
+        localWeightsScan,
+        scanLocalWeights,
         resetDemoState,
       }}
     >

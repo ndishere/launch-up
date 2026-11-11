@@ -1,15 +1,38 @@
 import React, { useState } from 'react';
-import { Star, Rocket, ArrowRight, FileCode2, Sparkles, X, Copy, Check } from 'lucide-react';
+import { Star, Rocket, ArrowRight, FileCode2, Sparkles, X, Copy, Check, RefreshCw } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { GraphifyImpactAnalyzerPanel } from '../common/GraphifyImpactAnalyzerPanel';
 import { packRepoToCompressedMd, type RepomixSkeletonResult } from '../../lib/token-compressor';
-import type { Template } from '../../types';
+import type { GoldenTemplateManifest, Template } from '../../types';
 
 export const TemplatesTab: React.FC = () => {
-  const { templates, setIsCreateProjectModalOpen, tokenOptimizer, updateTokenOptimizer } = useApp();
+  const {
+    templates,
+    goldenTemplates,
+    refreshGoldenTemplates,
+    setIsCreateProjectModalOpen,
+    tokenOptimizer,
+    updateTokenOptimizer,
+  } = useApp();
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [skeletonResult, setSkeletonResult] = useState<RepomixSkeletonResult | null>(null);
   const [copiedDigest, setCopiedDigest] = useState(false);
+  const [scanningTemplates, setScanningTemplates] = useState(false);
+  const [selectedGoldenId, setSelectedGoldenId] = useState<string>(
+    goldenTemplates[0]?.id || 'landing-page-launchpad'
+  );
+  const selectedGoldenManifest: GoldenTemplateManifest | null =
+    goldenTemplates.find((gt) => gt.id === selectedGoldenId) || goldenTemplates[0] || null;
+
+  const handleScanTemplates = async () => {
+    setScanningTemplates(true);
+    try {
+      await refreshGoldenTemplates();
+    } finally {
+      setScanningTemplates(false);
+    }
+  };
 
   const avgStars = (templates.reduce((acc, t) => acc + t.stars, 0) / (templates.length || 1)).toFixed(1);
   const categoryCount = new Set(templates.map((t) => t.category)).size;
@@ -52,13 +75,24 @@ export const TemplatesTab: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsCreateProjectModalOpen(true)}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
-        >
-          <Rocket className="w-3.5 h-3.5" />
-          <span>Launch Template</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleScanTemplates}
+            disabled={scanningTemplates}
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${scanningTemplates ? 'animate-spin' : ''}`} />
+            <span>Scan *.launchup.json ({goldenTemplates.length})</span>
+          </button>
+          <button
+            onClick={() => setIsCreateProjectModalOpen(true)}
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+          >
+            <Rocket className="w-3.5 h-3.5" />
+            <span>Launch Template</span>
+          </button>
+        </div>
       </div>
 
       {/* Unified 5-Cell Horizontal Summary Bar */}
@@ -130,6 +164,37 @@ export const TemplatesTab: React.FC = () => {
           {tokenOptimizer.goldenTemplateDeltaOnly ? 'Delta-Only: ON' : 'Delta-Only: OFF'}
         </button>
       </div>
+
+      {/* Drop-In Golden Template Selector + Graphify 3-Column Pre-Change Impact Analyzer */}
+      {selectedGoldenManifest && (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              Auto-Discovered Drop-In `.launchup.json` Blueprints:
+            </span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {goldenTemplates.map((gt) => (
+                <button
+                  key={gt.id}
+                  type="button"
+                  onClick={() => setSelectedGoldenId(gt.id)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono transition-colors ${
+                    selectedGoldenManifest.id === gt.id
+                      ? 'bg-indigo-600 text-white font-semibold'
+                      : 'bg-white dark:bg-[#111318] border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
+                  }`}
+                >
+                  {gt.id}/template.launchup.json
+                </button>
+              ))}
+            </div>
+          </div>
+          <GraphifyImpactAnalyzerPanel
+            template={selectedGoldenManifest}
+            title="Template Core vs Mutable Slots & Graphify Impact"
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {templates.map((tmpl) => (

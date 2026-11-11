@@ -14,9 +14,11 @@ import {
   Globe,
   Terminal,
   Sparkles,
+  FolderGit2,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
+import { PullProjectFolderModal } from '../modals/PullProjectFolderModal';
 import {
   synthesizeScope,
   buildLandingWeb,
@@ -40,6 +42,7 @@ export const ProjectsTab: React.FC = () => {
   const [localSearch, setLocalSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [clientFilter, setClientFilter] = useState('All');
+  const [isPullModalOpen, setIsPullModalOpen] = useState(false);
 
   // MOD-02..05 Autonomous Factory State
   const [factoryRunning, setFactoryRunning] = useState(false);
@@ -148,13 +151,23 @@ export const ProjectsTab: React.FC = () => {
           { label: 'Container Sync', value: `${projects.length}/${projects.length}`, subValue: 'Zero drift', status: 'good' },
         ]}
         actions={
-          <button
-            onClick={() => setIsCreateProjectModalOpen(true)}
-            className="px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-1.5"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>New Project</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsPullModalOpen(true)}
+              className="px-3.5 py-2 text-xs font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 border border-indigo-200/80 dark:border-indigo-800/70 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <FolderGit2 className="w-3.5 h-3.5" />
+              <span>Pull Project from Folder</span>
+            </button>
+            <button
+              onClick={() => setIsCreateProjectModalOpen(true)}
+              className="px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Project</span>
+            </button>
+          </div>
         }
       />
 
@@ -311,6 +324,11 @@ export const ProjectsTab: React.FC = () => {
                       <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {project.name}
                       </h3>
+                      {project.sourceTool && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 shrink-0">
+                          {project.sourceTool}
+                        </span>
+                      )}
                       <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
@@ -422,6 +440,11 @@ export const ProjectsTab: React.FC = () => {
           <p className="text-xs text-slate-400 mt-1">Adjust search filters or create a new project.</p>
         </div>
       )}
+
+      <PullProjectFolderModal
+        isOpen={isPullModalOpen}
+        onClose={() => setIsPullModalOpen(false)}
+      />
     </div>
   );
 };

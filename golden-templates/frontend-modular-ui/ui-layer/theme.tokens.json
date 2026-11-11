@@ -1,0 +1,13 @@
+{
+  "brandName": "Modular Portal Slate",
+  "colors": {
+    "primary": "#06b6d4",
+    "surface": "#111318",
+    "accent": "#6366f1"
+  },
+  "typography": {
+    "display": "Inter",
+    "body": "Inter"
+  },
+  "radius": "1rem"
+}

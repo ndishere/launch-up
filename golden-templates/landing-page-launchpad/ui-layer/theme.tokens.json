@@ -1,0 +1,13 @@
+{
+  "brandName": "Launchpad Adaptive",
+  "colors": {
+    "primary": "#4f46e5",
+    "surface": "#0f172a",
+    "accent": "#10b981"
+  },
+  "typography": {
+    "display": "Plus Jakarta Sans",
+    "body": "Inter"
+  },
+  "radius": "0.75rem"
+}

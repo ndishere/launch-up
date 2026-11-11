@@ -30,10 +30,28 @@ export const PreviewStudioTab: React.FC<PreviewStudioTabProps> = ({
   projectName,
   embedded = false,
 }) => {
-  const { figcraftProject, liveTelemetryScores, setLiveTelemetryScores, activeCanvasProjectId } =
-    useApp();
-  const targetProjectId = projectId || activeCanvasProjectId || 'proj-0001-0000-0000-000000000001';
-  const displayName = projectName || figcraftProject.projectName;
+  const {
+    figcraftProject,
+    liveTelemetryScores,
+    setLiveTelemetryScores,
+    activeCanvasProjectId,
+    projects,
+  } = useApp();
+  const [selectedPreviewProjId, setSelectedPreviewProjId] = useState<string>(
+    projectId || activeCanvasProjectId || projects[0]?.id || 'proj-0001-0000-0000-000000000001'
+  );
+  const effectiveProject =
+    projects.find((p) => p.id === (projectId || selectedPreviewProjId)) || projects[0];
+  const targetProjectId = projectId || effectiveProject?.id || 'proj-0001-0000-0000-000000000001';
+  const displayName = projectName || effectiveProject?.name || figcraftProject.projectName;
+  const boundPreviewUrl =
+    effectiveProject?.pulledManifest?.runtimeAndDeploy.previewUrl ||
+    effectiveProject?.previewUrl ||
+    (effectiveProject?.localDevPort ? `http://localhost:${effectiveProject.localDevPort}` : null) ||
+    effectiveProject?.liveUrl ||
+    'https://preview-staging.launchup.internal';
+  const complianceBadges =
+    effectiveProject?.pulledManifest?.complianceFrameworks ?? ['DPDP_INDIA', 'GDPR_EU'];
 
   const [activeViewport, setActiveViewport] = useState<ViewportMode>('mobile');
   const [isRunningQA, setIsRunningQA] = useState(false);
@@ -56,8 +74,8 @@ export const PreviewStudioTab: React.FC<PreviewStudioTabProps> = ({
     try {
       const res = await verifyQA({
         project_id: targetProjectId,
-        web_staging_url: 'https://preview-staging.launchup.internal',
-        api_staging_url: 'https://api-staging.launchup.internal',
+        web_staging_url: boundPreviewUrl,
+        api_staging_url: `${boundPreviewUrl.replace(/\/$/, '')}/api`,
       });
 
       setLiveTelemetryScores({
@@ -97,9 +115,22 @@ export const PreviewStudioTab: React.FC<PreviewStudioTabProps> = ({
               Preview & QA Studio
             </h2>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              {displayName} · 375px–1920px viewports, Android device & MOD-06 audit
+              {displayName} · Bound: <span className="font-mono text-indigo-600 dark:text-indigo-400">{boundPreviewUrl}</span> · {complianceBadges.join(' · ')} + RLS
             </p>
           </div>
+          {!projectId && projects.length > 0 && (
+            <select
+              value={effectiveProject?.id || ''}
+              onChange={(e) => setSelectedPreviewProjId(e.target.value)}
+              className="px-2 py-1 text-xs rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
+            >
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Viewport Selectors */}

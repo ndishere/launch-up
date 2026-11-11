@@ -6,6 +6,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { healIncident } from '../../services/api';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { DebugHotfixInspector } from '../common/DebugHotfixInspector';
 
 export const AlertsTab: React.FC = () => {
   const { alerts, markAlertAsRead, clearAlert, projects } = useApp();
@@ -102,6 +103,9 @@ export const AlertsTab: React.FC = () => {
           status="good"
         />
       </SummaryMetricGrid>
+
+      {/* Debug & SRE Hotfix Inspector for Pulled Projects */}
+      <DebugHotfixInspector />
 
       {/* MOD-09: Autonomous SRE & Self-Healing Backend Operations */}
       <div className="bg-white dark:bg-[#111318] rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-5 space-y-4">

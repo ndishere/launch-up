@@ -10,10 +10,14 @@ import {
   Layers,
   ExternalLink,
   Users,
+  Bug,
+  Monitor,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { N8nWorkflowsTab } from '../tabs/N8nWorkflowsTab';
+import { PreviewStudioTab } from '../tabs/PreviewStudioTab';
+import { DebugHotfixInspector } from '../common/DebugHotfixInspector';
 import { BuildAreaView } from './BuildAreaView';
 import { AgentSwarmView, AIModelsView } from './SwarmAndModelsView';
 import { FinOpsUnitEconomicsView, GitDockerStagingView } from './FinOpsAndGitView';
@@ -33,7 +37,15 @@ import { computeTokenCompressionMetrics } from '../../lib/token-compressor';
 import { verifyProjectFinOpsBudget } from '../../services/api';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
-type WorkspaceTabId = 'build' | 'n8n' | 'swarm' | 'models' | 'finops' | 'git-docker';
+type WorkspaceTabId =
+  | 'build'
+  | 'n8n'
+  | 'swarm'
+  | 'models'
+  | 'finops'
+  | 'git-docker'
+  | 'debug-sre'
+  | 'preview-qa';
 
 export const ProjectWorkspaceModal: React.FC = () => {
   const {
@@ -352,6 +364,8 @@ export const ProjectWorkspaceModal: React.FC = () => {
     { id: 'models', label: 'AI Models', icon: Cpu },
     { id: 'finops', label: 'FinOps & Unit Economics', icon: DollarSign },
     { id: 'git-docker', label: 'Git & Docker Staging', icon: GitBranch },
+    { id: 'debug-sre', label: 'Debug & SRE Hotfix', icon: Bug },
+    { id: 'preview-qa', label: 'Preview & QA', icon: Monitor },
   ];
 
   return (
@@ -754,6 +768,18 @@ export const ProjectWorkspaceModal: React.FC = () => {
               branches={workspace.gitDocker}
               onPromoteBranch={handlePromoteBranch}
               onGitDockerAction={handleGitDockerAction}
+            />
+          )}
+
+          {activeTab === 'debug-sre' && (
+            <DebugHotfixInspector project={project} />
+          )}
+
+          {activeTab === 'preview-qa' && (
+            <PreviewStudioTab
+              projectId={project.id}
+              projectName={project.name}
+              embedded
             />
           )}
         </div>

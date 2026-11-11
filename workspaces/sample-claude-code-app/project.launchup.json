@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "ext-claude-freight-01",
+  "name": "SwiftFreight Dispatch AI (Claude Code)",
+  "description": "External multi-tenant freight quoting & dispatch app built in Claude Code, pulled into Launch Up for Gate 3 deployment, MOD-06 SecOps, and MOD-09 SRE hotfixes.",
+  "sourceTool": "Claude Code",
+  "projectType": "SaaS Platform",
+  "framework": "React 19 + Fastify 5 + PostgreSQL 16",
+  "folderPath": "workspaces/sample-claude-code-app",
+  "clientId": "client-1",
+  "bootstrapped": false,
+  "createdAt": "2026-11-11T10:00:00Z",
+  "runtimeAndDeploy": {
+    "dockerfile": "Dockerfile",
+    "composeFile": "docker-compose.yml",
+    "buildCommand": "npm run build",
+    "startCommand": "node dist/server.js",
+    "localDevPort": 4100,
+    "previewUrl": "http://localhost:4100",
+    "gitBranches": ["feature/dev", "feature/testing", "feature/uat", "main"]
+  },
+  "layers": {
+    "coreLocked": [
+      "src/server.ts",
+      "src/db/schema.sql"
+    ],
+    "slotsMutable": [
+      "src/routes/rates.ts",
+      "Dockerfile",
+      "docker-compose.yml"
+    ],
+    "uiLayer": [
+      "ui/theme.tokens.json"
+    ]
+  },
+  "lockedFiles": [
+    "src/server.ts",
+    "src/db/schema.sql"
+  ],
+  "complianceFrameworks": ["DPDP_INDIA", "GDPR_EU"],
+  "graphify": {
+    "reportPath": "workspaces/sample-claude-code-app/graphify-out/GRAPH_REPORT.md",
+    "nodesCount": 148,
+    "edgesCount": 312,
+    "entryNodes": [
+      "DatabaseSchemaRoot",
+      "ApiRouterRoot",
+      "FeatureRegistryRoot"
+    ]
+  }
+}

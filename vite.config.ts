@@ -20,6 +20,9 @@ export default defineConfig(() => {
       proxy: {
         '/api/v1/governance': { target: 'http://localhost:8004', changeOrigin: true },
         '/api/v1/gates': { target: 'http://localhost:8004', changeOrigin: true },
+        '/api/v1/templates': { target: 'http://localhost:8004', changeOrigin: true },
+        '/api/v1/workspaces': { target: 'http://localhost:8004', changeOrigin: true },
+        '/api/v1/projects': { target: 'http://localhost:8004', changeOrigin: true },
         '/api/v1/leads': { target: 'http://localhost:8005', changeOrigin: true },
         '/api/v1/intake': { target: 'http://localhost:8006', changeOrigin: true },
         '/api/v1/web': { target: 'http://localhost:8007', changeOrigin: true },

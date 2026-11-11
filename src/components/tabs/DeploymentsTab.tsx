@@ -25,6 +25,11 @@ export const DeploymentsTab: React.FC = () => {
   // MOD-06 QA & SecOps Verification Interactive State
   const [runningQA, setRunningQA] = useState(false);
   const [qaResult, setQaResult] = useState<any>(null);
+  const [promotedBranch, setPromotedBranch] = useState<string>('feature/uat');
+  const [gate3ApprovedForExternal, setGate3ApprovedForExternal] = useState<string | null>(null);
+
+  const selectedProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
+  const pulledRuntime = selectedProject?.pulledManifest?.runtimeAndDeploy;
 
   const handleRunQA = async () => {
     setRunningQA(true);
@@ -207,6 +212,77 @@ export const DeploymentsTab: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Pulled External Project Runtime (`project.launchup.json` -> Docker / Git / Gate 3) */}
+      {pulledRuntime && (
+        <div className="bg-white dark:bg-[#111318] rounded-xl border border-indigo-200/80 dark:border-indigo-900/50 p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Terminal className="w-4 h-4 text-indigo-500" />
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Pulled Folder Runtime &amp; Gate 3 Staging — {selectedProject?.name}
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300">
+                  {selectedProject?.sourceTool} · Port {pulledRuntime.localDevPort}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Reads <code>runtimeAndDeploy</code> from <code>project.launchup.json</code> to drive Docker Compose staging, Git branch promotion, and Gate 3 approval.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={promotedBranch}
+                onChange={(e) => setPromotedBranch(e.target.value)}
+                className="px-2.5 py-1.5 text-xs font-mono bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200"
+              >
+                {pulledRuntime.gitBranches.map((br) => (
+                  <option key={br} value={br}>
+                    {br}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => triggerDeployment(selectedProject.id, 'Staging')}
+                className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg"
+              >
+                Build Docker ({pulledRuntime.composeFile})
+              </button>
+              <button
+                type="button"
+                onClick={() => setGate3ApprovedForExternal(`gate-0003-${Date.now().toString(36)}`)}
+                className="px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg inline-flex items-center gap-1"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Approve Gate 3 ({promotedBranch})</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono">
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+              <span className="text-[10px] text-slate-400 block">Dockerfile</span>
+              <span className="text-slate-800 dark:text-slate-200 font-bold">{pulledRuntime.dockerfile}</span>
+            </div>
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+              <span className="text-[10px] text-slate-400 block">Compose Stack</span>
+              <span className="text-slate-800 dark:text-slate-200 font-bold">{pulledRuntime.composeFile}</span>
+            </div>
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+              <span className="text-[10px] text-slate-400 block">Build Command</span>
+              <span className="text-slate-800 dark:text-slate-200 font-bold">{pulledRuntime.buildCommand}</span>
+            </div>
+            <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
+              <span className="text-[10px] text-slate-400 block">Gate 3 Status</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                {gate3ApprovedForExternal ? `APPROVED (${gate3ApprovedForExternal})` : 'Ready to Promote'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cluster Status Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

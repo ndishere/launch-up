@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { generateProjectContextCompactMd } from '../../lib/token-compressor';
+import { GraphifyImpactAnalyzerPanel } from '../common/GraphifyImpactAnalyzerPanel';
 import {
   GovernanceFrameworkKey,
   Project,
@@ -367,6 +368,13 @@ export const BuildAreaView: React.FC<BuildAreaViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Graphify Pre-Change 3-Column Impact Analyzer */}
+      <GraphifyImpactAnalyzerPanel
+        project={project}
+        manifest={project.pulledManifest}
+        title="Workspace Pre-Change Impact Analyzer"
+      />
 
       {/* PROJECT_CONTEXT_COMPACT.md Inspector & Download Modal */}
       {showCompactModal && (

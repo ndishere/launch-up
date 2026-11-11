@@ -6,12 +6,22 @@
 
 import { evaluateMod10FinOpsBudget } from '../lib/unit-economics.ts';
 import {
+  BUILTIN_GOLDEN_TEMPLATES,
+  parseTemplateManifest,
+} from '../lib/template-loader.ts';
+import {
+  BUILTIN_WORKSPACE_SAMPLES,
+  bootstrapRawProjectFolderManifest,
+  type PullFolderRequest,
+  type PullFolderResponse,
+} from '../lib/project-folder-adapter.ts';
+import {
   verifyApiConnectionEngine,
   type VerifiableApiProvider,
   type VerifyApiConnectionInput,
   type VerifyApiConnectionResult,
 } from '../../services/governance-service/src/engine.ts';
-import type { Mod10FinOpsCheckSnapshot } from '../types';
+import type { GoldenTemplateManifest, Mod10FinOpsCheckSnapshot } from '../types';
 
 export interface ServiceEndpointConfig {
   id: string;
@@ -922,4 +932,151 @@ export async function verifyApiConnection(
     ...fallback,
     isLiveService: false,
   };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Drop-In Golden Templates, External Folder Pull & D:\models\weights
+// ─────────────────────────────────────────────────────────────
+
+export async function scanGoldenTemplates(): Promise<{
+  data: {
+    templates: GoldenTemplateManifest[];
+    errors: Array<{ source: string; error: string }>;
+    scannedAt: string;
+  };
+  isLive: boolean;
+}> {
+  const res = await fetchWithFallback(
+    '/api/v1/templates/scan',
+    'http://localhost:8004/api/v1/templates/scan',
+    { method: 'GET' },
+    () => ({
+      templates: BUILTIN_GOLDEN_TEMPLATES,
+      errors: [],
+      scannedAt: new Date().toISOString(),
+    })
+  );
+
+  const normalizedTemplates: GoldenTemplateManifest[] = [];
+  for (const raw of res.data.templates || []) {
+    const parsed = parseTemplateManifest(raw, (raw as GoldenTemplateManifest).folderPath);
+    if (parsed.valid) normalizedTemplates.push(parsed.manifest);
+  }
+
+  return {
+    data: {
+      templates: normalizedTemplates.length > 0 ? normalizedTemplates : BUILTIN_GOLDEN_TEMPLATES,
+      errors: res.data.errors || [],
+      scannedAt: res.data.scannedAt || new Date().toISOString(),
+    },
+    isLive: res.isLive,
+  };
+}
+
+export interface DiscoveredWorkspaceFolder {
+  folderPath: string;
+  folderName: string;
+  hasManifest: boolean;
+  manifest: (typeof BUILTIN_WORKSPACE_SAMPLES)[number] | null;
+  hasDockerfile: boolean;
+  hasCompose: boolean;
+  hasCheckpoint: boolean;
+  hasGraphifyReport: boolean;
+}
+
+export async function scanWorkspaceFolders(): Promise<{
+  data: { workspaces: DiscoveredWorkspaceFolder[]; scannedAt: string };
+  isLive: boolean;
+}> {
+  return fetchWithFallback(
+    '/api/v1/workspaces/scan',
+    'http://localhost:8004/api/v1/workspaces/scan',
+    { method: 'GET' },
+    () => ({
+      workspaces: BUILTIN_WORKSPACE_SAMPLES.map((sample) => ({
+        folderPath: sample.folderPath,
+        folderName: 'sample-claude-code-app',
+        hasManifest: true,
+        manifest: sample,
+        hasDockerfile: true,
+        hasCompose: true,
+        hasCheckpoint: true,
+        hasGraphifyReport: true,
+      })),
+      scannedAt: new Date().toISOString(),
+    })
+  );
+}
+
+export async function importProjectFromFolder(
+  payload: PullFolderRequest
+): Promise<{ data: PullFolderResponse; isLive: boolean }> {
+  return fetchWithFallback<PullFolderResponse>(
+    '/api/v1/projects/import-folder',
+    'http://localhost:8004/api/v1/projects/import-folder',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    },
+    () => {
+      const normalized = payload.folderPath.trim().replace(/\\/g, '/').replace(/\/+$/, '');
+      const existing = BUILTIN_WORKSPACE_SAMPLES.find(
+        (s) => s.folderPath === normalized || normalized.endsWith('/sample-claude-code-app')
+      );
+      if (existing) {
+        return {
+          manifest: {
+            ...existing,
+            sourceTool: payload.sourceTool || existing.sourceTool,
+            clientId: payload.clientId || existing.clientId,
+          },
+          bootstrapped: false,
+          generatedFiles: [],
+          graphifyIndexed: true,
+          checkpointMarkdown: `# ${existing.name}\n\nPulled cleanly from ${existing.folderPath}.`,
+        };
+      }
+      const bootstrapped = bootstrapRawProjectFolderManifest(payload);
+      return {
+        manifest: bootstrapped.manifest,
+        bootstrapped: true,
+        generatedFiles: bootstrapped.generatedFiles,
+        graphifyIndexed: true,
+        checkpointMarkdown: bootstrapped.checkpointMarkdown,
+      };
+    }
+  );
+}
+
+export interface LocalModelWeightsScanResponse {
+  weightsDir: string;
+  exists: boolean;
+  discoveredModels: string[];
+  ggufFiles: Array<{ name: string; sizeMb: number }>;
+  blobCount: number;
+  scannedAt: string;
+}
+
+export async function scanLocalModelWeightsApi(): Promise<{
+  data: LocalModelWeightsScanResponse;
+  isLive: boolean;
+}> {
+  return fetchWithFallback<LocalModelWeightsScanResponse>(
+    '/api/v1/governance/local-models',
+    'http://localhost:8004/api/v1/governance/local-models',
+    { method: 'GET' },
+    () => ({
+      weightsDir: 'D:\\models\\weights',
+      exists: true,
+      discoveredModels: [
+        'qwen2.5-coder:7b-instruct-q4_K_M',
+        'phi3.5:3.8b',
+        'deepseek-r1:7b-qwen-distill-q4_K_M',
+      ],
+      ggufFiles: [],
+      blobCount: 1,
+      scannedAt: new Date().toISOString(),
+    })
+  );
 }
