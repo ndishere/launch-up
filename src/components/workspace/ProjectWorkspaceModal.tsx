@@ -29,6 +29,7 @@ import {
   type GitDockerActionType,
 } from '../../lib/git-docker-manager';
 import { formatPreFlightGatewayLog } from '../../lib/custom-api-gateway';
+import { computeTokenCompressionMetrics } from '../../lib/token-compressor';
 import { verifyProjectFinOpsBudget } from '../../services/api';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
@@ -49,6 +50,7 @@ export const ProjectWorkspaceModal: React.FC = () => {
     customApiProviders,
     agentModelAssignments,
     testCustomApiProvider,
+    tokenOptimizer,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<WorkspaceTabId>('build');
@@ -155,8 +157,18 @@ export const ProjectWorkspaceModal: React.FC = () => {
             | 'warn',
         }));
 
+      const optimizerMetrics = computeTokenCompressionMetrics({
+        rawBaselineTokens: 185_000,
+        optimizer: tokenOptimizer,
+      });
+
       updateProjectWorkspace(project.id, (prev) => ({
         ...prev,
+        finops: {
+          ...prev.finops,
+          tokenCompressionSavingsUsd: optimizerMetrics.estimatedUsdSaved,
+          tokenReductionPercent: optimizerMetrics.reductionPercent,
+        },
         logs: [
           {
             id: `log-start-${Date.now()}`,
@@ -166,6 +178,15 @@ export const ProjectWorkspaceModal: React.FC = () => {
             modelUsed: prev.modelRouting.fastReasoning,
             message: `Autonomous Factory started for "${project.name}" across 7 hierarchical stages.`,
             level: 'info' as const,
+          },
+          {
+            id: `log-opt-${Date.now()}`,
+            timestamp: new Date().toLocaleTimeString(),
+            stageId: 'ceo' as const,
+            agentName: '4-Layer Token Optimizer',
+            modelUsed: `/caveman ${tokenOptimizer.cavemanMode}`,
+            message: `[TokenOptimizer] Caveman (${tokenOptimizer.cavemanMode}) + Repomix AST (${tokenOptimizer.repomixAstSkeletonMode ? 'ON' : 'OFF'}) + Golden Delta (${optimizerMetrics.deltaBoilerplateClonedPercent}% free) — ${optimizerMetrics.reductionPercent}% context reduced · VRAM ${optimizerMetrics.estimatedVramGb}GB/${tokenOptimizer.vramBudgetGb}GB.`,
+            level: 'success' as const,
           },
           ...preFlightLogs,
           ...prev.logs,
@@ -210,6 +231,12 @@ export const ProjectWorkspaceModal: React.FC = () => {
           assignedGateway?.defaultModelId ||
           prev.modelRouting[def.modelKey];
         const newSha = Math.random().toString(16).slice(2, 9);
+        const stepOpt = computeTokenCompressionMetrics({
+          rawBaselineTokens: 185_000,
+          optimizer: tokenOptimizer,
+        });
+        const costFactor = Math.max(0.2, Number((1 - stepOpt.reductionPercent / 100).toFixed(2)));
+        const stageSpendDelta = Number((def.tokenCostUsd * costFactor).toFixed(2));
         return {
           ...prev,
           stages: prev.stages.map((s, idx) =>
@@ -228,13 +255,13 @@ export const ProjectWorkspaceModal: React.FC = () => {
                   ...slot,
                   status: 'Completed',
                   activeQueue: Math.max(0, slot.activeQueue - 1),
-                  tokensSpentUsd: Number((slot.tokensSpentUsd + def.tokenCostUsd * 0.45).toFixed(2)),
+                  tokensSpentUsd: Number((slot.tokensSpentUsd + stageSpendDelta * 0.45).toFixed(2)),
                 }
               : slot
           ),
           finops: {
             ...prev.finops,
-            actualLlmSpendUsd: Number((prev.finops.actualLlmSpendUsd + def.tokenCostUsd).toFixed(2)),
+            actualLlmSpendUsd: Number((prev.finops.actualLlmSpendUsd + stageSpendDelta).toFixed(2)),
             containerHours: Number((prev.finops.containerHours + def.containerHoursDelta).toFixed(2)),
             agentComputeMinutes: Number((prev.finops.agentComputeMinutes + def.computeMinsDelta).toFixed(1)),
           },
@@ -561,6 +588,29 @@ export const ProjectWorkspaceModal: React.FC = () => {
                 updateProjectWorkspace(project.id, (prev) => ({
                   ...prev,
                   modelRouting: { ...prev.modelRouting, ...patch },
+                }))
+              }
+              appliedTokenSavingsUsd={workspace.finops.tokenCompressionSavingsUsd}
+              onApplyTokenSavings={(savingsUsd, reductionPercent) =>
+                updateProjectWorkspace(project.id, (prev) => ({
+                  ...prev,
+                  finops: {
+                    ...prev.finops,
+                    tokenCompressionSavingsUsd: savingsUsd,
+                    tokenReductionPercent: reductionPercent,
+                  },
+                  logs: [
+                    {
+                      id: `log-finops-opt-${Date.now()}`,
+                      timestamp: new Date().toLocaleTimeString(),
+                      stageId: 'ceo' as const,
+                      agentName: '4-Layer Token Optimizer',
+                      modelUsed: `/caveman ${tokenOptimizer.cavemanMode}`,
+                      message: `Synced $${savingsUsd.toFixed(2)} (${reductionPercent}% compression) to Project FinOps Unit Economics.`,
+                      level: 'success' as const,
+                    },
+                    ...prev.logs,
+                  ].slice(0, 60),
                 }))
               }
             />

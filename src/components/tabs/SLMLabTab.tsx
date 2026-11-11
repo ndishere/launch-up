@@ -7,9 +7,11 @@ import {
 import { useApp } from '../../context/AppContext';
 import { SLMModel, SLMQuantization } from '../../types';
 import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
+import { VramTokenOptimizerPanel } from '../common/VramTokenOptimizerPanel';
+import { compressToCavemanMd } from '../../lib/token-compressor';
 
 export const SLMLabTab: React.FC = () => {
-  const { slms, trainSLMModel, addSLMModel } = useApp();
+  const { slms, trainSLMModel, addSLMModel, tokenOptimizer } = useApp();
 
   const [selectedModel, setSelectedModel] = useState<SLMModel>(slms[0]);
   const [showCreateModelModal, setShowCreateModelModal] = useState(false);
@@ -29,12 +31,18 @@ export const SLMLabTab: React.FC = () => {
     setIsInferencing(true);
     setPlaygroundOutput('');
 
-    const simulatedResponse = `[Inference complete in ${selectedModel.evalScores.latencyMs}ms @ ${selectedModel.tokensPerSec} tps on ${selectedModel.deviceTarget}]
+    const rawResponse = `[Inference complete in ${selectedModel.evalScores.latencyMs}ms @ ${selectedModel.tokensPerSec} tps on ${selectedModel.deviceTarget}]
 
-1. Max Connection Tuning: Configure PostgreSQL max_connections based on available RAM (typically 100-200) rather than spawning unbounded threads.
-2. Connection Pooler: Mount PgBouncer or Odyssey in Transaction Pooling mode at the cluster edge. This reduces thread switching overhead by 80%.
-3. Keepalives: Configure tcp_keepalives_idle = 60 to prune dead edge connections immediately.
-4. Autonomous Telemetry: Monitored via Launch Up Sentinel Agent with auto-scaling connection thresholds.`;
+1. Max Connection Tuning: You should make sure to configure PostgreSQL max_connections based on the available RAM (typically 100-200) rather than spawning unbounded threads.
+2. Connection Pooler: In order to reduce overhead, mount PgBouncer or Odyssey in Transaction Pooling mode at the cluster edge. Therefore, this reduces the thread switching overhead by 80%.
+3. Keepalives: Please note that you should configure tcp_keepalives_idle = 60 in order to prune dead edge connections immediately.
+4. Autonomous Telemetry: It is important to note that the pool is monitored via Launch Up Sentinel Agent with auto-scaling connection thresholds.`;
+
+    let simulatedResponse = rawResponse;
+    if (tokenOptimizer.cavemanMode !== 'off') {
+      const compressed = compressToCavemanMd(rawResponse, tokenOptimizer.cavemanMode);
+      simulatedResponse = `[/caveman ${tokenOptimizer.cavemanMode} · ${compressed.rawTokens} -> ${compressed.compressedTokens} tokens (${compressed.reductionPercent}% saved)]\n\n${compressed.compressedText}`;
+    }
 
     let i = 0;
     const interval = setInterval(() => {
@@ -117,6 +125,9 @@ export const SLMLabTab: React.FC = () => {
           </button>
         }
       />
+
+      {/* RTX 3050 (6GB VRAM) Hardware & 4-Layer Token Compression Optimizer */}
+      <VramTokenOptimizerPanel />
 
       {/* Model Cards Grid & Benchmarking */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

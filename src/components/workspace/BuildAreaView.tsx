@@ -13,7 +13,13 @@ import {
   ArrowRight,
   ChevronRight,
   Cpu,
+  Download,
+  Sparkles,
+  FileArchive,
+  X,
 } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import { generateProjectContextCompactMd } from '../../lib/token-compressor';
 import {
   GovernanceFrameworkKey,
   Project,
@@ -40,30 +46,95 @@ export const BuildAreaView: React.FC<BuildAreaViewProps> = ({
   onToggleCompliance,
   onUpdateBlueprint,
 }) => {
+  const { tokenOptimizer, updateTokenOptimizer } = useApp();
   const [blueprintTab, setBlueprintTab] = useState<'prd' | 'tdd' | 'designTheme' | 'compliance'>('prd');
+  const [showCompactModal, setShowCompactModal] = useState(false);
 
   const completedStages = workspace.stages.filter((s) => s.status === 'completed').length;
   const allDone = completedStages === workspace.stages.length;
+
+  const compactDigest = generateProjectContextCompactMd({
+    projectName: project.name,
+    projectType: project.type,
+    branchNames: workspace.gitDocker.map((b) => b.branch),
+    workspaceSummary: `Project ${project.name} (${project.type}) on ${project.framework}. Stages completed: ${completedStages}/${workspace.stages.length}.`,
+    handoffCheckpointMd: workspace.blueprints.prd,
+    templateFiles: [
+      {
+        path: 'src/blueprints/tdd-contract.ts',
+        content: workspace.blueprints.tdd,
+      },
+      {
+        path: 'src/blueprints/design-tokens.ts',
+        content: workspace.blueprints.designTheme,
+      },
+    ],
+    optimizer: tokenOptimizer,
+  });
+
+  const handleDownloadCompactMd = () => {
+    const blob = new Blob([compactDigest.markdown], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = compactDigest.filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-5">
       {/* Pipeline Control Banner */}
       <div className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
               Hierarchical Agent Swarm Pipeline
             </h3>
             <span className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60">
               {completedStages} / {workspace.stages.length} Stages Verified
             </span>
+            <button
+              type="button"
+              onClick={() =>
+                updateTokenOptimizer({
+                  cavemanMode:
+                    tokenOptimizer.cavemanMode === 'off'
+                      ? 'lite'
+                      : tokenOptimizer.cavemanMode === 'lite'
+                      ? 'full'
+                      : tokenOptimizer.cavemanMode === 'full'
+                      ? 'ultra'
+                      : 'off',
+                })
+              }
+              className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 inline-flex items-center gap-1"
+              title="Cycle Caveman Agent Output Mode (off -> lite -> full -> ultra)"
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>/caveman {tokenOptimizer.cavemanMode}</span>
+            </button>
+            {tokenOptimizer.goldenTemplateDeltaOnly && (
+              <span className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                88% Delta Clone ($0)
+              </span>
+            )}
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             CEO Agent → Tech Architect → Design Team → Parallel Coding Agents → Testing Agents → Tech Manager Integration → UAT / Deployment
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowCompactModal(true)}
+            className="px-3 py-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50/80 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200/70 dark:border-indigo-800/60 rounded-lg transition-colors inline-flex items-center gap-1.5"
+            title="View & download Graphify + Repomix + Caveman PROJECT_CONTEXT_COMPACT.md"
+          >
+            <FileArchive className="w-3.5 h-3.5" />
+            <span>Compact Context ({compactDigest.reductionPercent}% saved)</span>
+          </button>
           <button
             type="button"
             onClick={onResetBuild}
@@ -296,6 +367,50 @@ export const BuildAreaView: React.FC<BuildAreaViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* PROJECT_CONTEXT_COMPACT.md Inspector & Download Modal */}
+      {showCompactModal && (
+        <div
+          className="fixed inset-0 z-[75] flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCompactModal(false);
+          }}
+        >
+          <div className="w-full max-w-3xl max-h-[88vh] flex flex-col bg-white dark:bg-[#0D1017] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white font-mono">
+                  {compactDigest.filename}
+                </h3>
+                <p className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
+                  {compactDigest.rawTokens} raw → {compactDigest.compressedTokens} compressed tokens ({compactDigest.reductionPercent}% reduced · Graphify {compactDigest.breakdown.graphifyTokens}t · Repomix {compactDigest.breakdown.repomixTokens}t · Caveman {compactDigest.breakdown.cavemanHandoffTokens}t)
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleDownloadCompactMd}
+                  className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg inline-flex items-center gap-1.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download .md</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowCompactModal(false)}
+                  aria-label="Close compact context viewer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <pre className="flex-1 overflow-auto p-4 bg-[#0D111A] text-slate-200 font-mono text-[11px] leading-relaxed">
+              {compactDigest.markdown}
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

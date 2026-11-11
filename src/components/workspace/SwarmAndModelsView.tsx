@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { ProjectModelRouting, ProjectWorkspaceState } from '../../types';
 import { CustomApiGatewayPanel } from '../common/CustomApiGatewayPanel';
+import { VramTokenOptimizerPanel } from '../common/VramTokenOptimizerPanel';
 
 interface AgentSwarmViewProps {
   workspace: ProjectWorkspaceState;
@@ -153,6 +154,8 @@ export const AgentSwarmView: React.FC<AgentSwarmViewProps> = ({
 interface AIModelsViewProps {
   routing: ProjectModelRouting;
   onUpdateRouting: (patch: Partial<ProjectModelRouting>) => void;
+  onApplyTokenSavings?: (savingsUsd: number, reductionPercent: number) => void;
+  appliedTokenSavingsUsd?: number;
 }
 
 const MODEL_TIERS = [
@@ -186,7 +189,12 @@ const MODEL_TIERS = [
   },
 ];
 
-export const AIModelsView: React.FC<AIModelsViewProps> = ({ routing, onUpdateRouting }) => {
+export const AIModelsView: React.FC<AIModelsViewProps> = ({
+  routing,
+  onUpdateRouting,
+  onApplyTokenSavings,
+  appliedTokenSavingsUsd,
+}) => {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -281,6 +289,12 @@ export const AIModelsView: React.FC<AIModelsViewProps> = ({ routing, onUpdateRou
           </div>
         </div>
       </div>
+
+      {/* RTX 3050 (6GB VRAM) Optimizer & 4-Layer Token Compression */}
+      <VramTokenOptimizerPanel
+        onApplyFinOpsSavings={onApplyTokenSavings}
+        appliedFinOpsSavingsUsd={appliedTokenSavingsUsd}
+      />
 
       {/* Universal Custom AI & External API Gateway Manager + Per-Agent Matrix */}
       <CustomApiGatewayPanel />
