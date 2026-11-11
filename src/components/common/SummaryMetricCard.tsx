@@ -33,7 +33,9 @@ export const SummaryMetricGrid: React.FC<{ children: React.ReactNode; className?
   children,
   className = '',
 }) => (
-  <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 ${className}`}>
+  <div
+    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80 dark:divide-slate-800 ${className}`}
+  >
     {children}
   </div>
 );
@@ -48,7 +50,7 @@ export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
   id,
 }) => {
   const interactiveClasses = onClick
-    ? 'cursor-pointer hover:border-indigo-300 dark:hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 text-left group'
+    ? 'cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500/30 text-left group'
     : '';
 
   const content = (
@@ -68,7 +70,7 @@ export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
 
       {/* Middle Row: Primary Value */}
       <div className="mt-2">
-        <span className="text-2xl font-bold tracking-tight whitespace-nowrap text-slate-900 dark:text-slate-100 tabular-nums block">
+        <span className="text-[19px] leading-snug font-bold tracking-tight whitespace-nowrap text-slate-900 dark:text-slate-100 tabular-nums block">
           {primaryValue}
         </span>
       </div>
@@ -93,7 +95,7 @@ export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
     </>
   );
 
-  const baseClass = `h-full min-h-[120px] w-full flex flex-col justify-between p-4 rounded-xl bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800/80 transition-colors ${interactiveClasses}`;
+  const baseClass = `h-full min-h-[112px] w-full flex flex-col justify-between p-4 bg-transparent transition-colors ${interactiveClasses}`;
 
   if (onClick) {
     return (
