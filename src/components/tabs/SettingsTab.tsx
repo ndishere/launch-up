@@ -6,6 +6,7 @@ import {
 import { useApp } from '../../context/AppContext';
 import { ThemeMode, ColorPalette } from '../../types';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { CustomApiGatewayPanel } from '../common/CustomApiGatewayPanel';
 
 export const SettingsTab: React.FC = () => {
   const { themeMode, setThemeMode, palette, setPalette, resolvedTheme, resetDemoState } = useApp();
@@ -80,6 +81,8 @@ export const SettingsTab: React.FC = () => {
           status="neutral"
         />
       </SummaryMetricGrid>
+
+      <CustomApiGatewayPanel />
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* General Branding */}

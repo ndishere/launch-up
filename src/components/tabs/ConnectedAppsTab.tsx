@@ -5,12 +5,13 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
+import { CustomApiGatewayPanel } from '../common/CustomApiGatewayPanel';
 import { ConnectedAppPlugin } from '../../types';
 
 export const ConnectedAppsTab: React.FC = () => {
-  const { connectedApps, toggleAppInstall, stackPresets, addStackPreset } = useApp();
+  const { connectedApps, toggleAppInstall, stackPresets, addStackPreset, customApiProviders } = useApp();
 
-  const [activeSubView, setActiveSubView] = useState<'plugins' | 'stacks'>('plugins');
+  const [activeSubView, setActiveSubView] = useState<'plugins' | 'stacks' | 'ai-apis'>('plugins');
   const [showAddStackModal, setShowAddStackModal] = useState(false);
 
   // New Stack Form
@@ -105,6 +106,16 @@ export const ConnectedAppsTab: React.FC = () => {
               }`}
             >
               Tech Stack Presets ({stackPresets.length})
+            </button>
+            <button
+              onClick={() => setActiveSubView('ai-apis')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors ${
+                activeSubView === 'ai-apis'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              AI APIs & Gateways ({customApiProviders.length})
             </button>
             {activeSubView === 'stacks' && (
               <button
@@ -350,6 +361,9 @@ export const ConnectedAppsTab: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* SubView: AI APIs & Gateways */}
+      {activeSubView === 'ai-apis' && <CustomApiGatewayPanel />}
     </div>
   );
 };

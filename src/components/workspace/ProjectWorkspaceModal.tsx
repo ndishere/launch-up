@@ -28,6 +28,7 @@ import {
   applyBranchAutomationAction,
   type GitDockerActionType,
 } from '../../lib/git-docker-manager';
+import { formatPreFlightGatewayLog } from '../../lib/custom-api-gateway';
 import { verifyProjectFinOpsBudget } from '../../services/api';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
@@ -45,6 +46,9 @@ export const ProjectWorkspaceModal: React.FC = () => {
     updateProjectWorkspace,
     setCurrentTab,
     setActiveCanvasProjectId,
+    customApiProviders,
+    agentModelAssignments,
+    testCustomApiProvider,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<WorkspaceTabId>('build');
@@ -89,6 +93,14 @@ export const ProjectWorkspaceModal: React.FC = () => {
     setSimulatingProjectId(project.id);
     cancelledRef.current = false;
 
+    const assignedProviderIds = Array.from(
+      new Set(Object.values(agentModelAssignments).filter(Boolean))
+    );
+    const providersToCheck =
+      assignedProviderIds.length > 0
+        ? customApiProviders.filter((p) => assignedProviderIds.includes(p.id))
+        : customApiProviders.filter((p) => p.enabled);
+
     updateProjectWorkspace(project.id, (prev) => ({
       ...prev,
       buildStatus: 'running',
@@ -96,21 +108,70 @@ export const ProjectWorkspaceModal: React.FC = () => {
       stages: prev.stages.map((s, idx) => ({
         ...s,
         status: idx === 0 ? 'running' : 'pending',
-        progressPercent: idx === 0 ? 35 : 0,
+        progressPercent: idx === 0 ? 20 : 0,
       })),
       logs: [
         {
-          id: `log-start-${Date.now()}`,
+          id: `log-preflight-init-${Date.now()}`,
           timestamp: new Date().toLocaleTimeString(),
           stageId: 'ceo' as const,
-          agentName: 'Aegis CEO Orchestrator',
+          agentName: 'Model Gateway Pre-Flight',
           modelUsed: prev.modelRouting.fastReasoning,
-          message: `Autonomous Factory started for "${project.name}" across 7 hierarchical stages.`,
+          message: `[Gateway] Running pre-flight API verification across ${providersToCheck.length} assigned provider gateway(s)...`,
           level: 'info' as const,
         },
         ...prev.logs,
       ].slice(0, 60),
     }));
+
+    const preFlightResults = await Promise.all(
+      providersToCheck.map(async (providerCfg) => {
+        const res = await testCustomApiProvider(providerCfg.id);
+        return { providerCfg, res };
+      })
+    );
+
+    if (!cancelledRef.current) {
+      const preFlightLogs = preFlightResults
+        .filter((item) => item.res !== null)
+        .map(({ providerCfg, res }) => ({
+          id: `log-gateway-${providerCfg.id}-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString(),
+          stageId: 'ceo' as const,
+          agentName: 'API Gateway Verifier',
+          modelUsed:
+            res!.status === 'CONNECTED'
+              ? res!.verifiedModel
+              : providerCfg.defaultModelId,
+          message: formatPreFlightGatewayLog(
+            providerCfg,
+            res!.status,
+            res!.latencyMs,
+            res!.status === 'CONNECTED' ? res!.verifiedModel : undefined,
+            res!.status === 'FAILED' ? res!.message : undefined
+          ),
+          level: (res!.status === 'CONNECTED' ? 'success' : 'warn') as
+            | 'success'
+            | 'warn',
+        }));
+
+      updateProjectWorkspace(project.id, (prev) => ({
+        ...prev,
+        logs: [
+          {
+            id: `log-start-${Date.now()}`,
+            timestamp: new Date().toLocaleTimeString(),
+            stageId: 'ceo' as const,
+            agentName: 'Aegis CEO Orchestrator',
+            modelUsed: prev.modelRouting.fastReasoning,
+            message: `Autonomous Factory started for "${project.name}" across 7 hierarchical stages.`,
+            level: 'info' as const,
+          },
+          ...preFlightLogs,
+          ...prev.logs,
+        ].slice(0, 60),
+      }));
+    }
 
     for (let i = 0; i < SWARM_STAGE_DEFINITIONS.length; i++) {
       if (cancelledRef.current) break;
@@ -137,7 +198,17 @@ export const ProjectWorkspaceModal: React.FC = () => {
       if (cancelledRef.current) break;
 
       updateProjectWorkspace(project.id, (prev) => {
-        const chosenModel = prev.modelRouting[def.modelKey];
+        const assignedRoleProviderId =
+          def.id in agentModelAssignments
+            ? agentModelAssignments[def.id as keyof typeof agentModelAssignments]
+            : agentModelAssignments.integration;
+        const assignedGateway = customApiProviders.find(
+          (p) => p.id === assignedRoleProviderId
+        );
+        const chosenModel =
+          assignedGateway?.verifiedModel ||
+          assignedGateway?.defaultModelId ||
+          prev.modelRouting[def.modelKey];
         const newSha = Math.random().toString(16).slice(2, 9);
         return {
           ...prev,

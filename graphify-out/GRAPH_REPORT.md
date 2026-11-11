@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-11)
 
 ## Corpus Check
-- 191 files · ~145,640 words
+- 196 files · ~151,516 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 18 file(s) not represented in the graph (top: (none) 13, .example 1, .lock 1)
 
 ## Summary
-- 1910 nodes · 3745 edges · 96 communities (90 shown, 6 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 51 edges (avg confidence: 0.91)
+- 1949 nodes · 3867 edges · 95 communities (89 shown, 6 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 49 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5e1c46dd`
+- Built from commit: `881d53f6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -81,10 +81,10 @@
 - dev-orchestrator.ts
 - App.tsx
 - whatsapp-service/src/lib/engine.ts
-- git-docker-manager.ts
+- api.ts
 - whatsapp-service/package.json
 - compilerOptions
-- workspaceDefaults.ts
+- ProjectWorkspaceModal.tsx
 - marketing-engine-service
 - GovernanceMesh
 - web-builder-service
@@ -94,7 +94,8 @@
 - marketing-engine-service/src/lib/engine.ts
 - ambient.d.ts
 - postgres
-- LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
+- NoCodeEditorTab.tsx
+- src/engine.ts
 - gateway
 - redis
 - verify-mesh-health.ts
@@ -103,47 +104,45 @@
 - lead-pitch-service
 - qa-secops-service
 - agency-concurrency.perf.test.ts
-- ProjectWorkspaceModal.tsx
-- src/types/index.ts
+- custom-api-gateway.ts
+- Sidebar.tsx
 - express@^4.21.2
 - @fastify/helmet@^13.2.0
 - pino-pretty@^13.2.0
 - zod@^4.6.7
-- code-sanitizer.ts
-- lead-pitch-service/src/server.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `useApp()` - 73 edges
-2. `react` - 48 edges
-3. `lucide-react` - 43 edges
+1. `useApp()` - 75 edges
+2. `react` - 50 edges
+3. `lucide-react` - 45 edges
 4. `AppLayout()` - 37 edges
 5. `SummaryMetricCard()` - 37 edges
 6. `SummaryMetricGrid()` - 37 edges
-7. `AppContextType` - 28 edges
+7. `AppContextType` - 32 edges
 8. `N8nWorkflowsTab()` - 21 edges
 9. `services` - 20 edges
-10. `ScreenAnalyticsHeader()` - 19 edges
+10. `ProjectWorkspaceModal()` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `Mod10AuthRequest`  [INFERRED]
-  checkpoint_handoff_state.md → services/governance-service/src/lib/verify_permission.ts
-- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `Mod10AuthResponse`  [INFERRED]
-  checkpoint_handoff_state.md → services/governance-service/src/lib/verify_permission.ts
-- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `verifyProjectFinOpsBudget()`  [INFERRED]
-  checkpoint_handoff_state.md → src/services/api.ts
+- `TypeScript 5.x` --references--> `Client`  [INFERRED]
+  TECH_STACK.md → src/types/index.ts
+- `TypeScript 5.x` --references--> `Project`  [INFERRED]
+  TECH_STACK.md → src/types/index.ts
 - `TypeScript 5.x` --references--> `DeploymentLog`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
 - `TypeScript 5.x` --references--> `SystemAlert`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
+- `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` --references--> `GitDockerStagingView()`  [INFERRED]
+  checkpoint_handoff_state.md → src/components/workspace/FinOpsAndGitView.tsx
 
 ## Import Cycles
 - None detected.
 
-## Communities (96 total, 6 thin omitted)
+## Communities (95 total, 6 thin omitted)
 
 ### Community 0 - "AppContext.tsx"
-Cohesion: 0.07
-Nodes (56): buildLaunchUpFaviconDataUrl(), LaunchUpFaviconOptions, LaunchUpLogoProps, NavItem, AppContext, AppContextType, AppProvider(), DEFAULT_FIGCRAFT_PROJECT (+48 more)
+Cohesion: 0.06
+Nodes (69): BuildAreaViewProps, AppContext, AppContextType, DEFAULT_FIGCRAFT_PROJECT, DEFAULT_STUDIO_COMPLIANCE, N8nProjectGraph, PALETTE_DEFINITIONS, ProjectScopeDraft (+61 more)
 
 ### Community 1 - "environment"
 Cohesion: 0.22
@@ -186,7 +185,7 @@ Cohesion: 0.11
 Nodes (18): 1. Frontend Core & Reactive Architecture, 2. Type System & Software Correctness, 3. Styling, Design Systems & Theming, 4. Data Visualization & Charting, 5. Database Architecture & Systems Engineering, 6. DevOps, Infrastructure & CI/CD Pipelines, 7. Security, Cryptography & Compliance, 8. Build Tools & Runtime Environment (+10 more)
 
 ### Community 11 - "auth-service/src/models/schema.ts"
-Cohesion: 0.08
+Cohesion: 0.09
 Nodes (32): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), fastify (+24 more)
 
 ### Community 12 - "compilerOptions"
@@ -198,7 +197,7 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+10 more)
 
 ### Community 14 - "client-service/src/routes/index.ts"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (25): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), authorize() (+17 more)
 
 ### Community 15 - "compilerOptions"
@@ -267,7 +266,7 @@ Nodes (7): 1. Module-by-Module Positive, Negative & Rare Test Cases, 2. The 5-St
 
 ### Community 31 - "governance-service/src/routes/index.ts"
 Cohesion: 0.10
-Nodes (26): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, detectCircularTenancy(), BudgetExceededError, CircularTenancyError, GATE_STAGES, Mod10AuthRequest, Mod10AuthResponse, RbacDeniedError (+18 more)
+Nodes (27): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, detectCircularTenancy(), BudgetExceededError, CircularTenancyError, GATE_STAGES, Mod10AuthRequest, Mod10AuthResponse, RbacDeniedError (+19 more)
 
 ### Community 32 - "mobile-app-service/src/lib/engine.ts"
 Cohesion: 0.15
@@ -306,7 +305,7 @@ Cohesion: 0.12
 Nodes (15): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+7 more)
 
 ### Community 43 - "sre-healing-service/src/lib/engine.ts"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (19): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), buildApp() (+11 more)
 
 ### Community 44 - "auth-service"
@@ -322,8 +321,8 @@ Cohesion: 0.08
 Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
 
 ### Community 47 - "backend-api-service/src/lib/engine.ts"
-Cohesion: 0.20
-Nodes (18): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+10 more)
+Cohesion: 0.25
+Nodes (16): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+8 more)
 
 ### Community 48 - "compilerOptions"
 Cohesion: 0.12
@@ -390,16 +389,16 @@ Cohesion: 0.13
 Nodes (15): checkPort(), cleanup(), __dirname, __filename, main(), processes, rootDir, SERVICES (+7 more)
 
 ### Community 64 - "App.tsx"
-Cohesion: 0.06
-Nodes (98): lucide-react, react, @xyflow/react, App(), AppLayout(), LaunchUpLogo(), MetricItem, ScreenAnalyticsHeader() (+90 more)
+Cohesion: 0.11
+Nodes (46): lucide-react, react, App(), AppLayout(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, BADGE_STYLES (+38 more)
 
 ### Community 65 - "whatsapp-service/src/lib/engine.ts"
-Cohesion: 0.26
-Nodes (13): check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), MetaApiRejectError, Mod08EventType, Mod08MessagePayload, Mod08WhatsAppRequest, Mod08WhatsAppResponse (+5 more)
+Cohesion: 0.20
+Nodes (17): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), buildApp(), PORT, MetaApiRejectError (+9 more)
 
-### Community 66 - "git-docker-manager.ts"
-Cohesion: 0.24
-Nodes (15): GitDockerStagingView(), GitDockerStagingViewProps, applyBranchAutomationAction(), generateDeterministicSha(), generateGitDockerCliCommands(), generateProjectComposeYaml(), generateProjectDockerfile(), getNextGitStageBranch() (+7 more)
+### Community 66 - "api.ts"
+Cohesion: 0.11
+Nodes (41): @xyflow/react, GenerateLeadModal(), GenerateLeadModalProps, INDUSTRY_PRESETS, MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab() (+33 more)
 
 ### Community 67 - "whatsapp-service/package.json"
 Cohesion: 0.08
@@ -409,9 +408,9 @@ Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet
 Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+8 more)
 
-### Community 69 - "workspaceDefaults.ts"
-Cohesion: 0.19
-Nodes (23): 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), FinOpsUnitEconomicsViewProps, UnitEconomicsProfitabilityCard(), UnitEconomicsProfitabilityCardProps, buildDefaultCompliance(), calculateProjectUnitEconomics(), createDefaultProjectWorkspace(), FinOpsCalculatedSummary (+15 more)
+### Community 69 - "ProjectWorkspaceModal.tsx"
+Cohesion: 0.06
+Nodes (70): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:, BuildAreaView(), FinOpsUnitEconomicsView() (+62 more)
 
 ### Community 70 - "marketing-engine-service"
 Cohesion: 0.33
@@ -434,8 +433,8 @@ Cohesion: 0.18
 Nodes (11): MINIO_ROOT_PASSWORD, MINIO_ROOT_USER, command, container_name, environment, image, networks, ports (+3 more)
 
 ### Community 76 - "marketing-engine-service/src/lib/engine.ts"
-Cohesion: 0.21
-Nodes (15): `MOD-07`: Canva Pro Digital Marketing Engine, generatePlatformPost(), PLATFORM_ROTATION, processMarketingCampaign(), marketingRequestSchema, marketingRoutes(), buildApp(), PORT (+7 more)
+Cohesion: 0.27
+Nodes (12): `MOD-07`: Canva Pro Digital Marketing Engine, generatePlatformPost(), PLATFORM_ROTATION, processMarketingCampaign(), marketingRequestSchema, CalendarItem, CanvaRateLimitError, Mod07MarketingRequest (+4 more)
 
 ### Community 77 - "ambient.d.ts"
 Cohesion: 0.50
@@ -445,9 +444,13 @@ Nodes (3): bcrypt, drizzle-kit, @fastify/rate-limit
 Cohesion: 0.18
 Nodes (11): POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, container_name, environment, image, networks, ports (+3 more)
 
-### Community 80 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
-Cohesion: 0.33
-Nodes (5): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:
+### Community 79 - "NoCodeEditorTab.tsx"
+Cohesion: 0.24
+Nodes (11): NoCodeEditorTab(), NoCodeEditorTabProps, compileFigCraftToReact(), DEFAULT_FIGCRAFT_TOKENS, FigCraftColorToken, FigCraftComponentNode, FigCraftDesignTokens, FigCraftTypographyToken (+3 more)
+
+### Community 80 - "src/engine.ts"
+Cohesion: 0.21
+Nodes (11): buildProbeTarget(), DEFAULT_MODEL_BY_PROVIDER, extractVerifiedModelName(), PROVIDERS_ALLOWING_EMPTY_KEY, validateBaseUrl(), VerifiableApiProvider, verifyApiConnectionEngine(), VerifyApiConnectionFailure (+3 more)
 
 ### Community 81 - "gateway"
 Cohesion: 0.25
@@ -462,8 +465,8 @@ Cohesion: 0.50
 Nodes (4): main(), probe(), ProbeTarget, TARGETS
 
 ### Community 84 - "2. Module-by-Module JSON Input/Output Contracts"
-Cohesion: 0.40
-Nodes (4): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT), `MOD-08`: WhatsApp Marketing & CRM RAG Engine
+Cohesion: 0.50
+Nodes (3): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT)
 
 ### Community 85 - "governance-service"
 Cohesion: 0.33
@@ -478,48 +481,40 @@ Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
 
 ### Community 88 - "agency-concurrency.perf.test.ts"
-Cohesion: 0.22
-Nodes (7): whatsappRoutes(), buildApp(), PORT, buildMod01(), buildMod02(), LiveEndpoint, MOCK_PROSPECTS
+Cohesion: 0.13
+Nodes (12): buildApp(), PORT, leadPitchRoutes(), buildApp(), PORT, marketingRoutes(), buildApp(), PORT (+4 more)
 
-### Community 89 - "ProjectWorkspaceModal.tsx"
-Cohesion: 0.22
-Nodes (14): BuildAreaView(), BuildAreaViewProps, FinOpsUnitEconomicsView(), ProjectWorkspaceModal(), WorkspaceTabId, AgentSwarmView(), AgentSwarmViewProps, AIModelsView() (+6 more)
-
-### Community 90 - "src/types/index.ts"
+### Community 89 - "custom-api-gateway.ts"
 Cohesion: 0.12
-Nodes (18): AgentRole, AgentStatus, ClientStatus, ClientTier, ColorPalette, GoldenTemplateId, ProjectBlueprints, ProjectComplianceItem (+10 more)
+Nodes (27): CustomApiGatewayPanel(), CustomApiGatewayPanelProps, CustomApiSetupModal(), CustomApiSetupModalProps, PRESET_ORDER, AgentSwarmViewProps, AIModelsViewProps, MODEL_TIERS (+19 more)
+
+### Community 90 - "Sidebar.tsx"
+Cohesion: 0.31
+Nodes (7): buildLaunchUpFaviconDataUrl(), LaunchUpFaviconOptions, LaunchUpLogo(), LaunchUpLogoProps, NavItem, Sidebar(), TabId
 
 ### Community 91 - "express@^4.21.2"
 Cohesion: 0.33
 Nodes (4): express@^4.21.2, @types/canvas-confetti@^1.9.0, express, @types/canvas-confetti
 
-### Community 95 - "code-sanitizer.ts"
-Cohesion: 0.14
-Nodes (20): collectFindings(), computeRiskScore(), getLineNumberAt(), maskPreview(), SAMPLE_STRIPE_PLACEHOLDER, SAMPLE_UNSAFE_TEMPLATE_SNIPPET, sanitizeCodeSnippet(), SANITIZER_RULES (+12 more)
-
-### Community 99 - "lead-pitch-service/src/server.ts"
-Cohesion: 0.50
-Nodes (3): leadPitchRoutes(), buildApp(), PORT
-
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 761 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 769 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `package.json`, `workspaceDefaults.ts`, `ProjectWorkspaceModal.tsx`, `src/types/index.ts`, `dependencies`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **Why does `verifyApiConnectionEngine()` connect `src/engine.ts` to `custom-api-gateway.ts`, `api.ts`, `governance-service/src/routes/index.ts`?**
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `AppContext.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07071887784921099 - nodes in this community are weakly interconnected._
-- **Why does `3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)` connect `workspaceDefaults.ts` to `LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE`, `ProjectWorkspaceModal.tsx`, `governance-service/src/routes/index.ts`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+  _Cohesion score 0.0645045045045045 - nodes in this community are weakly interconnected._
+- **Why does `react` connect `App.tsx` to `AppContext.tsx`, `api.ts`, `package.json`, `ProjectWorkspaceModal.tsx`, `NoCodeEditorTab.tsx`, `custom-api-gateway.ts`, `Sidebar.tsx`, `dependencies`?**
+  _High betweenness centrality (0.020) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.10052910052910052 - nodes in this community are weakly interconnected._
-- **Why does `lucide-react` connect `App.tsx` to `package.json`, `workspaceDefaults.ts`, `ProjectWorkspaceModal.tsx`, `src/types/index.ts`, `dependencies`?**
+- **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/models/schema.ts`?**
   _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Should `auth-service/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._

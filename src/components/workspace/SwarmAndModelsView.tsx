@@ -10,6 +10,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { ProjectModelRouting, ProjectWorkspaceState } from '../../types';
+import { CustomApiGatewayPanel } from '../common/CustomApiGatewayPanel';
 
 interface AgentSwarmViewProps {
   workspace: ProjectWorkspaceState;
@@ -280,6 +281,9 @@ export const AIModelsView: React.FC<AIModelsViewProps> = ({ routing, onUpdateRou
           </div>
         </div>
       </div>
+
+      {/* Universal Custom AI & External API Gateway Manager + Per-Agent Matrix */}
+      <CustomApiGatewayPanel />
     </div>
   );
 };

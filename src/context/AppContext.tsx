@@ -5,9 +5,13 @@ import {
   AutonomousAgent, BusinessAutomationIntake, SLMModel, MarketingCampaign,
   RemoteTelemetryPackage, FDESystemArchitecture,
   TechStackPreset, ConnectedAppPlugin, ClientRequirementIntake, AutomationWorkflow,
-  ProjectWorkspaceState,
+  ProjectWorkspaceState, CustomApiProviderConfig, AgentModelAssignments, SwarmAgentRoleKey,
 } from '../types';
 import { createDefaultProjectWorkspace } from '../components/workspace/workspaceDefaults';
+import {
+  getDefaultAgentModelAssignments,
+  getDefaultCustomApiProviders,
+} from '../lib/custom-api-gateway';
 import { FigCraftProjectSchema, DEFAULT_FIGCRAFT_TOKENS } from '../lib/figcraft-adapter';
 import { 
   initialClients, initialProjects, initialAlerts, initialDeployments, 
@@ -19,9 +23,11 @@ import {
 import {
   resetStoredGates,
   runTier1InternalHealthPulse,
+  verifyApiConnection,
   verifyVendorApisOnProjectStart,
   type HealthPulseLogEntry,
   type VendorReadinessReport,
+  type VerifyApiConnectionResponse,
 } from '../services/api';
 import { buildLaunchUpFaviconDataUrl } from '../components/common/LaunchUpLogo';
 
@@ -281,6 +287,16 @@ interface AppContextType {
   triggerInternalHealthPulse: () => Promise<void>;
   verifyVendorReadiness: (projectName?: string) => Promise<VendorReadinessReport>;
   clearHealthPulseLogs: () => void;
+  // Universal Custom AI & External API Gateway Manager
+  customApiProviders: CustomApiProviderConfig[];
+  agentModelAssignments: AgentModelAssignments;
+  addCustomApiProvider: (
+    input: Omit<CustomApiProviderConfig, 'id' | 'createdAt'>
+  ) => CustomApiProviderConfig;
+  updateCustomApiProvider: (id: string, patch: Partial<CustomApiProviderConfig>) => void;
+  removeCustomApiProvider: (id: string) => void;
+  testCustomApiProvider: (id: string) => Promise<VerifyApiConnectionResponse | null>;
+  setAgentModelAssignment: (roleKey: SwarmAgentRoleKey, providerId: string) => void;
   resetDemoState: () => void;
 }
 
@@ -651,6 +667,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [lastVendorReadiness, setLastVendorReadiness] = useState<VendorReadinessReport | null>(() =>
     loadPersisted<VendorReadinessReport | null>('lastVendorReadiness', null)
   );
+  const [customApiProviders, setCustomApiProviders] = useState<CustomApiProviderConfig[]>(() =>
+    loadPersisted<CustomApiProviderConfig[]>('customApiProviders', getDefaultCustomApiProviders())
+  );
+  const [agentModelAssignments, setAgentModelAssignments] = useState<AgentModelAssignments>(() =>
+    loadPersisted<AgentModelAssignments>(
+      'agentModelAssignments',
+      getDefaultAgentModelAssignments()
+    )
+  );
 
   // Sync persisted state slices to localStorage
   useEffect(() => {
@@ -703,6 +728,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     savePersisted('projectWorkspaces', projectWorkspaces);
     savePersisted('healthPulseLogs', healthPulseLogs.slice(0, 100));
     savePersisted('lastVendorReadiness', lastVendorReadiness);
+    savePersisted('customApiProviders', customApiProviders);
+    savePersisted('agentModelAssignments', agentModelAssignments);
   }, [
     figcraftProject,
     activeStudioPlatform,
@@ -713,6 +740,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     projectWorkspaces,
     healthPulseLogs,
     lastVendorReadiness,
+    customApiProviders,
+    agentModelAssignments,
   ]);
 
   const triggerInternalHealthPulse = async () => {
@@ -738,6 +767,84 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const clearHealthPulseLogs = () => {
     setHealthPulseLogs([]);
+  };
+
+  const addCustomApiProvider = (
+    input: Omit<CustomApiProviderConfig, 'id' | 'createdAt'>
+  ): CustomApiProviderConfig => {
+    const newProvider: CustomApiProviderConfig = {
+      ...input,
+      id: `api-${input.provider}-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    setCustomApiProviders((prev) => [newProvider, ...prev]);
+    return newProvider;
+  };
+
+  const updateCustomApiProvider = (
+    id: string,
+    patch: Partial<CustomApiProviderConfig>
+  ) => {
+    setCustomApiProviders((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+    );
+  };
+
+  const removeCustomApiProvider = (id: string) => {
+    setCustomApiProviders((prev) => prev.filter((item) => item.id !== id));
+    setAgentModelAssignments((prev) => {
+      const next = { ...prev };
+      (Object.keys(next) as SwarmAgentRoleKey[]).forEach((role) => {
+        if (next[role] === id) {
+          next[role] = '';
+        }
+      });
+      return next;
+    });
+  };
+
+  const testCustomApiProvider = async (
+    id: string
+  ): Promise<VerifyApiConnectionResponse | null> => {
+    const target = customApiProviders.find((item) => item.id === id);
+    if (!target) return null;
+
+    const result = await verifyApiConnection({
+      provider: target.provider,
+      baseUrl: target.baseUrl,
+      apiKey: target.apiKey,
+      modelId: target.defaultModelId,
+      customHeaders: target.customHeaders,
+    });
+
+    setCustomApiProviders((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: result.status,
+              latencyMs: result.latencyMs,
+              lastTestedAt: result.timestamp,
+              lastMessage: result.message,
+              verifiedModel:
+                result.status === 'CONNECTED' ? result.verifiedModel : undefined,
+              errorCode: result.status === 'FAILED' ? result.errorCode : undefined,
+            }
+          : item
+      )
+    );
+
+    return result;
+  };
+
+  const setAgentModelAssignment = (
+    roleKey: SwarmAgentRoleKey,
+    providerId: string
+  ) => {
+    setAgentModelAssignments((prev) => ({
+      ...prev,
+      [roleKey]: providerId,
+    }));
   };
 
   // Tier 1 Free Internal Mesh Pulse (ports 8004-8013 only; external vendor APIs never polled on idle timers)
@@ -874,6 +981,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setWorkspaceProjectId(null);
     setHealthPulseLogs([]);
     setLastVendorReadiness(null);
+    setCustomApiProviders(getDefaultCustomApiProviders());
+    setAgentModelAssignments(getDefaultAgentModelAssignments());
     setActiveCanvasProjectId(null);
     setSelectedClient(null);
     setSelectedProject(null);
@@ -1560,6 +1669,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         triggerInternalHealthPulse,
         verifyVendorReadiness,
         clearHealthPulseLogs,
+        customApiProviders,
+        agentModelAssignments,
+        addCustomApiProvider,
+        updateCustomApiProvider,
+        removeCustomApiProvider,
+        testCustomApiProvider,
+        setAgentModelAssignment,
         resetDemoState,
       }}
     >

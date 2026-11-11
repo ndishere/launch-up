@@ -17,8 +17,16 @@ import {
   CircularTenancyError,
 } from '../lib/verify_permission.js';
 import { detectCircularTenancy } from '../lib/circular_tenancy_check.js';
+import { verifyApiConnectionEngine } from '../engine.js';
 
 // ── Validation Schemas ────────────────────────────────
+const verifyApiConnectionSchema = z.object({
+  provider: z.enum(['openrouter', 'openai', 'anthropic', 'gemini', 'groq', 'ollama', 'custom']),
+  baseUrl: z.string().min(1),
+  apiKey: z.string().default(''),
+  modelId: z.string().optional(),
+  customHeaders: z.record(z.string(), z.string()).optional(),
+});
 const verifySchema = z.object({
   principal_id: z.string().uuid(),
   client_id: z.string().uuid().nullable().optional().default(null),
@@ -119,6 +127,30 @@ export async function governanceRoutes(app: FastifyInstance) {
         error: 'Internal authorization error',
       });
     }
+  });
+
+  // ── MOD-10: External AI & Custom API Connection Verifier ──
+  app.post('/api/v1/governance/verify-api-connection', async (request, reply) => {
+    const parseResult = verifyApiConnectionSchema.safeParse(request.body);
+    if (!parseResult.success) {
+      return reply.status(400).send({
+        status: 'FAILED',
+        errorCode: 'ERR_API_UNREACHABLE',
+        latencyMs: 0,
+        provider: 'custom',
+        message: 'Invalid API verification payload (provider and baseUrl are required)',
+        details: parseResult.error.format(),
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const result = await verifyApiConnectionEngine(parseResult.data);
+    if (result.status === 'CONNECTED') {
+      return reply.status(200).send(result);
+    }
+
+    const httpCode = result.errorCode === 'ERR_API_AUTH_FAILED' ? 401 : 502;
+    return reply.status(httpCode).send(result);
   });
 
   // ── Approval Gates: List ───────────────────────────

@@ -5,6 +5,12 @@
  */
 
 import { evaluateMod10FinOpsBudget } from '../lib/unit-economics.ts';
+import {
+  verifyApiConnectionEngine,
+  type VerifiableApiProvider,
+  type VerifyApiConnectionInput,
+  type VerifyApiConnectionResult,
+} from '../../services/governance-service/src/engine.ts';
 import type { Mod10FinOpsCheckSnapshot } from '../types';
 
 export interface ServiceEndpointConfig {
@@ -864,5 +870,56 @@ export async function verifyProjectFinOpsBudget(payload: {
     error_code: response.data.code,
     checkedAt: new Date().toISOString(),
     isLiveService: response.isLive,
+  };
+}
+
+export type VerifyApiConnectionRequest = VerifyApiConnectionInput;
+export type VerifyApiConnectionResponse = VerifyApiConnectionResult & {
+  isLiveService: boolean;
+};
+
+/**
+ * Verifies connectivity & authentication for any configured AI / external API provider
+ * through MOD-10 (`POST /api/v1/governance/verify-api-connection`), with graceful
+ * client-side handshake fallback when the governance service is offline.
+ */
+export async function verifyApiConnection(
+  payload: VerifyApiConnectionRequest
+): Promise<VerifyApiConnectionResponse> {
+  const endpoints = [
+    '/api/v1/governance/verify-api-connection',
+    'http://localhost:8004/api/v1/governance/verify-api-connection',
+  ];
+
+  for (const url of endpoints) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      const body = (await res.json()) as Partial<VerifyApiConnectionResult>;
+      if (body && (body.status === 'CONNECTED' || body.status === 'FAILED')) {
+        return {
+          ...(body as VerifyApiConnectionResult),
+          isLiveService: true,
+        };
+      }
+    } catch {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  const fallback = await verifyApiConnectionEngine({
+    ...payload,
+    provider: payload.provider as VerifiableApiProvider,
+  });
+  return {
+    ...fallback,
+    isLiveService: false,
   };
 }

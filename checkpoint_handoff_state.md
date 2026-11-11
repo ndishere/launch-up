@@ -40,27 +40,28 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-11T15:15:00+05:30`
+- **Last Updated Timestamp:** `2026-11-11T17:42:30+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `SPRINT 4 COMPLETE — DOCKER & GIT BRANCH AUTOMATION MANAGER (PLATFORM 100% COMPLETE)`
-- **Architecture Alignment:** Built Sprint 4 Docker & Git Branch Automation Manager for isolated per-project Git lifecycle management (`feature/dev` -> `feature/testing` -> `feature/uat` -> `feature/production`) and zero-secret containerized staging spec generation:
-  1. **Git & Docker Pure Automation Engine (`src/lib/git-docker-manager.ts`):** Added `GIT_STAGE_ORDER`, `getNextGitStageBranch()`, `applyBranchAutomationAction()` (`commit`, `rebuild`, `rollback`, `promote`), `generateProjectDockerfile()`, `generateProjectComposeYaml()` (using `${DATABASE_URL}`, `${REDIS_URL}`, `${POSTGRES_USER}`, `${POSTGRES_PASSWORD}` env placeholders with zero hardcoded secrets), and `generateGitDockerCliCommands()`.
-  2. **Interactive Git & Docker Staging UI (`src/components/workspace/FinOpsAndGitView.tsx`, `src/components/workspace/ProjectWorkspaceModal.tsx`):** Upgraded `GitDockerStagingView` with interactive branch cards displaying status/container health pills (`Active`/`Ahead`/`Synced`/`Pending` & `Healthy`/`Building`/`Standby`), Rebuild/Rollback/Promote controls, an isolated branch Commit Delta form (`Commit & Build`), and a 3-tab generated artifact inspector (`docker-compose.staging.yml`, `Dockerfile`, `Git/Docker CLI`) with `sanitizeCodeSnippet` secret verification and copy support. Wired `handleGitDockerAction` and preserved backward-compatible `handlePromoteBranch`.
-  3. **Sprint 4 Verification (`tests/workspace/sprint4-git-docker.unit.test.ts`):** Added `GIT-01`..`GIT-04` covering isolated branch commits, stage promotions, Dockerfile/Compose secret-free generation, and Git/Docker CLI generation.
+- **Active Module ID:** `UNIVERSAL CUSTOM AI & EXTERNAL API GATEWAY + MOD-10 VERIFIER (PLATFORM 100% COMPLETE)`
+- **Architecture Alignment:** Built Universal Custom AI & External API Setup Manager with live MOD-10 connection verification, per-agent swarm model assignment matrix, and autonomous build pre-flight verification:
+  1. **MOD-10 API Connection Verifier (`services/governance-service/src/engine.ts`, `services/governance-service/src/routes/index.ts`, `src/services/api.ts`):** Added `verifyApiConnectionEngine()` and `POST /api/v1/governance/verify-api-connection` (5s `AbortController` timeout, `/models` / `x-api-key` / `?key=` handshakes, simulation key `sk-test-` / `sim-` support, `ERR_API_AUTH_FAILED` & `ERR_API_UNREACHABLE` structured errors) plus client-side `verifyApiConnection()` fallback.
+  2. **Universal API Gateway Manager UI & Per-Agent Matrix (`src/lib/custom-api-gateway.ts`, `src/components/common/CustomApiSetupModal.tsx`, `CustomApiGatewayPanel.tsx`):** Added preset setup flow (OpenRouter, OpenAI, Anthropic Claude, Google Gemini, Groq, Local Ollama / vLLM, Custom Base URL), masked key eye toggle, $/1M input/output FinOps pricing, custom JSON headers, card & modal live `"Test Connection"` status badges (`Connected • Xms • Model Verified` / `Connection Failed` / `Unverified`), and 6-role Hierarchical Agent Swarm Assignment Matrix across [ConnectedAppsTab.tsx](src/components/tabs/ConnectedAppsTab.tsx), [SettingsTab.tsx](src/components/tabs/SettingsTab.tsx), and Project Workspace `AI Models` ([SwarmAndModelsView.tsx](src/components/workspace/SwarmAndModelsView.tsx)).
+  3. **Build Pre-Flight Verification & Persistence (`src/context/AppContext.tsx`, `src/components/workspace/ProjectWorkspaceModal.tsx`):** Persisted `customApiProviders` & `agentModelAssignments` in `localStorage` and wired `"Start Autonomous Build"` to run pre-flight `testCustomApiProvider()` checks logging `[Gateway] Verified ...` directly into the Agent Terminal.
+  4. **Gateway Verification Suite (`tests/workspace/custom-api-gateway.unit.test.ts`):** Added `GW-01`..`GW-04` covering simulation keys, URL/auth validation, live HTTP server handshakes (OpenAI/OpenRouter, Anthropic `x-api-key`, Gemini `?key=`, `401`/`403` failure mapping), masking, headers JSON, and blended cost calculation.
 - **Current TDD Stage:**
-  - `[x] Stage 0: Test Stubs Generated` — 58 test suites across all 10 modules, Sprint 1–4 Workspace/Git/Docker suites, and cross-module E2E
-  - `[x] Stage 1: Unit Tests Passing` — 99/99 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 + 5 Sprint 2 + 5 Sprint 3 + 4 Sprint 4 unit tests in `tests/workspace/sprint4-git-docker.unit.test.ts`)
+  - `[x] Stage 0: Test Stubs Generated` — 59 test suites across all 10 modules, Sprint 1–4 Workspace/Git/Docker suites, Gateway Verifier, and cross-module E2E
+  - `[x] Stage 1: Unit Tests Passing` — 103/103 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 + 5 Sprint 2 + 5 Sprint 3 + 4 Sprint 4 + 4 Custom API Gateway unit tests)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
   - `[x] Stage 4: Cross-Module Performance & Concurrency Passing` — 4/4 PASS (`tests/e2e/agency-concurrency.perf.test.ts`)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1910` nodes, `3745` edges, `96` communities)
-  - `[x] Cross-Module Monorepo Regression Passing` — 186/186 PASS across 58 test suites in 5.44s (100% pass rate)
-  - `[x] Monorepo TypeScript & Build` — `npm run lint && npm run build` exits `0`; Vite production bundle built in `822ms`
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1949` nodes, `3867` edges, `95` communities)
+  - `[x] Cross-Module Monorepo Regression Passing` — 190/190 PASS across 59 test suites in 6.48s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` & governance-service `tsc --noEmit` exit `0`; Vite production bundle built in `8.16s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **100% COMPLETE — All 10 Microservice Modules (MOD-01..MOD-10) + Studio + Workspace Sprints 1–4 COMPLETE (186/186 tests passing, 0 TypeScript/build errors).**
+  - **Platform Milestone:** **100% COMPLETE — All 10 Microservice Modules (MOD-01..MOD-10) + Studio + Workspace Sprints 1–4 + Universal Custom AI & External API Gateway COMPLETE (190/190 tests passing, 0 TypeScript/build errors).**
   - **Next Step:** Production deployment & customer onboarding.
 - **Known Blockers / Unresolved Errors:**
-  - `None. 186/186 tests passing across 58 suites, 0 TypeScript errors, clean Vite build (822ms). Graphify updated to 1910 nodes, 3745 edges, 96 communities.`
+  - `None. 190/190 tests passing across 59 suites, 0 TypeScript errors, clean Vite build (8.16s). Graphify updated to 1949 nodes, 3867 edges, 95 communities.`
 
 ---
 
@@ -81,3 +82,4 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 | **MOD-08** | WhatsApp Marketing & CRM Engine | YES | `9/9 (100%)` | `6/6 (100%)` | `VERIFIED` | `VERIFIED` | `PASSED` | `COMPLETE` |
 | **MOD-09** | Autonomous SRE & Self-Healing Ops | YES | `9/9 (100%)` | `7/7 (100%)` | `VERIFIED` | `VERIFIED` | `PASSED` | `COMPLETE` |
 | **WORKSPACE (Sprints 1–4)** | Command Center, Sanitizer, FinOps & Git/Docker | YES | `17/17 (100%)` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `100% COMPLETE` |
+| **API GATEWAY (MOD-10)** | Custom AI / API Verifier & Swarm Matrix | YES | `4/4 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |

@@ -557,3 +557,47 @@ export interface ProjectWorkspaceState {
   gitDocker: ProjectGitBranchNode[];
   lastUpdatedAt: string;
 }
+
+// ====================================================================
+// UNIVERSAL CUSTOM AI & EXTERNAL API GATEWAY TYPES
+// ====================================================================
+export type CustomApiProviderType =
+  | 'openrouter'
+  | 'openai'
+  | 'anthropic'
+  | 'gemini'
+  | 'groq'
+  | 'ollama'
+  | 'custom';
+
+export type ApiConnectionStatus = 'UNVERIFIED' | 'CONNECTED' | 'FAILED';
+
+export type SwarmAgentRoleKey =
+  | 'ceo'
+  | 'architect'
+  | 'design'
+  | 'coding'
+  | 'testing'
+  | 'integration';
+
+export interface CustomApiProviderConfig {
+  id: string;
+  name: string;
+  provider: CustomApiProviderType;
+  baseUrl: string;
+  apiKey: string;
+  defaultModelId: string;
+  costPer1MInputUsd: number;
+  costPer1MOutputUsd: number;
+  customHeaders?: Record<string, string>;
+  status: ApiConnectionStatus;
+  latencyMs?: number;
+  verifiedModel?: string;
+  lastTestedAt?: string;
+  lastMessage?: string;
+  errorCode?: 'ERR_API_AUTH_FAILED' | 'ERR_API_UNREACHABLE';
+  enabled: boolean;
+  createdAt: string;
+}
+
+export type AgentModelAssignments = Record<SwarmAgentRoleKey, string>;
