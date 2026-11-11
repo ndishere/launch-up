@@ -3,10 +3,15 @@ import {
   sanitizeCodeSnippet,
 } from '../../lib/code-sanitizer.ts';
 import { matchTemplates } from '../../lib/template-matcher.ts';
+import {
+  calculateProfitMarginPercent,
+  evaluateMod10FinOpsBudget,
+} from '../../lib/unit-economics.ts';
 import type {
   Client,
   GitStageBranchName,
   GovernanceFrameworkKey,
+  Mod10BudgetTierFallback,
   Project,
   ProjectComplianceItem,
   ProjectFinOpsState,
@@ -143,33 +148,61 @@ const buildDefaultCompliance = (): Record<GovernanceFrameworkKey, ProjectComplia
 export interface FinOpsCalculatedSummary {
   estimatedLlmCost: number;
   actualLlmCost: number;
+  estimatedContainerCost: number;
   containerCost: number;
+  estimatedAgentComputeCost: number;
   agentComputeCost: number;
   manualExpensesTotal: number;
   totalEstimatedCost: number;
   totalActualCost: number;
+  costVarianceUsd: number;
+  estimatedGrossProfitUsd: number;
   grossProfitUsd: number;
+  estimatedProfitMarginPercent: number;
   profitMarginPercent: number;
+  roiPercent: number;
   reusabilityPercent: number;
   reusabilitySavingsUsd: number;
   grossLlmCostWithoutReuseUsd: number;
   effectiveCostReductionPercent: number;
+  mod10RemainingBudgetUsd: number;
+  mod10BudgetUtilizationPercent: number;
+  mod10BudgetTierFallback: Mod10BudgetTierFallback;
+  mod10Authorized: boolean;
 }
 
 export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOpsCalculatedSummary {
   const manualExpensesTotal = finops.manualExpenses.reduce((acc, item) => acc + (Number(item.amountUsd) || 0), 0);
+  const estHours = finops.estimatedContainerHours ?? finops.containerHours;
+  const estMins = finops.estimatedAgentComputeMinutes ?? finops.agentComputeMinutes;
+
+  const estimatedContainerCost = Number((estHours * finops.containerRatePerHourUsd).toFixed(2));
   const containerCost = Number((finops.containerHours * finops.containerRatePerHourUsd).toFixed(2));
+  const estimatedAgentComputeCost = Number((estMins * finops.agentComputeRatePerMinUsd).toFixed(2));
   const agentComputeCost = Number((finops.agentComputeMinutes * finops.agentComputeRatePerMinUsd).toFixed(2));
   const estimatedLlmCost = Number(finops.estimatedLlmSpendUsd.toFixed(2));
   const actualLlmCost = Number(finops.actualLlmSpendUsd.toFixed(2));
 
-  const totalEstimatedCost = Number((estimatedLlmCost + containerCost + agentComputeCost + manualExpensesTotal).toFixed(2));
-  const totalActualCost = Number((actualLlmCost + containerCost + agentComputeCost + manualExpensesTotal).toFixed(2));
+  const totalEstimatedCost = Number(
+    (estimatedLlmCost + estimatedContainerCost + estimatedAgentComputeCost + manualExpensesTotal).toFixed(2)
+  );
+  const totalActualCost = Number(
+    (actualLlmCost + containerCost + agentComputeCost + manualExpensesTotal).toFixed(2)
+  );
+  const costVarianceUsd = Number((totalActualCost - totalEstimatedCost).toFixed(2));
+
+  const estimatedGrossProfitUsd = Number((finops.clientContractValueUsd - totalEstimatedCost).toFixed(2));
   const grossProfitUsd = Number((finops.clientContractValueUsd - totalActualCost).toFixed(2));
-  const profitMarginPercent =
-    finops.clientContractValueUsd > 0
-      ? Number(((grossProfitUsd / finops.clientContractValueUsd) * 100).toFixed(1))
-      : 0;
+  const estimatedProfitMarginPercent = calculateProfitMarginPercent(
+    finops.clientContractValueUsd,
+    totalEstimatedCost
+  );
+  const profitMarginPercent = calculateProfitMarginPercent(
+    finops.clientContractValueUsd,
+    totalActualCost
+  );
+  const roiPercent =
+    totalActualCost > 0 ? Number(((grossProfitUsd / totalActualCost) * 100).toFixed(1)) : 0;
 
   const reusabilitySavingsUsd = Number(
     (
@@ -190,20 +223,32 @@ export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOp
       ? Number(((reusabilitySavingsUsd / grossLlmCostWithoutReuseUsd) * 100).toFixed(1))
       : 0;
 
+  const mod10Eval = evaluateMod10FinOpsBudget(finops);
+
   return {
     estimatedLlmCost,
     actualLlmCost,
+    estimatedContainerCost,
     containerCost,
+    estimatedAgentComputeCost,
     agentComputeCost,
     manualExpensesTotal,
     totalEstimatedCost,
     totalActualCost,
+    costVarianceUsd,
+    estimatedGrossProfitUsd,
     grossProfitUsd,
+    estimatedProfitMarginPercent,
     profitMarginPercent,
+    roiPercent,
     reusabilityPercent,
     reusabilitySavingsUsd,
     grossLlmCostWithoutReuseUsd,
     effectiveCostReductionPercent,
+    mod10RemainingBudgetUsd: mod10Eval.remainingBudgetUsd,
+    mod10BudgetUtilizationPercent: mod10Eval.budgetUtilizationPercent,
+    mod10BudgetTierFallback: mod10Eval.budgetTierFallback,
+    mod10Authorized: mod10Eval.authorized,
   };
 }
 
@@ -243,6 +288,13 @@ export function createDefaultProjectWorkspace(
 
   const initialTemplateMatches = matchTemplates(defaultPrd, project.type);
   const initialSanitization = sanitizeCodeSnippet(SAMPLE_UNSAFE_TEMPLATE_SNIPPET);
+
+  const initialLlmBudget = 25.0;
+  const initialActualLlm = isAlreadyLive ? 6.68 : 0.3;
+  const initialMod10Eval = evaluateMod10FinOpsBudget({
+    llmTokenBudgetUsd: initialLlmBudget,
+    actualLlmSpendUsd: initialActualLlm,
+  });
 
   return {
     projectId: project.id,
@@ -363,11 +415,13 @@ export function createDefaultProjectWorkspace(
     },
     finops: {
       clientContractValueUsd: contractValue,
-      llmTokenBudgetUsd: 25.0,
+      llmTokenBudgetUsd: initialLlmBudget,
       estimatedLlmSpendUsd: 6.68,
-      actualLlmSpendUsd: isAlreadyLive ? 6.68 : 0.3,
+      actualLlmSpendUsd: initialActualLlm,
+      estimatedContainerHours: 14.0,
       containerHours: isAlreadyLive ? 14.5 : 2.0,
       containerRatePerHourUsd: 1.45,
+      estimatedAgentComputeMinutes: 30.0,
       agentComputeMinutes: isAlreadyLive ? 32.8 : 4.5,
       agentComputeRatePerMinUsd: 0.35,
       manualExpenses: [
@@ -383,6 +437,18 @@ export function createDefaultProjectWorkspace(
       reusabilityTokenSavingsUsd: initialTemplateMatches.totalEstimatedSavingsUsd,
       templateMatchResults: initialTemplateMatches,
       lastSanitizationResult: initialSanitization,
+      lastMod10Check: {
+        authorized: initialMod10Eval.authorized,
+        principal_type: 'AI_AGENT',
+        effective_role: 'AUTONOMOUS_FACTORY_SWARM',
+        rls_session_token: `rls_${shortSha(project.id)}`,
+        remaining_budget_usd: initialMod10Eval.remainingBudgetUsd,
+        budget_tier_fallback: initialMod10Eval.budgetTierFallback,
+        gate_required: false,
+        error_code: initialMod10Eval.errorCode,
+        checkedAt: new Date().toISOString(),
+        isLiveService: false,
+      },
     },
     gitDocker: [
       {

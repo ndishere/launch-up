@@ -15,6 +15,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import {
+  Client,
   GitStageBranchName,
   Project,
   ProjectFinOpsExpense,
@@ -27,27 +28,34 @@ import {
   sanitizeCodeSnippet,
 } from '../../lib/code-sanitizer.ts';
 import { matchTemplates } from '../../lib/template-matcher.ts';
+import { UnitEconomicsProfitabilityCard } from './UnitEconomicsProfitabilityCard';
 
 interface FinOpsUnitEconomicsViewProps {
   finops: ProjectFinOpsState;
   prdText?: string;
   projectType?: Project['type'];
+  linkedClients?: Client[];
+  verifyingMod10?: boolean;
   onUpdateFinOps: (patch: Partial<ProjectFinOpsState>) => void;
   onAddExpense: (expense: Omit<ProjectFinOpsExpense, 'id' | 'date'>) => void;
   onRemoveExpense: (expenseId: string) => void;
   onRunTemplateMatch?: () => void;
   onRunSanitizer?: (rawSnippet: string) => void;
+  onVerifyMod10Budget?: () => void;
 }
 
 export const FinOpsUnitEconomicsView: React.FC<FinOpsUnitEconomicsViewProps> = ({
   finops,
   prdText = '',
   projectType,
+  linkedClients = [],
+  verifyingMod10 = false,
   onUpdateFinOps,
   onAddExpense,
   onRemoveExpense,
   onRunTemplateMatch,
   onRunSanitizer,
+  onVerifyMod10Budget,
 }) => {
   const [category, setCategory] = useState<ProjectFinOpsExpense['category']>('Cloud Compute');
   const [description, setDescription] = useState('');
@@ -182,6 +190,15 @@ export const FinOpsUnitEconomicsView: React.FC<FinOpsUnitEconomicsViewProps> = (
           </span>
         </div>
       </div>
+
+      {/* Sprint 3: Automated Unit Economics & Profitability Dashboard */}
+      <UnitEconomicsProfitabilityCard
+        finops={finops}
+        summary={summary}
+        linkedClients={linkedClients}
+        verifyingMod10={verifyingMod10}
+        onVerifyMod10Budget={onVerifyMod10Budget}
+      />
 
       {/* Inputs & Cost Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">

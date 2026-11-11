@@ -24,6 +24,7 @@ import {
 } from './workspaceDefaults';
 import { sanitizeCodeSnippet } from '../../lib/code-sanitizer';
 import { matchTemplates } from '../../lib/template-matcher';
+import { verifyProjectFinOpsBudget } from '../../services/api';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
 type WorkspaceTabId = 'build' | 'n8n' | 'swarm' | 'models' | 'finops' | 'git-docker';
@@ -44,6 +45,7 @@ export const ProjectWorkspaceModal: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<WorkspaceTabId>('build');
   const [simulatingProjectId, setSimulatingProjectId] = useState<string | null>(null);
+  const [verifyingMod10, setVerifyingMod10] = useState(false);
   const cancelledRef = useRef(false);
 
   useEffect(() => {
@@ -499,10 +501,16 @@ export const ProjectWorkspaceModal: React.FC = () => {
               finops={workspace.finops}
               prdText={workspace.blueprints.prd}
               projectType={project.type}
+              linkedClients={linkedClients}
+              verifyingMod10={verifyingMod10}
               onUpdateFinOps={(patch) =>
                 updateProjectWorkspace(project.id, (prev) => ({
                   ...prev,
-                  finops: { ...prev.finops, ...patch },
+                  finops: {
+                    ...prev.finops,
+                    ...patch,
+                    lastMod10Check: null,
+                  },
                 }))
               }
               onAddExpense={(expense) =>
@@ -580,6 +588,43 @@ export const ProjectWorkspaceModal: React.FC = () => {
                   };
                 })
               }
+              onVerifyMod10Budget={async () => {
+                setVerifyingMod10(true);
+                try {
+                  const check = await verifyProjectFinOpsBudget({
+                    principal_id: '00000000-0000-0000-0000-000000000010',
+                    client_id: linkedClients[0]?.id ?? null,
+                    project_id: project.id,
+                    requested_action: 'code:write',
+                    estimated_cost_usd: 0.25,
+                    monthly_token_budget_usd: workspace.finops.llmTokenBudgetUsd,
+                    actual_llm_spend_usd: workspace.finops.actualLlmSpendUsd,
+                  });
+                  updateProjectWorkspace(project.id, (prev) => ({
+                    ...prev,
+                    finops: {
+                      ...prev.finops,
+                      lastMod10Check: check,
+                    },
+                    logs: [
+                      {
+                        id: `log-mod10-${Date.now()}`,
+                        timestamp: new Date().toLocaleTimeString(),
+                        stageId: 'ceo' as const,
+                        agentName: 'MOD-10 FinOps Governance',
+                        modelUsed: prev.modelRouting.fastReasoning,
+                        message: check.authorized
+                          ? `MOD-10 verified budget cap ($${check.remaining_budget_usd.toFixed(2)} remaining, tier: ${check.budget_tier_fallback}, live: ${check.isLiveService}).`
+                          : `MOD-10 blocked spend (${check.error_code || 'ERR_BUDGET_EXCEEDED'}): budget cap reached.`,
+                        level: (check.authorized ? 'success' : 'warn') as 'success' | 'warn',
+                      },
+                      ...prev.logs,
+                    ].slice(0, 60),
+                  }));
+                } finally {
+                  setVerifyingMod10(false);
+                }
+              }}
             />
           )}
 

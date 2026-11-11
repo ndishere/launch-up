@@ -4,6 +4,9 @@
  * with automatic local proxying and graceful schema-compliant fallbacks.
  */
 
+import { evaluateMod10FinOpsBudget } from '../lib/unit-economics.ts';
+import type { Mod10FinOpsCheckSnapshot } from '../types';
+
 export interface ServiceEndpointConfig {
   id: string;
   name: string;
@@ -792,4 +795,74 @@ export async function verifyGovernance(payload: {
       scoped_jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.dummy',
     })
   );
+}
+
+/**
+ * Verifies a project's FinOps spend & cap against MOD-10 Governance Core
+ * using the locked Mod10AuthRequest -> Mod10AuthResponse contract.
+ */
+export async function verifyProjectFinOpsBudget(payload: {
+  principal_id: string;
+  client_id: string | null;
+  project_id: string;
+  requested_action: 'project:read' | 'code:write' | 'gate:approve' | 'marketing:draft';
+  estimated_cost_usd: number;
+  monthly_token_budget_usd: number;
+  actual_llm_spend_usd: number;
+}): Promise<Mod10FinOpsCheckSnapshot> {
+  const localEval = evaluateMod10FinOpsBudget(
+    {
+      llmTokenBudgetUsd: payload.monthly_token_budget_usd,
+      actualLlmSpendUsd: payload.actual_llm_spend_usd,
+    },
+    payload.estimated_cost_usd
+  );
+
+  const response = await fetchWithFallback<{
+    authorized: boolean;
+    principal_type: 'HUMAN' | 'AI_AGENT';
+    effective_role: string;
+    rls_session_token: string;
+    remaining_budget_usd: number;
+    budget_tier_fallback: 'NONE' | 'TIER_2' | 'TIER_3';
+    gate_required: boolean;
+    code?: Mod10FinOpsCheckSnapshot['error_code'];
+  }>(
+    '/api/v1/governance/verify',
+    'http://localhost:8004/api/v1/governance/verify',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        principal_id: payload.principal_id,
+        client_id: payload.client_id,
+        project_id: payload.project_id,
+        requested_action: payload.requested_action,
+        estimated_cost_usd: payload.estimated_cost_usd,
+      }),
+    },
+    () => ({
+      authorized: localEval.authorized,
+      principal_type: 'AI_AGENT',
+      effective_role: 'AUTONOMOUS_FACTORY_SWARM',
+      rls_session_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mod10-finops-fallback',
+      remaining_budget_usd: localEval.remainingBudgetUsd,
+      budget_tier_fallback: localEval.budgetTierFallback,
+      gate_required: payload.requested_action === 'gate:approve',
+      code: localEval.errorCode,
+    })
+  );
+
+  return {
+    authorized: response.data.authorized,
+    principal_type: response.data.principal_type,
+    effective_role: response.data.effective_role,
+    rls_session_token: response.data.rls_session_token,
+    remaining_budget_usd: response.data.remaining_budget_usd,
+    budget_tier_fallback: response.data.budget_tier_fallback,
+    gate_required: response.data.gate_required,
+    error_code: response.data.code,
+    checkedAt: new Date().toISOString(),
+    isLiveService: response.isLive,
+  };
 }

@@ -40,27 +40,27 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-11T13:48:20+05:30`
+- **Last Updated Timestamp:** `2026-11-11T14:08:10+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `SPRINT 2 COMPLETE — SMART REUSABILITY & CODE SANITIZER ENGINE`
-- **Architecture Alignment:** Built Sprint 2 reusable module matching, security/PII sanitization, and FinOps savings visibility cleanly atop Sprint 1 (`src/lib/`, `src/components/workspace/`, `src/types/index.ts`):
-  1. **Code Sanitizer Engine (`src/lib/code-sanitizer.ts`):** Deterministic, idempotent sanitizer inspecting code templates and snippets before reuse. Scrubs **PII** (emails, phone numbers, author/owner names, physical street addresses), **Secrets & Connection URIs** (PostgreSQL/Mongo/Redis/MySQL/AMQP URIs, AWS `AKIA...` keys, `sk_live_`/`ghp_`/`AIza`/`xox` keys, `Bearer` tokens, hardcoded env secret assignments), and **Proprietary / Rigid UI Constraints** (hex colors, `rgb`/`rgba`, fixed `font-family`/`fontFamily`, `!important`, fixed desktop `px` widths, extreme `z-index` overrides). Computes `riskScoreBefore`, `riskScoreAfter`, and `isSafe`.
-  2. **Smart Template Matcher & Reusability Calculator (`src/lib/template-matcher.ts`):** Evaluates project PRD blueprints and `ProjectType` against canonical golden templates (`golden-web-landing`, `golden-mobile-android`, `golden-backend-api`) and verified sanitized components (`sanitized-gdpr-dpdp-consent`, `sanitized-rls-tenant-guard`, `sanitized-whatsapp-crm-bridge`), computing match scores, avoided token counts, reusability `%`, and USD savings.
-  3. **FinOps & Workspace Integration (`src/components/workspace/FinOpsAndGitView.tsx`, `workspaceDefaults.ts`, `ProjectWorkspaceModal.tsx`):** Extended `ProjectFinOpsState` and `calculateProjectUnitEconomics()`, hydrated reusability + sanitization metrics on workspace creation and PRD updates, surfaced savings in the workspace 5-cell summary bar and FinOps breakdown, and added interactive Template Matcher + Code Sanitizer inspector controls.
+- **Active Module ID:** `SPRINT 3 COMPLETE — AUTOMATED UNIT ECONOMICS & PROFITABILITY DASHBOARD`
+- **Architecture Alignment:** Built Sprint 3 Automated Unit Economics & Profitability Dashboard tied directly into MOD-10 FinOps governance contracts (`Mod10AuthRequest` / `Mod10AuthResponse`) and M:N client-project billing attribution:
+  1. **Unit Economics & MOD-10 FinOps Core Engine (`src/lib/unit-economics.ts`, `src/components/workspace/workspaceDefaults.ts`):** Added `evaluateMod10FinOpsBudget()` enforcing MOD-10 `NONE` / `TIER_2` (<50% remaining) / `TIER_3` (<20% remaining) fallback tiers and `ERR_BUDGET_EXCEEDED`, `computeEstimatedVsActualBreakdown()` across LLM tokens, container hosting hours, agent compute time, and manual ledger entries, `calculateProfitMarginPercent()` (`((Revenue - Cost) / Revenue) * 100`), and `computeClientBillingAttribution()` across M:N stakeholders.
+  2. **MOD-10 Control Plane API Bridge (`src/services/api.ts`, `src/types/index.ts`):** Added `verifyProjectFinOpsBudget()` aligned to `POST /api/v1/governance/verify` (`Mod10AuthRequest -> Mod10AuthResponse`) and persisted `Mod10FinOpsCheckSnapshot`, `estimatedContainerHours`, and `estimatedAgentComputeMinutes` inside `ProjectFinOpsState` (`launchup_state_v1_projectWorkspaces` in `localStorage`).
+  3. **Profitability Dashboard UI (`src/components/workspace/UnitEconomicsProfitabilityCard.tsx`, `FinOpsAndGitView.tsx`, `ProjectWorkspaceModal.tsx`):** Added Gross Revenue vs. Net Profit hero card, visual cost/profit allocation bar, M:N stakeholder profit split list, 4-pillar Estimated vs. Actual variance table, MOD-10 cap utilization bar, and interactive `"Verify MOD-10 Budget"` action wired to telemetry logs.
 - **Current TDD Stage:**
-  - `[x] Stage 0: Test Stubs Generated` — 56 test suites across all 10 modules, Sprint 1 Workspace, Sprint 2 Sanitizer/Reusability, and cross-module E2E
-  - `[x] Stage 1: Unit Tests Passing` — 90/90 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 Workspace + 5 Sprint 2 Sanitizer/Reusability unit tests in `tests/workspace/sprint2-sanitizer.unit.test.ts`)
+  - `[x] Stage 0: Test Stubs Generated` — 57 test suites across all 10 modules, Sprint 1–3 Workspace/FinOps suites, and cross-module E2E
+  - `[x] Stage 1: Unit Tests Passing` — 95/95 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 + 5 Sprint 2 + 5 Sprint 3 unit tests in `tests/workspace/sprint3-unit-economics.unit.test.ts`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
   - `[x] Stage 4: Cross-Module Performance & Concurrency Passing` — 4/4 PASS (`tests/e2e/agency-concurrency.perf.test.ts`)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1882` nodes, `3623` edges, `96` communities)
-  - `[x] Cross-Module Monorepo Regression Passing` — 177/177 PASS across 56 test suites in 6.07s (100% pass rate)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exits `0`; Vite production bundle built in `1.04s`
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1897` nodes, `3688` edges, `100` communities)
+  - `[x] Cross-Module Monorepo Regression Passing` — 182/182 PASS across 57 test suites in 16.88s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exits `0`; Vite production bundle built in `10.60s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **Sprint 2 Smart Reusability & Code Sanitizer Engine COMPLETE (177/177 tests passing, 0 TS errors).**
-  - **Next Step:** Sprint 3 live WebSocket/SSE agent execution streaming or Docker multi-container production rollout.
+  - **Platform Milestone:** **Sprint 3 Automated Unit Economics & Profitability Dashboard COMPLETE (182/182 tests passing, 0 TS errors).**
+  - **Next Step:** Sprint 4 live WebSocket/SSE agent execution streaming or Docker multi-container production rollout.
 - **Known Blockers / Unresolved Errors:**
-  - `None. 177/177 tests passing across 56 suites, 0 TypeScript errors, clean Vite build. Graphify updated to 1882 nodes, 3623 edges, 96 communities.`
+  - `None. 182/182 tests passing across 57 suites, 0 TypeScript errors, clean Vite build. Graphify updated to 1897 nodes, 3688 edges, 100 communities.`
 
 ---
 

@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1794384757.7753336,
-    "seen": 1794385098.2963133,
-    "ast_hash": "7ce2e115bfe26e6f743e851cdf4734a3",
+    "mtime": 1794386026.598286,
+    "seen": 1794386277.1593053,
+    "ast_hash": "252ca1b19dbd9ce1de48ca5ab9391433",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794385115.3620577,
-    "seen": 1794385596.3670888,
-    "ast_hash": "c04f1243b93f5971915200cb3eec2bbc",
+    "mtime": 1794385748.5644147,
+    "seen": 1794386277.1670308,
+    "ast_hash": "11904c9f0e2fdf93f4e102fd503b8662",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -996,9 +996,9 @@
     "semantic_hash": ""
   },
   "src/services/api.ts": {
-    "mtime": 1794378320.3869145,
-    "seen": 1794378523.6658652,
-    "ast_hash": "5ed0f2fc268e750012e1502ef9747c69",
+    "mtime": 1794386105.4165568,
+    "seen": 1794386277.1593027,
+    "ast_hash": "9d9a230c02b2d201fdcb5de763cea371",
     "semantic_hash": ""
   },
   "scripts/run-all-tests.mjs": {
@@ -1104,15 +1104,15 @@
     "semantic_hash": ""
   },
   "src/components/workspace/FinOpsAndGitView.tsx": {
-    "mtime": 1794385027.3836465,
-    "seen": 1794385098.2946265,
-    "ast_hash": "25a5b70ddecd690f4df9538a3eaa9461",
+    "mtime": 1794386141.426798,
+    "seen": 1794386277.1575541,
+    "ast_hash": "aace995a126a2f4c9c65222ced804e37",
     "semantic_hash": ""
   },
   "src/components/workspace/ProjectWorkspaceModal.tsx": {
-    "mtime": 1794384936.9868739,
-    "seen": 1794385098.294631,
-    "ast_hash": "e48c14e4233d0f475e9482f0d44f71c7",
+    "mtime": 1794386165.0803444,
+    "seen": 1794386277.1575587,
+    "ast_hash": "fcad7bda6dadc31173e3429405ce431d",
     "semantic_hash": ""
   },
   "src/components/workspace/SwarmAndModelsView.tsx": {
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "src/components/workspace/workspaceDefaults.ts": {
-    "mtime": 1794385024.783599,
-    "seen": 1794385098.2949276,
-    "ast_hash": "77cb1e95df424651a5ad5cfb688347f8",
+    "mtime": 1794386194.1227057,
+    "seen": 1794386277.1579053,
+    "ast_hash": "5615d884ef9c71643434149410470040",
     "semantic_hash": ""
   },
   "tests/workspace/sprint1-workspace.unit.test.ts": {
@@ -1155,6 +1155,24 @@
     "mtime": 1794385550.191421,
     "seen": 1794385596.365285,
     "ast_hash": "d0597d965a19021cef7f825e16947244",
+    "semantic_hash": ""
+  },
+  "src/components/workspace/UnitEconomicsProfitabilityCard.tsx": {
+    "mtime": 1794386125.4132087,
+    "seen": 1794386277.1579025,
+    "ast_hash": "77d08362a6a4be005bfe8ff5fbb6ec38",
+    "semantic_hash": ""
+  },
+  "src/lib/unit-economics.ts": {
+    "mtime": 1794386039.7886746,
+    "seen": 1794386277.159087,
+    "ast_hash": "4af4f53cf3214c98f366f1c80fade516",
+    "semantic_hash": ""
+  },
+  "tests/workspace/sprint3-unit-economics.unit.test.ts": {
+    "mtime": 1794386225.0437236,
+    "seen": 1794386277.1651177,
+    "ast_hash": "35ee3e893d19452e520374f980b641f8",
     "semantic_hash": ""
   },
   "package-lock.json": {

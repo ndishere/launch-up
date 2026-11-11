@@ -492,13 +492,30 @@ export interface TemplateMatchResult {
   evaluatedAt: string;
 }
 
+export type Mod10BudgetTierFallback = 'NONE' | 'TIER_2' | 'TIER_3';
+
+export interface Mod10FinOpsCheckSnapshot {
+  authorized: boolean;
+  principal_type: 'HUMAN' | 'AI_AGENT';
+  effective_role: string;
+  rls_session_token: string;
+  remaining_budget_usd: number;
+  budget_tier_fallback: Mod10BudgetTierFallback;
+  gate_required: boolean;
+  error_code?: 'ERR_BUDGET_EXCEEDED' | 'ERR_RBAC_DENIED' | 'ERR_TENANT_MISMATCH' | 'ERR_CIRCULAR_TENANCY';
+  checkedAt: string;
+  isLiveService: boolean;
+}
+
 export interface ProjectFinOpsState {
   clientContractValueUsd: number;
   llmTokenBudgetUsd: number;
   estimatedLlmSpendUsd: number;
   actualLlmSpendUsd: number;
+  estimatedContainerHours?: number;
   containerHours: number;
   containerRatePerHourUsd: number;
+  estimatedAgentComputeMinutes?: number;
   agentComputeMinutes: number;
   agentComputeRatePerMinUsd: number;
   manualExpenses: ProjectFinOpsExpense[];
@@ -506,6 +523,7 @@ export interface ProjectFinOpsState {
   reusabilityTokenSavingsUsd?: number;
   templateMatchResults?: TemplateMatchResult | null;
   lastSanitizationResult?: SanitizationResult | null;
+  lastMod10Check?: Mod10FinOpsCheckSnapshot | null;
 }
 
 export type GitStageBranchName =
