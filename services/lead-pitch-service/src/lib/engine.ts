@@ -5,6 +5,8 @@ import type {
   GeneratedLead,
   ProspectRaw,
 } from '../types/index.ts';
+export type { ProspectRaw };
+
 import {
   DncListBlockedError,
   ScrapeTimeoutError,

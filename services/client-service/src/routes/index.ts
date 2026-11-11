@@ -14,7 +14,7 @@ const createClientSchema = z.object({
   tier: z.enum(['Enterprise B2B', 'Growth B2B', 'Startup B2C', 'Agency']).default('Startup B2C'),
   status: z.enum(['Active', 'Onboarding', 'Pending', 'Inactive']).default('Onboarding'),
   monthlyMrr: z.number().int().min(0).default(0),
-  contactInfo: z.record(z.any()).default({}),
+  contactInfo: z.record(z.string(), z.any()).default({}),
   notes: z.string().optional(),
 });
 

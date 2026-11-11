@@ -5,11 +5,14 @@ import { pool } from '../db.js';
 
 export interface JwtPayload {
   sub: string;
+  userId?: string;
   email: string;
   orgId: string;
   fullName: string;
   roles: string[];
   permissions: string[];
+  iat?: number;
+  exp?: number;
 }
 
 declare module 'fastify' {

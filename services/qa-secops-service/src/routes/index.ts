@@ -20,7 +20,7 @@ const qaVerifyRequestSchema = z.object({
   api_staging_url: z.string().url('api_staging_url must be a valid URL'),
   signed_apk_url: z.string().url('signed_apk_url must be a valid URL'),
   user_stories: z.array(userStorySchema),
-  simulated_findings: z.record(z.any()).optional(),
+  simulated_findings: z.record(z.string(), z.any()).optional(),
 });
 
 export async function qaSecopsRoutes(app: FastifyInstance) {

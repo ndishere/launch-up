@@ -18,7 +18,7 @@ const webBuildRequestSchema = z.object({
   project_id: z.string().min(1, 'project_id is required'),
   golden_template_id: z.string().min(1, 'golden_template_id is required'),
   openapi_3_1_yaml: z.string().optional(),
-  brand_assets: z.record(z.any()).optional(),
+  brand_assets: z.record(z.string(), z.any()).optional(),
   compliance_flags: z.array(z.string()).optional(),
   ga4_measurement_id: z.string().optional(),
   file_deltas: z.array(fileDeltaSchema),

@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyRequest } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
@@ -21,7 +21,7 @@ await app.register(helmet, { global: true });
 await app.register(rateLimit, {
   max: 100,
   timeWindow: '1 minute',
-  keyGenerator: (request) => request.ip,
+  keyGenerator: (request: FastifyRequest) => request.ip,
 });
 
 // ── Routes ────────────────────────────────────────────

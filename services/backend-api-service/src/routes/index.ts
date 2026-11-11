@@ -16,7 +16,7 @@ const backendBuildRequestSchema = z.object({
   golden_template_id: z.string().min(1, 'golden_template_id is required'),
   db_migration_sql: z.string().min(1, 'db_migration_sql cannot be empty'),
   openapi_3_1_yaml: z.string().min(1, 'openapi_3_1_yaml cannot be empty'),
-  rbac_matrix: z.record(z.array(z.string())),
+  rbac_matrix: z.record(z.string(), z.array(z.string())),
   compliance_flags: z.array(z.string()).optional(),
 });
 

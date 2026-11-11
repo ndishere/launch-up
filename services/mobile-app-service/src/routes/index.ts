@@ -17,7 +17,7 @@ const androidBuildRequestSchema = z.object({
   project_id: z.string().min(1, 'project_id is required'),
   golden_template_id: z.string().min(1, 'golden_template_id is required'),
   openapi_3_1_yaml: z.string().optional(),
-  brand_assets: z.record(z.any()).optional(),
+  brand_assets: z.record(z.string(), z.any()).optional(),
   package_name: z.string().min(1, 'package_name is required'),
   target_sdk_version: z.number().int().positive(),
   file_deltas: z.array(fileDeltaSchema),

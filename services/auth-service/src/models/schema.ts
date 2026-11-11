@@ -1,5 +1,5 @@
 import {
-  pgSchema, uuid, varchar, text, boolean, timestamp, integer, jsonb, inet, citext, primaryKey
+  pgSchema, uuid, varchar, text, boolean, timestamp, integer, jsonb, inet, primaryKey
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 

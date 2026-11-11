@@ -72,11 +72,15 @@ async function buildTokenPayload(userId: string) {
 }
 
 function signAccessToken(payload: object): string {
-  return jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.ACCESS_TOKEN_EXPIRY });
+  return jwt.sign(payload, config.JWT_SECRET, {
+    expiresIn: config.ACCESS_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
+  });
 }
 
 function signRefreshToken(payload: { sub: string }): string {
-  return jwt.sign(payload, config.JWT_REFRESH_SECRET, { expiresIn: config.REFRESH_TOKEN_EXPIRY });
+  return jwt.sign(payload, config.JWT_REFRESH_SECRET, {
+    expiresIn: config.REFRESH_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'],
+  });
 }
 
 // ── Route Registration ──────────────────────────────

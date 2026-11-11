@@ -8,7 +8,7 @@ import {
 
 const marketingRequestSchema = z.object({
   project_id: z.string().min(1, 'project_id is required'),
-  brand_kit: z.record(z.any()),
+  brand_kit: z.record(z.string(), z.any()),
   campaign_theme: z.string().min(1, 'campaign_theme is required'),
   days_count: z.number().int().min(1).max(365).optional().default(30),
   canva_brand_template_ids: z.array(z.string()).min(1, 'At least one canva template ID is required'),

@@ -38,7 +38,7 @@ const createGateSchema = z.object({
     'HOTFIX_MERGE',
   ]),
   artifact_summary: z.string().optional().default(''),
-  artifact_payload: z.record(z.any()).optional().default({}),
+  artifact_payload: z.record(z.string(), z.any()).optional().default({}),
 });
 
 const decideGateSchema = z.object({
@@ -188,7 +188,7 @@ export async function governanceRoutes(app: FastifyInstance) {
       });
     }
 
-    const principalId = request.user!.userId;
+    const principalId = request.user!.userId ?? request.user!.sub;
     const orgId = request.user!.orgId;
 
     // 1. Principal lookup and check if AI_AGENT

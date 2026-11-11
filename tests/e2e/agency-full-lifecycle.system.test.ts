@@ -206,12 +206,20 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
       project_id: PROJECT_ID,
       client_id: CLIENT_ID,
       intake_transcript: intakeTranscript,
+      brand_assets: {
+        primary_color_hex: '#1E3A8A',
+        secondary_color_hex: '#3B82F6',
+        font_heading: 'Inter',
+        font_body: 'Inter',
+      },
       target_countries: ['IN', 'DE', 'US'],
       target_modules: {
         build_website: true,
         build_landing_page: true,
         build_android_app: true,
         build_backend_api: true,
+        enable_digital_marketing: true,
+        enable_whatsapp_marketing: true,
       },
     });
 
@@ -255,6 +263,7 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
       file_deltas: [
         {
           file_path: 'src/pages/Home.tsx',
+          operation: 'CREATE',
           content: '<main className="container mx-auto px-4"><h1 className="text-4xl font-bold">Punjab Freight</h1></main>',
         },
       ],
@@ -272,10 +281,11 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
       golden_template_id: 'golden-mobile-android',
       package_name: 'com.punjabfreight.express',
       target_sdk_version: 35,
+      file_deltas: [],
       declared_permissions: ['ACCESS_COARSE_LOCATION'],
       data_safety_csv_declarations: ['LOCATION'],
       keystore_config: {
-        alias: 'release-key',
+        key_alias: 'release-key',
         key_password: 'ValidPassword123!',
         store_password: 'ValidPassword123!',
       },
@@ -292,6 +302,10 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
       golden_template_id: 'golden-backend-api',
       db_migration_sql: generatedSqlMigration,
       openapi_3_1_yaml: generatedOpenApiYaml,
+      rbac_matrix: {
+        admin: ['read', 'write', 'delete'],
+        user: ['read'],
+      },
     });
 
     assert.ok(backendResponse.rls_tables_verified_count > 0);
@@ -303,12 +317,14 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
   it('Stage 6 (MOD-06): Autonomous QA, SecOps & Lighthouse CI Verification -> Gate 3', async () => {
     const qaResponse = await processQAVerification({
       project_id: PROJECT_ID,
-      staging_web_url: 'https://preview-proj-000.launchup.internal',
-      api_endpoint_url: 'https://api-preview-proj-000.launchup.internal',
+      web_staging_url: 'https://preview-proj-000.launchup.internal',
+      api_staging_url: 'https://api-preview-proj-000.launchup.internal',
+      signed_apk_url: 'https://builds.launchup.internal/app-release.apk',
       user_stories: [
         {
           id: 'US-001',
-          title: 'Real-time order tracking',
+          role: 'Customer',
+          goal: 'Real-time order tracking',
           acceptance_criteria: ['Returns 200 OK', 'Displays live GPS coordinates'],
         },
       ],
@@ -387,9 +403,9 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
     // 2. MOD-08: Inbound WhatsApp Customer Service & RAG
     const inboundResponse = await processWhatsAppEvent({
       project_id: PROJECT_ID,
-      client_id: CLIENT_ID,
       event_type: 'INBOUND_CUSTOMER_MSG',
       recipient_phone_e164: '+919876543210',
+      opt_in_proof_id: null,
       last_inbound_timestamp: new Date().toISOString(),
       message_payload: {
         text_or_template: 'What is the tracking number for order #PF-9482?',
@@ -403,7 +419,6 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
     // 3. MOD-08: Outbound Campaign Broadcast with Valid Opt-In Proof
     const outboundResponse = await processWhatsAppEvent({
       project_id: PROJECT_ID,
-      client_id: CLIENT_ID,
       event_type: 'OUTBOUND_CAMPAIGN_BROADCAST',
       recipient_phone_e164: '+919876543210',
       opt_in_proof_id: 'optin-proof-user-consent-v1',
@@ -506,7 +521,6 @@ describe('Stage 3: Master End-to-End Agency Pipeline Verification', () => {
       async () => {
         await processWhatsAppEvent({
           project_id: PROJECT_ID,
-          client_id: CLIENT_ID,
           event_type: 'OUTBOUND_CAMPAIGN_BROADCAST',
           recipient_phone_e164: '+919876543210',
           opt_in_proof_id: '', // Missing opt-in proof

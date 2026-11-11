@@ -4,13 +4,14 @@ import jwt from 'jsonwebtoken';
 
 export interface JwtPayload {
   sub: string;
+  userId?: string;
   email: string;
   orgId: string;
   fullName: string;
   roles: string[];
   permissions: string[];
-  iat: number;
-  exp: number;
+  iat?: number;
+  exp?: number;
 }
 
 declare module 'fastify' {
