@@ -40,33 +40,27 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-11T13:25:15+05:30`
+- **Last Updated Timestamp:** `2026-11-11T13:48:20+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `SPRINT 1 COMPLETE — PROJECT COMMAND CENTER & HIERARCHICAL AGENT SWARM WORKSPACE`
-- **Architecture Alignment:** Built Sprint 1 autonomous software factory workspace (`src/components/workspace/`), unified favicon sync (`public/favicon.svg`), and full M:N `localStorage` persistence (`src/context/AppContext.tsx`):
-  1. **Immersive Project Command Center (`src/components/workspace/ProjectWorkspaceModal.tsx`, `BuildAreaView.tsx`, `SwarmAndModelsView.tsx`, `FinOpsAndGitView.tsx`, `workspaceDefaults.ts`):** Triggered automatically when clicking any project (`ProjectsTab.tsx`, `ClientDetailDrawer.tsx`, `CommandPalette.tsx`, `DashboardTab.tsx`) or finishing `CreateProjectModal.tsx`. Includes all 6 top-level workspace tabs:
-     - **`Build Area`:** 7-stage Hierarchical Agent Swarm (`CEO Agent -> Tech Architect -> Design Team -> Parallel Coding Agents -> Testing Agents -> Tech Manager Integration -> UAT / Deployment`), `"Start Autonomous Build"` runner, live agent reasoning logs, editable PRD/TDD/Design Theme blueprints, and interactive `GDPR_EU`, `DPDP_INDIA`, `CCPA_US` governance checklists.
-     - **`n8n Workflows`:** Project-scoped embedded `<N8nWorkflowsTab />` synced to `n8nGraphs`.
-     - **`Agent Swarm`:** Real-time virtual agent allocation, active task queue dispatch, token budget bars, and branch assignments.
-     - **`AI Models`:** Tiered model routing selectors (Gemini Flash / Claude Sonnet / Gemini Pro / GPT Mini), Local Edge SLM FinOps fallback toggle, and determinism temperature slider.
-     - **`FinOps & Unit Economics`:** Live calculator tracking Client Contract Value, estimated vs actual LLM spend, container hosting hours, agent compute minutes, manual expense CRUD ledger, Net Gross Profit (`$`), and Gross Margin (`%`).
-     - **`Git & Docker Staging`:** 4-stage isolated branch promotion visualizer (`feature/dev -> feature/testing -> feature/uat -> feature/production`) with SHA tracking + Docker Compose status & YAML preview.
-  2. **M:N Workspace Persistence (`src/context/AppContext.tsx` & `src/types/index.ts`):** `projectWorkspaces` persisted to `localStorage` (`launchup_state_v1_projectWorkspaces`), automatically hydrated from M:N `clientIds` retainer values, and reset cleanly via `resetDemoState()`.
-  3. **Theme-Adaptive SVG Favicon (`public/favicon.svg`, `index.html`, `src/components/common/LaunchUpLogo.tsx`):** Added rounded ascend prism favicon synced live across Light/Dark/System themes and custom color palettes.
+- **Active Module ID:** `SPRINT 2 COMPLETE — SMART REUSABILITY & CODE SANITIZER ENGINE`
+- **Architecture Alignment:** Built Sprint 2 reusable module matching, security/PII sanitization, and FinOps savings visibility cleanly atop Sprint 1 (`src/lib/`, `src/components/workspace/`, `src/types/index.ts`):
+  1. **Code Sanitizer Engine (`src/lib/code-sanitizer.ts`):** Deterministic, idempotent sanitizer inspecting code templates and snippets before reuse. Scrubs **PII** (emails, phone numbers, author/owner names, physical street addresses), **Secrets & Connection URIs** (PostgreSQL/Mongo/Redis/MySQL/AMQP URIs, AWS `AKIA...` keys, `sk_live_`/`ghp_`/`AIza`/`xox` keys, `Bearer` tokens, hardcoded env secret assignments), and **Proprietary / Rigid UI Constraints** (hex colors, `rgb`/`rgba`, fixed `font-family`/`fontFamily`, `!important`, fixed desktop `px` widths, extreme `z-index` overrides). Computes `riskScoreBefore`, `riskScoreAfter`, and `isSafe`.
+  2. **Smart Template Matcher & Reusability Calculator (`src/lib/template-matcher.ts`):** Evaluates project PRD blueprints and `ProjectType` against canonical golden templates (`golden-web-landing`, `golden-mobile-android`, `golden-backend-api`) and verified sanitized components (`sanitized-gdpr-dpdp-consent`, `sanitized-rls-tenant-guard`, `sanitized-whatsapp-crm-bridge`), computing match scores, avoided token counts, reusability `%`, and USD savings.
+  3. **FinOps & Workspace Integration (`src/components/workspace/FinOpsAndGitView.tsx`, `workspaceDefaults.ts`, `ProjectWorkspaceModal.tsx`):** Extended `ProjectFinOpsState` and `calculateProjectUnitEconomics()`, hydrated reusability + sanitization metrics on workspace creation and PRD updates, surfaced savings in the workspace 5-cell summary bar and FinOps breakdown, and added interactive Template Matcher + Code Sanitizer inspector controls.
 - **Current TDD Stage:**
-  - `[x] Stage 0: Test Stubs Generated` — 55 test suites across all 10 modules, Sprint 1 Workspace, and cross-module E2E
-  - `[x] Stage 1: Unit Tests Passing` — 85/85 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 Workspace unit tests in `tests/workspace/sprint1-workspace.unit.test.ts`)
+  - `[x] Stage 0: Test Stubs Generated` — 56 test suites across all 10 modules, Sprint 1 Workspace, Sprint 2 Sanitizer/Reusability, and cross-module E2E
+  - `[x] Stage 1: Unit Tests Passing` — 90/90 PASS (82 MOD-01..MOD-10 + 3 Sprint 1 Workspace + 5 Sprint 2 Sanitizer/Reusability unit tests in `tests/workspace/sprint2-sanitizer.unit.test.ts`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
   - `[x] Stage 4: Cross-Module Performance & Concurrency Passing` — 4/4 PASS (`tests/e2e/agency-concurrency.perf.test.ts`)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1859` nodes, `3553` edges, `95` communities)
-  - `[x] Cross-Module Monorepo Regression Passing` — 172/172 PASS across 55 test suites in 5.30s (100% pass rate)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exits `0`; Vite production bundle built in `720ms`
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`1882` nodes, `3623` edges, `96` communities)
+  - `[x] Cross-Module Monorepo Regression Passing` — 177/177 PASS across 56 test suites in 6.07s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exits `0`; Vite production bundle built in `1.04s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **Sprint 1 Project Command Center & Hierarchical Swarm Workspace COMPLETE (172/172 tests passing, 0 TS errors).**
-  - **Next Step:** Sprint 2 live WebSocket/SSE agent execution streaming or Docker multi-container production rollout.
+  - **Platform Milestone:** **Sprint 2 Smart Reusability & Code Sanitizer Engine COMPLETE (177/177 tests passing, 0 TS errors).**
+  - **Next Step:** Sprint 3 live WebSocket/SSE agent execution streaming or Docker multi-container production rollout.
 - **Known Blockers / Unresolved Errors:**
-  - `None. 172/172 tests passing across 55 suites, 0 TypeScript errors, clean Vite build. Graphify updated to 1859 nodes, 3553 edges, 95 communities.`
+  - `None. 177/177 tests passing across 56 suites, 0 TypeScript errors, clean Vite build. Graphify updated to 1882 nodes, 3623 edges, 96 communities.`
 
 ---
 

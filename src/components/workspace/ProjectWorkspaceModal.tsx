@@ -22,6 +22,8 @@ import {
   createDefaultProjectWorkspace,
   SWARM_STAGE_DEFINITIONS,
 } from './workspaceDefaults';
+import { sanitizeCodeSnippet } from '../../lib/code-sanitizer';
+import { matchTemplates } from '../../lib/template-matcher';
 import { GitStageBranchName, GovernanceFrameworkKey } from '../../types';
 
 type WorkspaceTabId = 'build' | 'n8n' | 'swarm' | 'models' | 'finops' | 'git-docker';
@@ -362,7 +364,7 @@ export const ProjectWorkspaceModal: React.FC = () => {
             <SummaryMetricCard
               title="LLM Spend / Cap"
               primaryValue={`$${workspace.finops.actualLlmSpendUsd.toFixed(2)} / $${workspace.finops.llmTokenBudgetUsd}`}
-              subtitle={`${workspace.modelRouting.deepArchitecture}`}
+              subtitle={`${finopsSummary.reusabilityPercent}% Reused · $${finopsSummary.reusabilitySavingsUsd.toFixed(2)} Saved`}
               status={
                 workspace.finops.actualLlmSpendUsd > workspace.finops.llmTokenBudgetUsd
                   ? 'warn'
@@ -411,10 +413,26 @@ export const ProjectWorkspaceModal: React.FC = () => {
                 }))
               }
               onUpdateBlueprint={(field, value) =>
-                updateProjectWorkspace(project.id, (prev) => ({
-                  ...prev,
-                  blueprints: { ...prev.blueprints, [field]: value },
-                }))
+                updateProjectWorkspace(project.id, (prev) => {
+                  const nextBlueprints = { ...prev.blueprints, [field]: value };
+                  if (field === 'prd') {
+                    const matched = matchTemplates(value, project.type);
+                    return {
+                      ...prev,
+                      blueprints: nextBlueprints,
+                      finops: {
+                        ...prev.finops,
+                        reusabilityPercent: matched.totalReusabilityPercent,
+                        reusabilityTokenSavingsUsd: matched.totalEstimatedSavingsUsd,
+                        templateMatchResults: matched,
+                      },
+                    };
+                  }
+                  return {
+                    ...prev,
+                    blueprints: nextBlueprints,
+                  };
+                })
               }
             />
           )}
@@ -479,6 +497,8 @@ export const ProjectWorkspaceModal: React.FC = () => {
           {activeTab === 'finops' && (
             <FinOpsUnitEconomicsView
               finops={workspace.finops}
+              prdText={workspace.blueprints.prd}
+              projectType={project.type}
               onUpdateFinOps={(patch) =>
                 updateProjectWorkspace(project.id, (prev) => ({
                   ...prev,
@@ -509,6 +529,56 @@ export const ProjectWorkspaceModal: React.FC = () => {
                     manualExpenses: prev.finops.manualExpenses.filter((e) => e.id !== expenseId),
                   },
                 }))
+              }
+              onRunTemplateMatch={() =>
+                updateProjectWorkspace(project.id, (prev) => {
+                  const matched = matchTemplates(prev.blueprints.prd, project.type);
+                  return {
+                    ...prev,
+                    finops: {
+                      ...prev.finops,
+                      reusabilityPercent: matched.totalReusabilityPercent,
+                      reusabilityTokenSavingsUsd: matched.totalEstimatedSavingsUsd,
+                      templateMatchResults: matched,
+                    },
+                    logs: [
+                      {
+                        id: `log-reuse-${Date.now()}`,
+                        timestamp: new Date().toLocaleTimeString(),
+                        stageId: 'architect' as const,
+                        agentName: 'Smart Template Matcher',
+                        modelUsed: prev.modelRouting.fastReasoning,
+                        message: `Matched ${matched.matches.length} reusable templates (${matched.totalReusabilityPercent}% coverage, $${matched.totalEstimatedSavingsUsd.toFixed(2)} saved).`,
+                        level: 'success' as const,
+                      },
+                      ...prev.logs,
+                    ].slice(0, 60),
+                  };
+                })
+              }
+              onRunSanitizer={(rawSnippet) =>
+                updateProjectWorkspace(project.id, (prev) => {
+                  const result = sanitizeCodeSnippet(rawSnippet);
+                  return {
+                    ...prev,
+                    finops: {
+                      ...prev.finops,
+                      lastSanitizationResult: result,
+                    },
+                    logs: [
+                      {
+                        id: `log-san-${Date.now()}`,
+                        timestamp: new Date().toLocaleTimeString(),
+                        stageId: 'testing' as const,
+                        agentName: 'Code Sanitizer Engine',
+                        modelUsed: prev.modelRouting.qaSecurity,
+                        message: `Sanitized snippet: scrubbed ${result.removedItems.length} findings (PII:${result.countsByCategory.pii}, Secrets:${result.countsByCategory.secret}, UI:${result.countsByCategory.styling}). Risk ${result.riskScoreBefore} -> ${result.riskScoreAfter}.`,
+                        level: (result.isSafe ? 'success' : 'warn') as 'success' | 'warn',
+                      },
+                      ...prev.logs,
+                    ].slice(0, 60),
+                  };
+                })
               }
             />
           )}

@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "src/components/modals/ClientDetailDrawer.tsx": {
-    "mtime": 1794383575.4482706,
-    "seen": 1794383713.5253155,
+    "mtime": 1794383822.7328184,
+    "seen": 1794385098.2868242,
     "ast_hash": "c439c2192b90579d6af7d19a99b31681",
     "semantic_hash": ""
   },
@@ -192,14 +192,14 @@
     "semantic_hash": ""
   },
   "src/components/modals/CommandPalette.tsx": {
-    "mtime": 1794383579.8345668,
-    "seen": 1794383713.5255094,
+    "mtime": 1794383822.8109753,
+    "seen": 1794385098.2871275,
     "ast_hash": "06138ae79c5679ee0260d79ad75f44bb",
     "semantic_hash": ""
   },
   "src/components/modals/CreateProjectModal.tsx": {
-    "mtime": 1794383565.8041022,
-    "seen": 1794383713.5255122,
+    "mtime": 1794383822.8841736,
+    "seen": 1794385098.2871318,
     "ast_hash": "4e6ea6d632ccac83f10d54228bbcaebb",
     "semantic_hash": ""
   },
@@ -252,8 +252,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/DashboardTab.tsx": {
-    "mtime": 1794383588.8118508,
-    "seen": 1794383713.5269022,
+    "mtime": 1794383823.442274,
+    "seen": 1794385098.2898781,
     "ast_hash": "5a019bbd32a48ac68383c328229329af",
     "semantic_hash": ""
   },
@@ -288,8 +288,8 @@
     "semantic_hash": ""
   },
   "src/components/tabs/ProjectsTab.tsx": {
-    "mtime": 1794383571.1868067,
-    "seen": 1794383713.5284684,
+    "mtime": 1794383823.5148866,
+    "seen": 1794385098.292371,
     "ast_hash": "474adee5b94ac73c98329933cacd6eb0",
     "semantic_hash": ""
   },
@@ -336,8 +336,8 @@
     "semantic_hash": ""
   },
   "src/context/AppContext.tsx": {
-    "mtime": 1794383467.8609185,
-    "seen": 1794383713.5301895,
+    "mtime": 1794383824.425653,
+    "seen": 1794385098.2949312,
     "ast_hash": "685559532729aa45c39cf2087432bcdf",
     "semantic_hash": ""
   },
@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1794383405.0481508,
-    "seen": 1794383713.5309932,
-    "ast_hash": "ec9ff0c5e7584594002b4cea97ebb75d",
+    "mtime": 1794384757.7753336,
+    "seen": 1794385098.2963133,
+    "ast_hash": "7ce2e115bfe26e6f743e851cdf4734a3",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794376252.79162,
-    "seen": 1794378523.673077,
-    "ast_hash": "455bfd256e82b925dae0de2670f113c6",
+    "mtime": 1794385115.3620577,
+    "seen": 1794385596.3670888,
+    "ast_hash": "c04f1243b93f5971915200cb3eec2bbc",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -1104,15 +1104,15 @@
     "semantic_hash": ""
   },
   "src/components/workspace/FinOpsAndGitView.tsx": {
-    "mtime": 1794383536.4327292,
-    "seen": 1794383713.5301826,
-    "ast_hash": "3084461d03896d4be36e0ce13d66aae3",
+    "mtime": 1794385027.3836465,
+    "seen": 1794385098.2946265,
+    "ast_hash": "25a5b70ddecd690f4df9538a3eaa9461",
     "semantic_hash": ""
   },
   "src/components/workspace/ProjectWorkspaceModal.tsx": {
-    "mtime": 1794383611.5248299,
-    "seen": 1794383713.5301845,
-    "ast_hash": "0f7dbb13786cb080269cbaf671b3294a",
+    "mtime": 1794384936.9868739,
+    "seen": 1794385098.294631,
+    "ast_hash": "e48c14e4233d0f475e9482f0d44f71c7",
     "semantic_hash": ""
   },
   "src/components/workspace/SwarmAndModelsView.tsx": {
@@ -1122,9 +1122,9 @@
     "semantic_hash": ""
   },
   "src/components/workspace/workspaceDefaults.ts": {
-    "mtime": 1794383639.0334058,
-    "seen": 1794383713.5301876,
-    "ast_hash": "13fd4ef6dc1dfa55b06c191260eb9149",
+    "mtime": 1794385024.783599,
+    "seen": 1794385098.2949276,
+    "ast_hash": "77cb1e95df424651a5ad5cfb688347f8",
     "semantic_hash": ""
   },
   "tests/workspace/sprint1-workspace.unit.test.ts": {
@@ -1137,6 +1137,24 @@
     "mtime": 1794381752.4186928,
     "seen": 1794383713.5395021,
     "ast_hash": "6b8b00d1a6b3594c649339d2b1e35b92",
+    "semantic_hash": ""
+  },
+  "src/lib/code-sanitizer.ts": {
+    "mtime": 1794385546.9589343,
+    "seen": 1794385596.3567164,
+    "ast_hash": "9e630d787afedbeeef056c696db26b27",
+    "semantic_hash": ""
+  },
+  "src/lib/template-matcher.ts": {
+    "mtime": 1794385022.2450361,
+    "seen": 1794385098.2954555,
+    "ast_hash": "552ded9c460a87321ef42ef0071e5a80",
+    "semantic_hash": ""
+  },
+  "tests/workspace/sprint2-sanitizer.unit.test.ts": {
+    "mtime": 1794385550.191421,
+    "seen": 1794385596.365285,
+    "ast_hash": "d0597d965a19021cef7f825e16947244",
     "semantic_hash": ""
   },
   "package-lock.json": {

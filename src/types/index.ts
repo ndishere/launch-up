@@ -442,6 +442,56 @@ export interface ProjectFinOpsExpense {
   date: string;
 }
 
+// ====================================================================
+// SPRINT 2: SMART REUSABILITY & CODE SANITIZER TYPES
+// ====================================================================
+export type SanitizationCategory = 'pii' | 'secret' | 'styling';
+
+export interface SanitizationFinding {
+  id: string;
+  category: SanitizationCategory;
+  ruleName: string;
+  matchedPreview: string;
+  replacement: string;
+  line: number;
+  severity: 'high' | 'medium' | 'low';
+}
+
+export interface SanitizationResult {
+  sanitizedCode: string;
+  removedItems: SanitizationFinding[];
+  countsByCategory: Record<SanitizationCategory, number>;
+  riskScoreBefore: number;
+  riskScoreAfter: number;
+  isSafe: boolean;
+  scannedAt: string;
+}
+
+export type GoldenTemplateId =
+  | 'golden-web-landing'
+  | 'golden-mobile-android'
+  | 'golden-backend-api';
+
+export interface MatchedTemplateItem {
+  templateId: string;
+  templateName: string;
+  sourceKind: 'golden-template' | 'sanitized-component';
+  matchScore: number;
+  matchedCapabilities: string[];
+  reusableComponents: string[];
+  estimatedTokensSaved: number;
+  estimatedTokenSavingsUsd: number;
+  sanitizedVerified: boolean;
+}
+
+export interface TemplateMatchResult {
+  matches: MatchedTemplateItem[];
+  totalReusabilityPercent: number;
+  totalTokensSaved: number;
+  totalEstimatedSavingsUsd: number;
+  evaluatedAt: string;
+}
+
 export interface ProjectFinOpsState {
   clientContractValueUsd: number;
   llmTokenBudgetUsd: number;
@@ -452,6 +502,10 @@ export interface ProjectFinOpsState {
   agentComputeMinutes: number;
   agentComputeRatePerMinUsd: number;
   manualExpenses: ProjectFinOpsExpense[];
+  reusabilityPercent?: number;
+  reusabilityTokenSavingsUsd?: number;
+  templateMatchResults?: TemplateMatchResult | null;
+  lastSanitizationResult?: SanitizationResult | null;
 }
 
 export type GitStageBranchName =

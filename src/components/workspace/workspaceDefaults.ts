@@ -1,3 +1,8 @@
+import {
+  SAMPLE_UNSAFE_TEMPLATE_SNIPPET,
+  sanitizeCodeSnippet,
+} from '../../lib/code-sanitizer.ts';
+import { matchTemplates } from '../../lib/template-matcher.ts';
 import type {
   Client,
   GitStageBranchName,
@@ -145,6 +150,10 @@ export interface FinOpsCalculatedSummary {
   totalActualCost: number;
   grossProfitUsd: number;
   profitMarginPercent: number;
+  reusabilityPercent: number;
+  reusabilitySavingsUsd: number;
+  grossLlmCostWithoutReuseUsd: number;
+  effectiveCostReductionPercent: number;
 }
 
 export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOpsCalculatedSummary {
@@ -162,6 +171,25 @@ export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOp
       ? Number(((grossProfitUsd / finops.clientContractValueUsd) * 100).toFixed(1))
       : 0;
 
+  const reusabilitySavingsUsd = Number(
+    (
+      finops.reusabilityTokenSavingsUsd ??
+      finops.templateMatchResults?.totalEstimatedSavingsUsd ??
+      0
+    ).toFixed(2)
+  );
+  const reusabilityPercent =
+    finops.reusabilityPercent ??
+    finops.templateMatchResults?.totalReusabilityPercent ??
+    0;
+  const grossLlmCostWithoutReuseUsd = Number(
+    (estimatedLlmCost + reusabilitySavingsUsd).toFixed(2)
+  );
+  const effectiveCostReductionPercent =
+    grossLlmCostWithoutReuseUsd > 0
+      ? Number(((reusabilitySavingsUsd / grossLlmCostWithoutReuseUsd) * 100).toFixed(1))
+      : 0;
+
   return {
     estimatedLlmCost,
     actualLlmCost,
@@ -172,6 +200,10 @@ export function calculateProjectUnitEconomics(finops: ProjectFinOpsState): FinOp
     totalActualCost,
     grossProfitUsd,
     profitMarginPercent,
+    reusabilityPercent,
+    reusabilitySavingsUsd,
+    grossLlmCostWithoutReuseUsd,
+    effectiveCostReductionPercent,
   };
 }
 
@@ -201,6 +233,16 @@ export function createDefaultProjectWorkspace(
     for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
     return h.toString(16).padStart(7, '0').slice(0, 7);
   };
+
+  const defaultPrd = `# PRD Blueprint — ${project.name}
+- Archetype: ${project.type}
+- M:N Linked Clients: ${clientNames}
+- Primary Framework: ${project.framework || 'React 19 + Fastify'}
+- Deployment Target: ${project.serverTarget}
+- Success Metric: 100% RLS isolation, <250ms p95 API latency, 0px horizontal mobile overflow (375px–1920px).`;
+
+  const initialTemplateMatches = matchTemplates(defaultPrd, project.type);
+  const initialSanitization = sanitizeCodeSnippet(SAMPLE_UNSAFE_TEMPLATE_SNIPPET);
 
   return {
     projectId: project.id,
@@ -232,12 +274,7 @@ export function createDefaultProjectWorkspace(
       },
     ],
     blueprints: {
-      prd: `# PRD Blueprint — ${project.name}
-- Archetype: ${project.type}
-- M:N Linked Clients: ${clientNames}
-- Primary Framework: ${project.framework || 'React 19 + Fastify'}
-- Deployment Target: ${project.serverTarget}
-- Success Metric: 100% RLS isolation, <250ms p95 API latency, 0px horizontal mobile overflow (375px–1920px).`,
+      prd: defaultPrd,
       tdd: `# Technical Design & Verification Matrix
 1. Schema Isolation: PostgreSQL 16 ENABLE ROW LEVEL SECURITY across tenant entities via client_project_links.
 2. API Contract: Strict OpenAPI 3.1 validation with deterministic 4xx/5xx error codes (ERR_RLS_UNPROTECTED_TABLE, ERR_OPTIMISTIC_LOCK_CONFLICT).
@@ -342,6 +379,10 @@ export function createDefaultProjectWorkspace(
           date: new Date().toISOString().slice(0, 10),
         },
       ],
+      reusabilityPercent: initialTemplateMatches.totalReusabilityPercent,
+      reusabilityTokenSavingsUsd: initialTemplateMatches.totalEstimatedSavingsUsd,
+      templateMatchResults: initialTemplateMatches,
+      lastSanitizationResult: initialSanitization,
     },
     gitDocker: [
       {
