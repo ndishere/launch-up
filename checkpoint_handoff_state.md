@@ -40,32 +40,42 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-13T17:37:00+05:30`
+- **Last Updated Timestamp:** `2026-11-13T20:36:00+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `GLOBAL TOP HEADER TAB HEADING + SUBTITLE REFINEMENT & ALL-TAB SIMPLIFICATION`
-- **Architecture Alignment:** Moved Tab Heading and Subtitle into the Global Top Header (`src/components/layout/Header.tsx`) across all current and future tabs, replacing the `10/10 Services Live` pill:
-  1. **Centralized Tab Metadata Registry (`src/constants/tabHeaders.ts`):** Created `TAB_HEADER_META: Record<string, { title: string; subtitle: string }>` covering all 27 tabs plus human-readable fallback generator `getTabHeaderMeta(tabId)` for future dynamic tabs.
-  2. **Global Header Refinement (`src/components/layout/Header.tsx`):** Positioned active tab's Heading and Subtitle directly to the right of the sidebar toggle button within `flex flex-col justify-center min-w-0 flex-1 mr-4 overflow-hidden`. Strictly preserved existing header height (`h-[72px]` in prototype / `h-14` in classic). Heading styled with `truncate`, subtitle with `truncate` and `title={tabMeta.subtitle}` for hover tooltip, ensuring smooth `...` truncation on window resize without wrapping or pushing search/action buttons.
-  3. **Removed Duplicate Standalone Headings Across All Tabs:**
-     - `ThreeZoneScreenLayout.tsx`: Retained action buttons and badges in a compact toolbar above Section 1 without redundant `<h1>` / `<p>`.
-     - `ScreenAnalyticsHeader.tsx`: Preserved action buttons and badges above the 5-cell summary bar with optional title/description props for 100% backward compatibility.
-     - Standalone tabs (`AgentCompanyTab.tsx`, `AlertsTab.tsx`, `AnalyticsTab.tsx`, `BillingTab.tsx`, `IntegrationsTab.tsx`, `MarketingEngineTab.tsx`, `SystemDesignTab.tsx`, `TemplatesTab.tsx`): Cleaned up duplicate headers while preserving action buttons (`+ Intake Business`, `Mark All as Read`, `Plans`, `Scan *.launchup.json`, `+ Launch Campaign`, sub-tabs, etc.).
-  4. **Verification & Monorepo Test Suite:**
+- **Active Module ID:** `STRICT RESTORATION OF ORIGINAL SLATE & INDIGO THEME + EXPANDABLE RIGHT DETAIL PANEL + GLOBAL TOP HEADER TAB HEADING`
+- **Architecture Alignment:** Strictly reverted and locked visual theme to the original sleek dark/light Slate & Indigo Control Plane theme from commit `8c12cde`, while retaining the Global Top Header Tab Heading + Subtitle and the Expandable Right-Side Detail Panel:
+  1. **Theme Reversion & Scoping Cleanup (`src/index.css`, `src/context/AppContext.tsx`, `src/App.tsx`):**
+     - Fully removed all `:root[data-ui-style="prototype"]` overrides, prototype CSS variables (`--bg:#F4F5F7`, `--surf:#161D2F`, etc.), and `.chip` / `.btn-pri` / `.card-kpi` overrides.
+     - Restored pure Tailwind Slate/Indigo styling with `@theme`, 5 user color palettes (Indigo, Cyan, Emerald, Amber, Rose), and clean dark/light/system mode switching.
+     - Removed `uiThemeStyle` and prototype switching states from `AppContext.tsx`, `Header.tsx`, `Sidebar.tsx`, `SummaryMetricCard.tsx`, `SettingsTab.tsx`, `ClientsTab.tsx`, and `DashboardTab.tsx`.
+  2. **Expandable / Collapsible Right-Side Detail Panel (`src/components/common/ExpandableRightDetailPanel.tsx`):**
+     - Reusable `<ExpandableRightDetailPanel />` component styled 100% in Slate & Indigo (`bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-800`).
+     - Includes integrated `[✕ / Collapse >]` button, collapsed vertical `Details` pill, and companion toolbar toggle button `<ExpandableDetailToggleButton />`.
+     - Integrated across `ThreeZoneScreenLayout.tsx` for seamless contextual inspection across tabs.
+  3. **Global Header Tab Heading + Subtitle (`src/components/layout/Header.tsx`, `src/constants/tabHeaders.ts`):**
+     - Fixed `h-14` header bar with zero height increase.
+     - Single-line title and subtitle with `truncate` on resize, ensuring search bar and user controls never wrap or misalign.
+     - Hover tooltip (`title={tabMeta.subtitle}`) provides full subtitle context on all screen sizes.
+  4. **Restored Full 15-Tab Sidebar (`src/components/layout/Sidebar.tsx`):**
+     - Restored full 15 navigation destinations (`Dashboard`, `Clients`, `Projects`, `SLM Lab`, `Deployments`, `Templates`, `Connected Apps`, `Analytics`, `Team & Gates`, `Agent Swarm`, `Telemetry`, `Services`, `Workflows`, `Alerts`, `Settings`).
+     - Theme-adaptive `<LaunchUpLogo size={34} />` and original Slate/Indigo active highlights.
+  5. **Verification & Monorepo Test Suite:**
      - TypeScript `tsc --noEmit` exit 0 (0 errors).
-     - Vite production build exit 0 (built in 1.31s).
+     - Vite production build exit 0 (built in 2.30s).
      - Full monorepo test suite: **200/200 tests passing (100% pass rate)** across 60 suites.
+     - Graphify AST updated: **2577 nodes, 4887 edges, 172 communities**.
 - **Current TDD Stage:**
   - `[x] Stage 0: Test Stubs Generated` — 60 test suites across all 10 modules, Studio, Workspace Sprints 1–4, Gateway Verifier, 4-Layer Token Optimizer, and Template/Folder/Impact Adapter
   - `[x] Stage 1: Unit Tests Passing` — 113/113 PASS (82 MOD-01..MOD-10 + 17 Sprints 1–4 + 4 Custom API Gateway + 5 Token Optimizer + 5 Template/Folder/Impact `TFI-01..05`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
   - `[x] Stage 4: Cross-Module Performance & Concurrency` — 4/4 PASS (`STAGE4-CROSS-01..04`)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2572` nodes, `4889` edges, `167` communities)
-  - `[x] Cross-Module Monorepo Regression` — 200/200 PASS across 60 test suites in 9.75s (100% pass rate)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle built in `1.31s`
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2577` nodes, `4887` edges, `172` communities)
+  - `[x] Cross-Module Monorepo Regression` — 200/200 PASS across 60 test suites in 9.89s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle built in `2.30s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **Global Top Header Heading & Subtitle integration COMPLETE across all current and future tabs with 0 regressions, 200/200 tests passing, and Graphify AST updated.**
-  - **Next Step:** Phase 2 UI Simplification (apply 3-section layout and prototype cards to remaining tabs).
+  - **Platform Milestone:** **Original Slate & Indigo Theme strictly restored; Expandable Right Detail Panel and Global Top Header Tab Heading + Subtitle preserved and locked; 200/200 tests passing; Graphify AST updated.**
+  - **Next Step:** Continue standard feature work or tab refinements using the locked Slate & Indigo theme.
 - **Known Blockers / Unresolved Errors:**
   - `None. All 200 tests passing (100%), TypeScript 0 errors, Vite production build clean.`
 
@@ -91,5 +101,6 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 | **API GATEWAY (MOD-10)** | Custom AI / API Verifier & Swarm Matrix | YES | `4/4 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **TOKEN OPTIMIZER (3050)** | 4-Layer Compression, Ollama Discovery & Delta | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **EXTERNAL ADAPTER + IMPACT** | Drop-In Templates, Folder Pull, Graphify Guard & Weights | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
-| **UI THEME & 3-SECTION LAYOUT** | Prototype Theme, 72px Header, 9-Tab Nav & 3-Zone Screens | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `PHASE 1 COMPLETE` |
+| **ORIGINAL SLATE & INDIGO THEME** | Sleek Control Plane Theme Locked, 15-Tab Nav Restored | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `100% LOCKED` |
+| **EXPANDABLE RIGHT DETAIL PANEL** | Expandable/Collapsible Drawer & Toggle Button | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `100% COMPLETE` |
 | **GLOBAL HEADER TAB TITLE & SUBTITLE** | Top Header Title + Subtitle & Tab Body Deduplication | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `100% COMPLETE` |

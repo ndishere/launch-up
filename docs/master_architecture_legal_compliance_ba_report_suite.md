@@ -105,3 +105,19 @@ To maintain executive clarity, reduce vertical visual noise, and provide an inst
 4. **Screen Body Deduplication Contract**:
    - All shared layout wrappers (`ThreeZoneScreenLayout.tsx`, `ScreenAnalyticsHeader.tsx`) and individual tab components (`AgentCompanyTab.tsx`, `AlertsTab.tsx`, `AnalyticsTab.tsx`, `BillingTab.tsx`, `IntegrationsTab.tsx`, `MarketingEngineTab.tsx`, `SystemDesignTab.tsx`, `TemplatesTab.tsx`) omit redundant top-level `<h1>` headings and description paragraphs.
    - Action buttons (`+ Add Client`, `+ Intake Business`, `Scan *.launchup.json`, `Plans`, `Mark All as Read`, etc.) and status badges are rendered directly in compact top toolbars, preserving 100% of functional capabilities while saving vertical screen real estate.
+
+---
+
+## 7. Locked Slate & Indigo Control Plane Theme & Expandable Right Detail Panel Standards
+
+1. **Locked Slate & Indigo Theme Standard**:
+   - The platform UI visual design is strictly locked to the original dark/light **Slate & Indigo Control Plane Theme** (commit `8c12cde`), providing high visual contrast, crisp typography, and native Tailwind CSS `@theme` design tokens.
+   - All experimental prototype-scoped CSS variables (`:root[data-ui-style="prototype"]`) and non-standard `.chip` / `.btn-pri` utility classes have been completely removed.
+   - Color modes support Dark (`#090B10` background, Slate-900 surfaces), Light (`slate-50/80` background, white surfaces), and System synchronization with 5 selectable primary accent palettes: Indigo (default), Cyan, Emerald, Amber, and Rose.
+   - The full 15-tab navigation sidebar is preserved with `<LaunchUpLogo size={34} />` and sleek active tab highlights.
+
+2. **Expandable / Collapsible Right-Side Detail Panel Standard (`src/components/common/ExpandableRightDetailPanel.tsx`)**:
+   - Reusable `<ExpandableRightDetailPanel />` component styled in pure Slate & Indigo (`bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-800`), sliding in or collapsing without content jump.
+   - Provides contextual drill-down inspection when any row, client, project, gate, alert, template, or service node is selected.
+   - Features an integrated `[✕ / Collapse >]` header action, a collapsed vertical `Details` pill toggle for 1-click re-opening, and a companion toolbar toggle button `<ExpandableDetailToggleButton />`.
+   - Integrated into `ThreeZoneScreenLayout.tsx` for consistent multi-zone desktop screen layouts across all tabs.

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
-  Theme, ThemeMode, ColorPalette, UiThemeStyle, TabId, Client, Project, DeploymentLog, SystemAlert, 
+  Theme, ThemeMode, ColorPalette, TabId, Client, Project, DeploymentLog, SystemAlert, 
   BackupRecord, Invoice, Template, Integration, TeamMember,
   AutonomousAgent, BusinessAutomationIntake, SLMModel, MarketingCampaign,
   RemoteTelemetryPackage, FDESystemArchitecture,
@@ -157,8 +157,6 @@ const getDefaultTelemetryScores = () => ({
 });
 
 interface AppContextType {
-  uiThemeStyle: UiThemeStyle;
-  setUiThemeStyle: (style: UiThemeStyle) => void;
   colorMode: ThemeMode;
   setColorMode: (mode: ThemeMode) => void;
   themeMode: ThemeMode;
@@ -481,15 +479,6 @@ export const PALETTE_DEFINITIONS: Record<ColorPalette, {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // UI Theme Style: 'prototype' | 'classic' (defaulting to 'prototype')
-  const [uiThemeStyle, setUiThemeStyle] = useState<UiThemeStyle>(() => {
-    const saved = localStorage.getItem('lu-theme-style') as UiThemeStyle | null;
-    if (saved && (saved === 'prototype' || saved === 'classic')) {
-      return saved;
-    }
-    return 'prototype';
-  });
-
   // Color Mode: 'dark' | 'light' | 'system'
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     const saved = (localStorage.getItem('lu-theme') || localStorage.getItem('launchup_theme_mode')) as ThemeMode | null;
@@ -536,8 +525,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     const root = document.documentElement;
 
-    // 0. Set UI Theme Style ('prototype' | 'classic') & Mode
-    root.setAttribute('data-ui-style', uiThemeStyle);
+    root.removeAttribute('data-ui-style');
     root.setAttribute('data-mode', resolvedTheme);
     
     // 1. Handle Light / Dark class
@@ -549,10 +537,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // 2. Set data attributes
     root.setAttribute('data-palette', palette);
-    root.setAttribute(
-      'data-theme',
-      uiThemeStyle === 'prototype' ? (resolvedTheme === 'dark' ? 'dark' : 'light') : palette
-    );
+    root.setAttribute('data-theme', palette);
 
     // 3. Directly inject all palette CSS variables onto root inline style
     const pal = PALETTE_DEFINITIONS[palette] || PALETTE_DEFINITIONS.indigo;
@@ -577,7 +562,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (faviconEl) {
       faviconEl.href = buildLaunchUpFaviconDataUrl({
         isDark: resolvedTheme === 'dark',
-        accent: uiThemeStyle === 'prototype' ? (resolvedTheme === 'dark' ? '#4F46E5' : '#4338CA') : pal.accent,
+        accent: pal.accent,
         shade200: pal.colors[200],
         shade300: pal.colors[300],
         shade400: pal.colors[400],
@@ -586,12 +571,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // 5. Save preferences
-    localStorage.setItem('lu-theme-style', uiThemeStyle);
+    localStorage.removeItem('lu-theme-style');
     localStorage.setItem('lu-theme', themeMode);
     localStorage.setItem('launchup_theme_mode', themeMode);
     localStorage.setItem('launchup_palette', palette);
     localStorage.setItem('launchup_theme', resolvedTheme);
-  }, [uiThemeStyle, resolvedTheme, palette, themeMode]);
+  }, [resolvedTheme, palette, themeMode]);
 
   const toggleTheme = () => {
     setThemeMode((prev) => {
@@ -1755,8 +1740,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider
       value={{
-        uiThemeStyle,
-        setUiThemeStyle,
         colorMode: themeMode,
         setColorMode: setThemeMode,
         themeMode,

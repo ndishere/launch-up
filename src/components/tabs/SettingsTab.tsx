@@ -5,15 +5,13 @@ import {
   Sparkles, Layers, Sliders, Check
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { ThemeMode, ColorPalette, UiThemeStyle } from '../../types';
+import { ThemeMode, ColorPalette } from '../../types';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { CustomApiGatewayPanel } from '../common/CustomApiGatewayPanel';
 import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
 
 export const SettingsTab: React.FC = () => {
   const { 
-    uiThemeStyle,
-    setUiThemeStyle,
     themeMode, 
     setThemeMode, 
     palette, 
@@ -22,7 +20,6 @@ export const SettingsTab: React.FC = () => {
     resetDemoState 
   } = useApp();
 
-  const isPrototype = uiThemeStyle === 'prototype';
   const [appName, setAppName] = useState('Launch Up');
   const [appUrl, setAppUrl] = useState('https://app.launchup.io');
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -49,22 +46,22 @@ export const SettingsTab: React.FC = () => {
   return (
     <ThreeZoneScreenLayout
       title="Workspace Settings"
-      subtitle="Configure Launch Up workspace branding, UI theme style, color modes, and autonomous gateway rules."
+      subtitle="Configure Launch Up workspace branding, color modes, accent palettes, and autonomous gateway rules."
       badge="Customization Engine"
       isSidePanelOpen={isSidePanelOpen}
       onToggleSidePanel={() => setIsSidePanelOpen((prev) => !prev)}
       sidePanelTitle="Theme & Appearance Summary"
-      sidePanelSubtitle={`Style: ${uiThemeStyle} · Mode: ${themeMode}`}
+      sidePanelSubtitle={`Mode: ${themeMode} · Palette: ${palette}`}
       headerActions={
         <>
           {savedSuccess && (
-            <span className="chip g text-xs flex items-center gap-1.5 animate-in fade-in">
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5 animate-in fade-in">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Saved Successfully</span>
             </span>
           )}
           {resetSuccess && (
-            <span className="chip a text-xs flex items-center gap-1.5 animate-in fade-in">
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 animate-in fade-in">
               <RotateCcw className="w-3.5 h-3.5" />
               <span>State Reset Cleanly</span>
             </span>
@@ -73,12 +70,6 @@ export const SettingsTab: React.FC = () => {
       }
       summaryMetrics={
         <SummaryMetricGrid>
-          <SummaryMetricCard
-            title="UI Theme Style"
-            primaryValue={uiThemeStyle === 'prototype' ? 'Prototype UI' : 'Classic UI'}
-            subtitle={uiThemeStyle === 'prototype' ? 'Simplified Working Prototype' : 'Original Launch Up Palette'}
-            status="good"
-          />
           <SummaryMetricCard
             title="Appearance Mode"
             primaryValue={themeMode.toUpperCase()}
@@ -92,9 +83,15 @@ export const SettingsTab: React.FC = () => {
             status="good"
           />
           <SummaryMetricCard
+            title="Theme Engine"
+            primaryValue="Control Plane"
+            subtitle="Sleek Slate & Indigo"
+            status="good"
+          />
+          <SummaryMetricCard
             title="State Sync"
             primaryValue="LocalStorage"
-            subtitle="lu-theme-style & lu-theme"
+            subtitle="Auto-persisted"
             status="good"
           />
           <SummaryMetricCard
@@ -108,152 +105,64 @@ export const SettingsTab: React.FC = () => {
       sidePanelContent={
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="chip b text-[11px]">Active Preset</span>
-            <span className="text-[11px] text-[var(--mut)]">Auto-persisted</span>
-          </div>
-
-          <div
-            className={`p-3.5 rounded-xl border space-y-2.5 text-xs ${
-              isPrototype
-                ? 'bg-[var(--surf2)] border-[var(--line)]'
-                : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--mut)]">Theme Style</span>
-              <span className="font-bold text-[var(--ink)]">
-                {uiThemeStyle === 'prototype' ? 'Prototype UI' : 'Classic UI'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--mut)]">Color Mode</span>
-              <span className="font-semibold text-[var(--ink)] capitalize">{themeMode}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--mut)]">Resolved Shade</span>
-              <span className="font-mono text-[var(--acc)] capitalize">{resolvedTheme}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[var(--mut)]">Palette Accent</span>
-              <span
-                className="w-3.5 h-3.5 rounded-full ring-1 ring-black/10"
-                style={{ backgroundColor: 'var(--acc)' }}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <span className="text-[11px] font-bold text-[var(--mut)] uppercase tracking-wider">
-              Token Preview Swatches
+            <span className="px-2 py-0.5 text-[11px] font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              Active Preset
             </span>
-            <div className="grid grid-cols-4 gap-2 pt-1">
-              {[
-                { name: 'Surface', bg: 'var(--surf)', border: 'var(--line)' },
-                { name: 'Accent', bg: 'var(--acc)', border: 'transparent' },
-                { name: 'Green', bg: 'var(--g)', border: 'transparent' },
-                { name: 'Amber', bg: 'var(--a)', border: 'transparent' },
-              ].map((sw) => (
-                <div
-                  key={sw.name}
-                  className="rounded-lg p-2 text-center text-[10px] font-semibold border flex flex-col items-center gap-1 shadow-2xs"
-                  style={{ backgroundColor: sw.bg, borderColor: sw.border }}
-                >
-                  <span className="text-[var(--ink)]">{sw.name}</span>
-                </div>
-              ))}
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">Auto-persisted</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2.5 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Theme Theme</span>
+              <span className="font-bold text-slate-900 dark:text-slate-100">Control Plane (Slate/Indigo)</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Color Mode</span>
+              <span className="font-semibold text-slate-900 dark:text-slate-100 capitalize">{themeMode}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Palette Accent</span>
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400 capitalize">{palette}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Font Stack</span>
+              <span className="font-mono text-[11px] text-slate-700 dark:text-slate-300">Plus Jakarta Sans</span>
             </div>
           </div>
 
-          <div className="space-y-2 pt-3 border-t border-[var(--line)]">
+          <div className="pt-2">
             <button
+              type="button"
               onClick={handleResetDemo}
-              className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full py-2 px-3 text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-950/70 border border-rose-200/80 dark:border-rose-900/60 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Demo State</span>
+              <span>Reset State & Clear Cache</span>
             </button>
           </div>
         </div>
       }
     >
-      {/* Column 1: Main Content Settings Cards */}
-
       {/* 1. Theme Engine & Appearance Settings */}
-      <div
-        className={`rounded-2xl border p-6 shadow-xs space-y-5 transition-colors ${
-          isPrototype
-            ? 'bg-[var(--surf)] border-[var(--line)]'
-            : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-        }`}
-      >
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-5 transition-colors">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[var(--acc)]" />
-              <span>Theme Style & Appearance Engine</span>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Theme & Appearance Engine</span>
             </h2>
-            <p className="text-xs text-[var(--mut)] mt-0.5">
-              Switch seamlessly between our new simplified Prototype Theme and your saved Classic Theme.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Original Launch Up Slate & Indigo control plane theme with Light/Dark/System modes and 5 accent palettes.
             </p>
           </div>
-          <span className="chip b text-xs font-bold">Dual Theme Active</span>
-        </div>
-
-        {/* UI Theme Style Switcher: Prototype Theme vs Classic Saved Theme */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-[var(--ink)] block">
-            UI Theme Preset
-          </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {[
-              {
-                id: 'prototype' as UiThemeStyle,
-                title: 'Prototype Theme (New)',
-                badge: 'Recommended',
-                desc: 'Clean 72px header, 9 primary sidebar tabs, 3-section layout, and Inter typography from Working Prototype.',
-              },
-              {
-                id: 'classic' as UiThemeStyle,
-                title: 'Classic Theme (Previous)',
-                badge: 'Saved',
-                desc: 'Original Launch Up theme with multi-palette selection, deep obsidian surfaces, and legacy layout.',
-              },
-            ].map((st) => {
-              const isSelected = uiThemeStyle === st.id;
-              return (
-                <button
-                  key={st.id}
-                  type="button"
-                  onClick={() => setUiThemeStyle(st.id)}
-                  className={`p-4 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between gap-2 ${
-                    isSelected
-                      ? isPrototype
-                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-2 ring-[var(--acc)]/20'
-                        : 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20'
-                      : isPrototype
-                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)]'
-                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
-                      <span>{st.title}</span>
-                      <span className="chip b text-[10px]">{st.badge}</span>
-                    </span>
-                    {isSelected && <Check className="w-4 h-4 text-[var(--acc)]" />}
-                  </div>
-                  <p className="text-xs text-[var(--mut)] leading-relaxed">
-                    {st.desc}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+          <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800">
+            Active Theme
+          </span>
         </div>
 
         {/* Color Mode Selection (Light / Night / System) */}
-        <div className="space-y-2 pt-2 border-t border-[var(--line)]">
-          <label className="text-xs font-bold text-[var(--ink)] block">
+        <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <label className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
             Color Mode
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -289,22 +198,18 @@ export const SettingsTab: React.FC = () => {
                   onClick={() => setThemeMode(m.id)}
                   className={`p-3.5 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
-                      ? isPrototype
-                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-2 ring-[var(--acc)]/20'
-                        : 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20'
-                      : isPrototype
-                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)]'
-                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                      ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-[var(--ink)] flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                       <Icon className={`w-4 h-4 ${m.iconColor}`} />
                       {m.label}
                     </span>
-                    {isSelected && <Check className="w-4 h-4 text-[var(--acc)]" />}
+                    {isSelected && <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />}
                   </div>
-                  <span className="text-[11px] text-[var(--mut)] leading-snug">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                     {m.desc}
                   </span>
                 </button>
@@ -314,13 +219,13 @@ export const SettingsTab: React.FC = () => {
         </div>
 
         {/* Color Palette (5 Options) */}
-        <div className="space-y-2 pt-2 border-t border-[var(--line)]">
+        <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-[var(--ink)] flex items-center gap-1.5">
-              <Palette className="w-3.5 h-3.5 text-[var(--acc)]" />
+            <label className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+              <Palette className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Accent Color Palette</span>
             </label>
-            <span className="text-[11px] text-[var(--mut)]">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
               Applies across both Light & Dark modes
             </span>
           </div>
@@ -338,12 +243,8 @@ export const SettingsTab: React.FC = () => {
                 onClick={() => setPalette(opt.id)}
                 className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
                   palette === opt.id
-                    ? isPrototype
-                      ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-2 ring-[var(--acc)]/20'
-                      : 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 ring-1 ring-indigo-500'
-                    : isPrototype
-                    ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)]'
-                    : 'border-slate-200 dark:border-slate-800'
+                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 ring-1 ring-indigo-500'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center gap-2 truncate">
@@ -351,11 +252,11 @@ export const SettingsTab: React.FC = () => {
                     className="w-3 h-3 rounded-full shrink-0 border border-black/10"
                     style={{ backgroundColor: opt.color }}
                   />
-                  <span className="text-xs font-semibold text-[var(--ink)] truncate">
+                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
                     {opt.label.split(' ')[0]}
                   </span>
                 </div>
-                {palette === opt.id && <Check className="w-3.5 h-3.5 text-[var(--acc)] shrink-0" />}
+                {palette === opt.id && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />}
               </button>
             ))}
           </div>
@@ -368,49 +269,45 @@ export const SettingsTab: React.FC = () => {
       {/* 3. Branding & Workspace Identity Form */}
       <form
         onSubmit={handleSave}
-        className={`rounded-2xl border p-6 shadow-xs space-y-4 transition-colors ${
-          isPrototype
-            ? 'bg-[var(--surf)] border-[var(--line)]'
-            : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-        }`}
+        className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-4 transition-colors"
       >
-        <h2 className="text-base font-bold text-[var(--ink)]">
+        <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
           Workspace Branding & Identity
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-semibold text-[var(--ink2)] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               Platform Name
             </label>
             <input
               type="text"
               value={appName}
               onChange={(e) => setAppName(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-[var(--surf2)] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none focus:border-[var(--acc)]"
+              className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[var(--ink2)] block mb-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
               Canonical Base URL
             </label>
             <input
               type="text"
               value={appUrl}
               onChange={(e) => setAppUrl(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-[var(--surf2)] border border-[var(--line)] rounded-xl text-[var(--ink)] focus:outline-none focus:border-[var(--acc)]"
+              className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
             />
           </div>
         </div>
 
         {/* Notification Preferences */}
-        <div className="pt-3 border-t border-[var(--line)] space-y-3">
-          <label className="text-xs font-bold text-[var(--ink)] block">
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+          <label className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
             Autonomous Notifications
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <label className="flex items-center gap-2.5 text-xs text-[var(--ink2)] cursor-pointer">
+            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={whatsAppAlerts}
@@ -419,7 +316,7 @@ export const SettingsTab: React.FC = () => {
               />
               <span>WhatsApp Inbound Alerts</span>
             </label>
-            <label className="flex items-center gap-2.5 text-xs text-[var(--ink2)] cursor-pointer">
+            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={gateAlerts}
@@ -428,7 +325,7 @@ export const SettingsTab: React.FC = () => {
               />
               <span>Gate Approval Requests</span>
             </label>
-            <label className="flex items-center gap-2.5 text-xs text-[var(--ink2)] cursor-pointer">
+            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={emailAlerts}
@@ -443,7 +340,7 @@ export const SettingsTab: React.FC = () => {
         <div className="pt-2 flex justify-end">
           <button
             type="submit"
-            className="btn pri btn-pri px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs cursor-pointer hover:brightness-110"
+            className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 flex items-center gap-2 shadow-xs cursor-pointer transition-colors"
           >
             <Save className="w-3.5 h-3.5" />
             <span>Save Preferences</span>

@@ -36,10 +36,8 @@ export const DashboardTab: React.FC = () => {
     setSelectedClient,
     meshStatuses,
     systemHealthPercent,
-    uiThemeStyle,
   } = useApp();
 
-  const isPrototype = uiThemeStyle === 'prototype';
   const [isHealthPulseOpen, setIsHealthPulseOpen] = useState(false);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
@@ -78,58 +76,48 @@ export const DashboardTab: React.FC = () => {
     },
     {
       id: 'fu-3',
-      clientName: 'Apex Logistics',
-      domain: 'apexroute.example',
-      contact: 'ops@apexroute.example',
-      previewUrl: 'http://localhost:3000/#preview-apex',
-      actionTitle: 'Auto-healing SRE hotfix generated',
-      actionDesc: 'Incident SENTRY_5XX resolved on isolated branch feature/dev. Gate 5 PR awaits review.',
-      badge: 'Hotfix PR',
+      clientName: 'Urban Fit Studio',
+      domain: 'urbanfit.club',
+      contact: '+91 91234 56789 (WhatsApp)',
+      previewUrl: 'http://localhost:3000/#preview-urbanfit',
+      actionTitle: 'Lead pitch viewed',
+      actionDesc: 'Canva pitch deck viewed. AI Pitch Agent scheduled automated 24h follow-up WhatsApp message.',
+      badge: 'Pitch Sent',
       badgeTone: 'live' as const,
     },
-    {
-      id: 'fu-4',
-      clientName: 'Urban Fit Studio',
-      domain: 'urbanfit.example',
-      contact: '+1 415 555 0199',
-      previewUrl: 'http://localhost:3000/#preview-urbanfit',
-      actionTitle: 'Prototype ready across viewports',
-      actionDesc: 'Tailwind landing page built with 88% reusable code tokens. Share demo link with owner.',
-      badge: 'Ready for Review',
-      badgeTone: 'good' as const,
-    },
   ];
 
-  // Approvals Inbox (Governance Gates)
-  const [approvedGateIds, setApprovedGateIds] = useState<Set<string>>(new Set());
+  // Approvals Inbox (Human-in-the-loop Governance Gates)
   const approvalItems = [
     {
-      id: 'gate-prd-1',
-      title: 'Gate 2: Synthesized PRD & DDL',
-      project: 'Smile Dental Clinic Portal',
-      law: 'DPDP_INDIA & GDPR_EU',
-      author: 'CEO Agent & Tech Architect',
-      summary: 'Verified RLS enabled on 100% of tables, zero unmapped OpenAPI endpoints.',
+      id: 'gate-prd-smiledental',
+      title: 'Gate 2 (PRD & Schema Approval)',
+      project: 'Smile Dental Clinic App',
+      law: 'DPDP_INDIA & PostgreSQL RLS',
+      status: 'Awaiting Decision',
+      summary: 'BA Agent synthesized multi-tenant schema with 100% Row-Level Security and patient record encryption.',
     },
     {
-      id: 'gate-deploy-1',
-      title: 'Gate 3: Production Deploy Approval',
-      project: 'Acme SaaS Web App',
-      law: 'CCPA_US Compliant',
-      author: 'QA & SecOps Agent',
-      summary: 'Docker-compose container built, 0 vulnerability CVEs, 100% test pass rate.',
+      id: 'gate-deploy-freshbite',
+      title: 'Gate 3 (Production Deployment)',
+      project: 'Fresh Bite Food Ordering Engine',
+      law: 'GDPR_EU & SSL Certificate Verified',
+      status: 'Awaiting Decision',
+      summary: 'Docker multi-stage build passed QA/SecOps. Zero high CVEs in Trivy audit and Lighthouse score is 98.',
     },
     {
-      id: 'gate-hotfix-1',
-      title: 'Gate 5: Autonomous SRE Hotfix Merge',
-      project: 'Express Delivery Rates API',
+      id: 'gate-sre-apex',
+      title: 'Gate 5 (SRE Autonomous Hotfix)',
+      project: 'Apex Logistics Tracking System',
       law: 'Self-Healing Engine (MOD-09)',
-      author: 'Autonomous SRE Agent',
-      summary: 'Healed TypeError on rates calculator. Verified 0 regression on 90 concurrent requests.',
+      status: 'Awaiting Decision',
+      summary: 'Auto-detected 500 error in tracking webhook. Synthetic fix verified against Graphify AST call graph.',
     },
   ];
 
-  // Active Selected Item in Column 2 (Dynamic Info Panel)
+  const [approvedGateIds, setApprovedGateIds] = useState<Set<string>>(new Set());
+
+  // Selected Item for Right Detail Panel
   const [selectedItem, setSelectedItem] = useState<DashboardSelectedItem>({
     type: 'follow-up',
     id: followUps[0].id,
@@ -146,15 +134,15 @@ export const DashboardTab: React.FC = () => {
   });
 
   const handleApproveGate = (gateId: string) => {
-    setApprovedGateIds((prev) => new Set([...prev, gateId]));
+    setApprovedGateIds((prev) => new Set(prev).add(gateId));
   };
 
   return (
     <>
       <ThreeZoneScreenLayout
         title="Agency Command Center"
-        subtitle="Autonomous 1-Person Software Factory: Real-time client pipelines, follow-ups, and approval inbox."
-        badge="Phase 1 Prototype"
+        subtitle="1-Person Software Agency Operating System. Autonomous specialist agents executing discovery, builds, and delivery."
+        badge="Autonomous Engine"
         isSidePanelOpen={isSidePanelOpen}
         onToggleSidePanel={() => setIsSidePanelOpen((prev) => !prev)}
         sidePanelTitle={selectedItem.subtitle || 'Details & Actions'}
@@ -163,11 +151,7 @@ export const DashboardTab: React.FC = () => {
           <>
             <button
               onClick={() => setIsHealthPulseOpen(true)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition-colors cursor-pointer ${
-                isPrototype
-                  ? 'bg-[var(--surf)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surf2)]'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
-              }`}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Activity className="w-3.5 h-3.5 text-emerald-500" />
               <span>Mesh Health ({healthyMeshCount}/10)</span>
@@ -176,7 +160,7 @@ export const DashboardTab: React.FC = () => {
             <button
               id="dashboard-add-client-btn"
               onClick={() => setIsAddClientModalOpen(true)}
-              className="btn pri btn-pri px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer hover:brightness-110"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Add Client</span>
@@ -223,51 +207,45 @@ export const DashboardTab: React.FC = () => {
             {/* Status Pill & Title */}
             <div className="flex items-center justify-between gap-2">
               <span
-                className={
+                className={`px-2 py-0.5 text-[11px] font-semibold rounded-md border ${
                   selectedItem.status === 'good'
-                    ? 'chip g'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
                     : selectedItem.status === 'warn'
-                    ? 'chip a'
-                    : 'chip b'
-                }
+                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                }`}
               >
                 {selectedItem.statusLabel}
               </span>
-              <span className="text-[11px] text-[var(--mut)]">Instant Action</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Instant Action</span>
             </div>
 
             <div>
-              <h4 className="text-sm font-bold text-[var(--ink)] leading-snug">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
                 {selectedItem.title}
               </h4>
-              <p className="text-xs text-[var(--mut)] mt-1.5 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
                 {selectedItem.details}
               </p>
             </div>
 
             {/* Client / Target Details */}
             {selectedItem.clientName && (
-              <div
-                className={`p-3 rounded-xl border space-y-2 text-xs ${
-                  isPrototype
-                    ? 'bg-[var(--surf2)] border-[var(--line)]'
-                    : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700'
-                }`}
-              >
+              <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-[var(--mut)]">Client</span>
-                  <span className="font-semibold text-[var(--ink)]">{selectedItem.clientName}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Client</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">{selectedItem.clientName}</span>
                 </div>
                 {selectedItem.domain && (
                   <div className="flex items-center justify-between">
-                    <span className="text-[var(--mut)]">Domain</span>
-                    <span className="font-mono text-[11px] text-[var(--acc)]">{selectedItem.domain}</span>
+                    <span className="text-slate-500 dark:text-slate-400">Domain</span>
+                    <span className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400">{selectedItem.domain}</span>
                   </div>
                 )}
                 {selectedItem.contact && (
                   <div className="flex items-center justify-between">
-                    <span className="text-[var(--mut)]">Contact</span>
-                    <span className="text-[var(--ink2)]">{selectedItem.contact}</span>
+                    <span className="text-slate-500 dark:text-slate-400">Channel</span>
+                    <span className="text-slate-700 dark:text-slate-300">{selectedItem.contact}</span>
                   </div>
                 )}
               </div>
@@ -275,24 +253,48 @@ export const DashboardTab: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-2">
-              {selectedItem.type === 'approval' ? (
+              {selectedItem.actionType === 'approve-gate' && (
                 <button
                   onClick={() => handleApproveGate(selectedItem.id)}
                   disabled={approvedGateIds.has(selectedItem.id)}
                   className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all ${
                     approvedGateIds.has(selectedItem.id)
-                      ? 'bg-emerald-600 text-white cursor-default'
-                      : 'btn pri btn-pri hover:brightness-110 cursor-pointer'
+                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
                   }`}
                 >
                   <Check className="w-4 h-4" />
                   <span>
-                    {approvedGateIds.has(selectedItem.id)
-                      ? 'Gate Approved Successfully'
-                      : 'Approve Gate & Advance Swarm'}
+                    {approvedGateIds.has(selectedItem.id) ? 'Gate Approved' : 'Sign & Approve Gate'}
                   </span>
                 </button>
-              ) : (
+              )}
+
+              {selectedItem.actionType === 'send-message' && (
+                <>
+                  <button
+                    onClick={() => setCurrentTab('clients')}
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Send WhatsApp Closing Note</span>
+                  </button>
+
+                  {selectedItem.previewUrl && (
+                    <a
+                      href={selectedItem.previewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>Open Customer Live Preview</span>
+                    </a>
+                  )}
+                </>
+              )}
+
+              {selectedItem.actionType === 'open-workspace' && (
                 <>
                   <button
                     onClick={() => {
@@ -302,7 +304,7 @@ export const DashboardTab: React.FC = () => {
                         setCurrentTab('projects');
                       }
                     }}
-                    className="w-full btn pri btn-pri py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer hover:brightness-110"
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />
                     <span>Open Autonomous Workspace</span>
@@ -310,11 +312,7 @@ export const DashboardTab: React.FC = () => {
 
                   <button
                     onClick={() => setCurrentTab('preview-studio')}
-                    className={`w-full py-2 px-4 rounded-xl text-xs font-semibold border flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                      isPrototype
-                        ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)] text-[var(--ink)]'
-                        : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
-                    }`}
+                    className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <Eye className="w-3.5 h-3.5 text-indigo-500" />
                     <span>Preview Multi-Viewport (375px–1920px)</span>
@@ -324,7 +322,7 @@ export const DashboardTab: React.FC = () => {
 
               <button
                 onClick={() => setCurrentTab('clients')}
-                className="w-full text-center text-xs text-[var(--acc)] font-medium hover:underline py-1 cursor-pointer"
+                className="w-full text-center text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline py-1 cursor-pointer"
               >
                 View all client records →
               </button>
@@ -335,26 +333,22 @@ export const DashboardTab: React.FC = () => {
         {/* Section 2: Main Content Area (Column 1) */}
         
         {/* Card 1: Today's Follow-Ups */}
-        <div
-          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
-            isPrototype
-              ? 'bg-[var(--surf)] border-[var(--line)]'
-              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-          }`}
-        >
+        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <span>Today&apos;s Follow-Ups</span>
-                <span className="chip a text-[10px]">{followUps.length} actions</span>
+                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                  {followUps.length} actions
+                </span>
               </h2>
-              <p className="text-xs text-[var(--mut)] mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 High-intent leads and clients awaiting communication or review.
               </p>
             </div>
             <button
               onClick={() => setCurrentTab('clients')}
-              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+              className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
             >
               View pipeline
             </button>
@@ -384,40 +378,36 @@ export const DashboardTab: React.FC = () => {
                   }
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isSelected
-                      ? isPrototype
-                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-1 ring-[var(--acc)]'
-                        : 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
-                      : isPrototype
-                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)] hover:border-[var(--acc)]'
-                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                      ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
+                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
                   }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-xs text-[var(--ink)]">{fu.clientName}</span>
-                      <span className="font-mono text-[11px] text-[var(--mut)]">({fu.domain})</span>
+                      <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{fu.clientName}</span>
+                      <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">({fu.domain})</span>
                       <span
-                        className={
+                        className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border ${
                           fu.badgeTone === 'good'
-                            ? 'chip g text-[10px]'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
                             : fu.badgeTone === 'warn'
-                            ? 'chip a text-[10px]'
-                            : 'chip b text-[10px]'
-                        }
+                            ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                            : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
+                        }`}
                       >
                         {fu.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-[var(--ink2)] font-medium mt-1">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
                       {fu.actionTitle}
                     </p>
-                    <p className="text-[11px] text-[var(--mut)] mt-0.5 line-clamp-1">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
                       {fu.actionDesc}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-xs text-[var(--acc)] font-semibold flex items-center gap-1 group-hover:underline">
+                    <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1 group-hover:underline">
                       <span>Take Action</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </span>
@@ -428,22 +418,18 @@ export const DashboardTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 2: Funnel This Week (Found -> Prototype -> Pitched -> Won) */}
-        <div
-          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
-            isPrototype
-              ? 'bg-[var(--surf)] border-[var(--line)]'
-              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-          }`}
-        >
+        {/* Card 2: Funnel This Week */}
+        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-[var(--ink)]">Funnel This Week</h2>
-              <p className="text-xs text-[var(--mut)] mt-0.5">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">Funnel This Week</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Conversion progress across the 1-Person autonomous pipeline.
               </p>
             </div>
-            <span className="chip g text-xs font-bold">33.3% Close Rate</span>
+            <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              33.3% Close Rate
+            </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -452,23 +438,19 @@ export const DashboardTab: React.FC = () => {
               { stage: '2. Prototypes Ready', count: 18, percent: 75, barColor: 'bg-sky-500' },
               { stage: '3. Pitched Outreach', count: 12, percent: 50, barColor: 'bg-amber-500' },
               { stage: '4. Won Retainers', count: 8, percent: 33, barColor: 'bg-emerald-500' },
-            ].map((step, idx) => (
+            ].map((step) => (
               <div
                 key={step.stage}
-                className={`p-3.5 rounded-xl border ${
-                  isPrototype
-                    ? 'bg-[var(--surf2)] border-[var(--line)]'
-                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800'
-                }`}
+                className="p-3.5 rounded-xl border bg-slate-50 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800"
               >
-                <span className="text-[11px] font-medium text-[var(--mut)] block">
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">
                   {step.stage}
                 </span>
                 <div className="flex items-baseline justify-between mt-1.5">
-                  <span className="text-xl font-bold text-[var(--ink)] tabular-nums">
+                  <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                     {step.count}
                   </span>
-                  <span className="text-[11px] font-semibold text-[var(--mut)]">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                     {step.percent}%
                   </span>
                 </div>
@@ -485,28 +467,22 @@ export const DashboardTab: React.FC = () => {
         </div>
 
         {/* Card 3: Approvals Inbox (Governance Gates) */}
-        <div
-          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
-            isPrototype
-              ? 'bg-[var(--surf)] border-[var(--line)]'
-              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-          }`}
-        >
+        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <span>Approvals Inbox</span>
-                <span className="chip b text-[10px]">
+                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                   {approvalItems.length - approvedGateIds.size} pending
                 </span>
               </h2>
-              <p className="text-xs text-[var(--mut)] mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Human-in-the-loop Governance Gates (MOD-10) guarding quality & security before production.
               </p>
             </div>
             <button
               onClick={() => setCurrentTab('team')}
-              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+              className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
             >
               All Gates & RBAC
             </button>
@@ -535,24 +511,24 @@ export const DashboardTab: React.FC = () => {
                   }
                   className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isSelected
-                      ? isPrototype
-                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-1 ring-[var(--acc)]'
-                        : 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
-                      : isPrototype
-                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)]'
-                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300'
+                      ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
+                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900'
                   }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-xs text-[var(--ink)]">{gate.title}</span>
-                      <span className="chip b text-[10px]">{gate.law}</span>
-                      {isApproved && <span className="chip g text-[10px]">Approved</span>}
+                      <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{gate.title}</span>
+                      <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">{gate.law}</span>
+                      {isApproved && (
+                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          Approved
+                        </span>
+                      )}
                     </div>
-                    <p className="text-xs text-[var(--ink2)] font-medium mt-1">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
                       Project: {gate.project}
                     </p>
-                    <p className="text-[11px] text-[var(--mut)] mt-0.5">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                       {gate.summary}
                     </p>
                   </div>
@@ -583,23 +559,17 @@ export const DashboardTab: React.FC = () => {
         </div>
 
         {/* Card 4: Recent Active Clients Quick View */}
-        <div
-          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
-            isPrototype
-              ? 'bg-[var(--surf)] border-[var(--line)]'
-              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
-          }`}
-        >
+        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-bold text-[var(--ink)]">Active Client Retainers</h2>
-              <p className="text-xs text-[var(--mut)] mt-0.5">
+              <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">Active Client Retainers</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Current onboarded businesses and live software deployments.
               </p>
             </div>
             <button
               onClick={() => setCurrentTab('clients')}
-              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+              className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
             >
               Open Clients View →
             </button>
@@ -608,7 +578,7 @@ export const DashboardTab: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-[var(--line)] text-[var(--mut)] font-semibold">
+                <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
                   <th className="pb-2.5">Business</th>
                   <th className="pb-2.5">Domain</th>
                   <th className="pb-2.5">Tier</th>
@@ -616,7 +586,7 @@ export const DashboardTab: React.FC = () => {
                   <th className="pb-2.5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--line)]">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {clients.slice(0, 5).map((client) => (
                   <tr
                     key={client.id}
@@ -636,22 +606,22 @@ export const DashboardTab: React.FC = () => {
                         actionType: 'open-workspace',
                       });
                     }}
-                    className="hover:bg-[var(--surf2)] transition-colors cursor-pointer group"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group"
                   >
-                    <td className="py-3 font-semibold text-[var(--ink)]">
+                    <td className="py-3 font-semibold text-slate-900 dark:text-slate-100">
                       {client.name}
                     </td>
-                    <td className="py-3 font-mono text-[11px] text-[var(--mut)]">
+                    <td className="py-3 font-mono text-[11px] text-slate-500 dark:text-slate-400">
                       {client.domain}
                     </td>
                     <td className="py-3">
-                      <span className="chip b text-[10px]">{client.tier}</span>
+                      <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">{client.tier}</span>
                     </td>
-                    <td className="py-3 font-bold text-[var(--ink)] tabular-nums">
+                    <td className="py-3 font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                       ${client.monthlySubscription}/mo
                     </td>
                     <td className="py-3 text-right">
-                      <span className="text-[var(--acc)] font-semibold text-xs group-hover:underline">
+                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-xs group-hover:underline">
                         Details →
                       </span>
                     </td>

@@ -1,17 +1,17 @@
 # Graph Report - launch-up  (2026-11-13)
 
 ## Corpus Check
-- 286 files · ~194,015 words
+- 287 files · ~193,455 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 20 file(s) not represented in the graph (top: (none) 15, .example 1, .lock 1)
 
 ## Summary
-- 2572 nodes · 4889 edges · 167 communities (132 shown, 35 thin omitted)
+- 2577 nodes · 4887 edges · 172 communities (137 shown, 35 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 43 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3e7828fc`
+- Built from commit: `b23a0984`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -47,7 +47,7 @@
 - mod10.unit.test.ts
 - LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE
 - 1. Module-by-Module Positive, Negative & Rare Test Cases
-- governance-service/src/routes/index.ts
+- react
 - mobile-app-service/src/lib/engine.ts
 - LAUNCH UP — SETUP GUIDE & EXACT STARTER PROMPT FOR CODING AI MODELS
 - Run and deploy your AI Studio app
@@ -84,7 +84,7 @@
 - api.ts
 - whatsapp-service/package.json
 - compilerOptions
-- ProjectWorkspaceModal.tsx
+- N8nWorkflowsTab.tsx
 - marketing-engine-service
 - GovernanceMesh
 - web-builder-service
@@ -99,13 +99,13 @@
 - gateway
 - redis
 - verify-mesh-health.ts
-- 2. Module-by-Module JSON Input/Output Contracts
+- ProjectWorkspaceModal.tsx
 - governance-service
 - lead-pitch-service
-- kafka
+- auth-service/src/server.ts
 - agency-concurrency.perf.test.ts
-- ProjectWorkspaceModal.tsx
-- LaunchUpLogo.tsx
+- token-compressor.ts
+- AppProvider
 - governance-service/src/routes/index.ts
 - @fastify/helmet@^13.2.0
 - pino-pretty@^13.2.0
@@ -123,7 +123,7 @@
 - caveman-explore/package.json
 - caveman-learn/package.json
 - benchmark.py
-- code-sanitizer.ts
+- src/types/index.ts
 - _body_candidate_error
 - write_bytes_atomic
 - Review Caveman evidence
@@ -134,7 +134,7 @@
 - caveman-discover/SKILL.md
 - ba-intake-service
 - backend-api-service
-- project-service
+- ref_fastify
 - skills/caveman-learn — the Caveman Learn editing skill (Apache-2.0, public)
 - caveman-learn skill
 - interface
@@ -155,10 +155,12 @@
 - verify-and-stop/SKILL.md
 - fastify@^5.12.8
 - dev-orchestrator.ts
-- whatsapp-service
+- client-service/src/server.ts
 - NoCodeEditorTab.tsx
 - swiftfreight-api
 - 2. Module-by-Module JSON Input/Output Contracts
+- local-scanner.ts
+- client-service
 - tenant-context.ts
 - dashboard-widgets.ts
 - rbac-middleware.ts
@@ -172,23 +174,26 @@
 - sample-claude-code-app/checkpoint_handoff_state.md
 - schema.sql
 - LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE
+- qa-secops-service
+- SwarmAndModelsView.tsx
+- tabHeaders.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `useApp()` - 88 edges
-2. `react` - 55 edges
+1. `useApp()` - 83 edges
+2. `react` - 56 edges
 3. `lucide-react` - 50 edges
-4. `AppContextType` - 39 edges
-5. `SummaryMetricGrid()` - 38 edges
-6. `SummaryMetricCard()` - 38 edges
-7. `AppLayout()` - 37 edges
+4. `AppContextType` - 38 edges
+5. `AppLayout()` - 37 edges
+6. `SummaryMetricGrid()` - 37 edges
+7. `SummaryMetricCard()` - 37 edges
 8. `ProjectWorkspaceModal()` - 22 edges
 9. `N8nWorkflowsTab()` - 21 edges
 10. `_compress_file_locked()` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `TypeScript 5.x` --references--> `Project`  [INFERRED]
-  TECH_STACK.md → src/types/index.ts
 - `TypeScript 5.x` --references--> `Client`  [INFERRED]
+  TECH_STACK.md → src/types/index.ts
+- `TypeScript 5.x` --references--> `Project`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
 - `TypeScript 5.x` --references--> `DeploymentLog`  [INFERRED]
   TECH_STACK.md → src/types/index.ts
@@ -200,11 +205,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (167 total, 35 thin omitted)
+## Communities (172 total, 35 thin omitted)
 
 ### Community 0 - "AppContext.tsx"
-Cohesion: 0.05
-Nodes (82): NavItem, PullProjectFolderModalProps, SOURCE_TOOLS, getTabHeaderMeta(), TAB_HEADER_META, TabHeaderMeta, AppContext, AppContextType (+74 more)
+Cohesion: 0.07
+Nodes (59): NavItem, AppContext, AppContextType, DEFAULT_FIGCRAFT_PROJECT, DEFAULT_STUDIO_COMPLIANCE, N8nProjectGraph, PALETTE_DEFINITIONS, ProjectScopeDraft (+51 more)
 
 ### Community 1 - "environment"
 Cohesion: 0.22
@@ -247,8 +252,8 @@ Cohesion: 0.11
 Nodes (18): 1. Frontend Core & Reactive Architecture, 2. Type System & Software Correctness, 3. Styling, Design Systems & Theming, 4. Data Visualization & Charting, 5. Database Architecture & Systems Engineering, 6. DevOps, Infrastructure & CI/CD Pipelines, 7. Security, Cryptography & Compliance, 8. Build Tools & Runtime Environment (+10 more)
 
 ### Community 11 - "useApp"
-Cohesion: 0.08
-Nodes (62): lucide-react, react, @xyflow/react, App(), AppLayout(), DebugHotfixInspector(), LaunchUpLogo(), MetricItem (+54 more)
+Cohesion: 0.13
+Nodes (25): App(), AppLayout(), LaunchUpLogo(), MetricItem, ScreenAnalyticsHeader(), ScreenAnalyticsHeaderProps, MetricStatusTone, CAVEMAN_MODES (+17 more)
 
 ### Community 12 - "compilerOptions"
 Cohesion: 0.11
@@ -259,8 +264,8 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+10 more)
 
 ### Community 14 - "client-service/src/routes/index.ts"
-Cohesion: 0.10
-Nodes (25): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), authorize() (+17 more)
+Cohesion: 0.15
+Nodes (15): db, authenticate(), authorize(), clientProjects, clientProjectsRelations, clients, clientsRelations, clientsSchema (+7 more)
 
 ### Community 15 - "compilerOptions"
 Cohesion: 0.11
@@ -303,32 +308,32 @@ Cohesion: 0.18
 Nodes (11): driver, name, driver, internal, name, driver, name, networks (+3 more)
 
 ### Community 25 - "environment"
-Cohesion: 0.17
-Nodes (12): ALLOW_PLAINTEXT_LISTENER, KAFKA_CFG_ADVERTISED_LISTENERS, KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE, KAFKA_CFG_CONTROLLER_LISTENER_NAMES, KAFKA_CFG_CONTROLLER_QUORUM_VOTERS, KAFKA_CFG_INTER_BROKER_LISTENER_NAME, KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP, KAFKA_CFG_LISTENERS (+4 more)
+Cohesion: 0.11
+Nodes (19): ALLOW_PLAINTEXT_LISTENER, KAFKA_CFG_ADVERTISED_LISTENERS, KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE, KAFKA_CFG_CONTROLLER_LISTENER_NAMES, KAFKA_CFG_CONTROLLER_QUORUM_VOTERS, KAFKA_CFG_INTER_BROKER_LISTENER_NAME, KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP, KAFKA_CFG_LISTENERS (+11 more)
 
 ### Community 26 - "agency-full-lifecycle.system.test.ts"
-Cohesion: 0.11
-Nodes (11): GateState, GovernanceMesh, Principal, createGovernanceHttpServer(), dbStore, signToken(), RFC-7519, verifyToken() (+3 more)
+Cohesion: 0.10
+Nodes (15): GateState, GovernanceMesh, Principal, createGovernanceHttpServer(), dbStore, signToken(), RFC-7519, verifyToken() (+7 more)
 
 ### Community 27 - "services"
 Cohesion: 0.08
-Nodes (24): name, name, name, container_name, networks, ports, restart, volumes (+16 more)
+Nodes (24): name, name, name, command, container_name, name, image, networks (+16 more)
 
 ### Community 28 - "mod10.unit.test.ts"
 Cohesion: 0.13
 Nodes (13): ApprovalGateRecord, BudgetExceededError, CircularTenancyError, ClientProjectLinkRecord, MembershipRecord, PrincipalRecord, ProjectRecord, RbacDeniedError (+5 more)
 
 ### Community 29 - "LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE"
-Cohesion: 0.25
-Nodes (7): 1. Executive Vision & Multi-Tenant Business Architecture, 2. Token Reduction & Multi-Model Continuity via `Graphify`, 3. Curated Open-Source & Subscription Tool Stack, 4. Global Multi-Country Legal, Privacy & App Store Compliance Matrix, 5. Future Report Analysis Protocol (How You Work With Your Senior Architect & BA), LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE, Many-to-Many (M:N) Tenancy & Revenue Model
+Cohesion: 0.22
+Nodes (8): 1. Executive Vision & Multi-Tenant Business Architecture, 2. Token Reduction & Multi-Model Continuity via `Graphify`, 3. Curated Open-Source & Subscription Tool Stack, 4. Global Multi-Country Legal, Privacy & App Store Compliance Matrix, 5. Future Report Analysis Protocol (How You Work With Your Senior Architect & BA), 6. Global Top Header Architecture & Tab Metadata UI Standard, LAUNCH UP — MASTER ARCHITECTURE, GLOBAL COMPLIANCE & BUSINESS ANALYST SUITE, Many-to-Many (M:N) Tenancy & Revenue Model
 
 ### Community 30 - "1. Module-by-Module Positive, Negative & Rare Test Cases"
 Cohesion: 0.25
 Nodes (7): 1. Module-by-Module Positive, Negative & Rare Test Cases, 2. The 5-Stage Post-Development Automated Testing Pipeline, LAUNCH UP — MASTER TEST-DRIVEN DEVELOPMENT (TDD) MATRIX & 5-STAGE PIPELINE, `MOD-01` & `MOD-02`: Lead Discovery, BA Intake & Legal Compliance Synthesizer, `MOD-03`, `MOD-04` & `MOD-05`: Responsive Web, Android App & Backend Factory, `MOD-06`, `MOD-07`, `MOD-08` & `MOD-09`: QA/SecOps, Canva, WhatsApp & SRE, `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core
 
-### Community 31 - "governance-service/src/routes/index.ts"
-Cohesion: 0.24
-Nodes (7): approvalGates, approvalGatesRelations, authSchema, clientProjectLinks, clientProjectLinksRelations, principalsRelations, projectMembershipsRelations
+### Community 31 - "react"
+Cohesion: 0.14
+Nodes (27): lucide-react, react, ExpandableRightDetailPanel(), ExpandableRightDetailPanelProps, BADGE_STYLES, DOT_STYLES, SummaryMetricCard(), SummaryMetricCardProps (+19 more)
 
 ### Community 32 - "mobile-app-service/src/lib/engine.ts"
 Cohesion: 0.15
@@ -343,7 +348,7 @@ Cohesion: 0.11
 Nodes (18): compilerOptions, declaration, declarationMap, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution (+10 more)
 
 ### Community 37 - "project-service/src/db.ts"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (4): config, envSchema, db, pool
 
 ### Community 38 - "compilerOptions"
@@ -356,7 +361,7 @@ Nodes (9): VITE_API_BASE_URL, web-admin, container_name, depends_on, environment
 
 ### Community 40 - "governance-service"
 Cohesion: 0.11
-Nodes (22): condition, depends_on, container_name, depends_on, networks, ports, restart, volumes (+14 more)
+Nodes (22): condition, depends_on, depends_on, auth-service, postgres, redis, container_name, depends_on (+14 more)
 
 ### Community 41 - "qa-secops-service/package.json"
 Cohesion: 0.08
@@ -367,24 +372,24 @@ Cohesion: 0.12
 Nodes (15): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+7 more)
 
 ### Community 43 - "sre-healing-service/src/lib/engine.ts"
-Cohesion: 0.22
-Nodes (16): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, ForbiddenFileTouchError, HotfixBrokeTestsError (+8 more)
+Cohesion: 0.21
+Nodes (17): `MOD-09`: Autonomous SRE & Self-Healing Backend Operations, FORBIDDEN_FILE_PATTERNS, isExternalThirdPartyOutage(), processSREIncident(), resolveImpactedGraphifyNodes(), THIRD_PARTY_INDICATORS, sreRoutes(), ForbiddenFileTouchError (+9 more)
 
 ### Community 44 - "auth-service"
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, auth-service
 
 ### Community 45 - "qa-secops-service/src/lib/engine.ts"
-Cohesion: 0.18
-Nodes (19): `MOD-06`: Autonomous QA, SecOps & Compliance Verifier, processQAVerification(), runPlaywrightE2E(), runSecurityAudit(), validateLighthouseScores(), qaSecopsRoutes(), qaVerifyRequestSchema, userStorySchema (+11 more)
+Cohesion: 0.22
+Nodes (16): `MOD-06`: Autonomous QA, SecOps & Compliance Verifier, processQAVerification(), runPlaywrightE2E(), runSecurityAudit(), validateLighthouseScores(), qaVerifyRequestSchema, userStorySchema, E2EAssertionFailError (+8 more)
 
 ### Community 46 - "backend-api-service/package.json"
 Cohesion: 0.08
 Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet@^13.0.0, pino@^9.5.0, zod@^3.24.0, description, devDependencies (+23 more)
 
 ### Community 47 - "backend-api-service/src/lib/engine.ts"
-Cohesion: 0.20
-Nodes (18): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+10 more)
+Cohesion: 0.25
+Nodes (16): `MOD-05`: Backend API & Row-Level Security (RLS) Engine, BUILTIN_SYSTEM_ENDPOINTS, detectOpenApiDrift(), executePrivacyErasure(), executePrivacyExport(), processBackendBuild(), VALID_GOLDEN_TEMPLATES, verifyRlsCoverage() (+8 more)
 
 ### Community 48 - "compilerOptions"
 Cohesion: 0.12
@@ -415,8 +420,8 @@ Cohesion: 0.17
 Nodes (19): `MOD-03`: Responsive Web & Landing Page Builder, BuildOptions, checkCookieConsent(), processWebBuild(), VALID_GOLDEN_TEMPLATES, verifyViewports(), fileDeltaSchema, webBuilderRoutes() (+11 more)
 
 ### Community 55 - "lead-pitch-service/src/lib/engine.ts"
-Cohesion: 0.19
-Nodes (19): `MOD-01`: Lead Discovery & Canva Pitch Engine, auditDigitalGaps(), autofillCanvaProposal(), checkDncSuppression(), processLeadDiscovery(), resolveCompliance(), leadRequestSchema, mockDncLedger (+11 more)
+Cohesion: 0.16
+Nodes (22): `MOD-01`: Lead Discovery & Canva Pitch Engine, auditDigitalGaps(), autofillCanvaProposal(), checkDncSuppression(), processLeadDiscovery(), resolveCompliance(), leadPitchRoutes(), leadRequestSchema (+14 more)
 
 ### Community 56 - "sre-healing-service"
 Cohesion: 0.33
@@ -447,16 +452,16 @@ Cohesion: 0.30
 Nodes (17): build, build, build, context, dockerfile, target, build, build (+9 more)
 
 ### Community 63 - "dev-orchestrator.ts"
-Cohesion: 0.13
-Nodes (11): md, skillFile, skill, findTests(), result, testFiles, SWARM_STAGE_DEFINITIONS, signToken() (+3 more)
+Cohesion: 0.16
+Nodes (6): md, skillFile, skill, findTests(), result, testFiles
 
 ### Community 64 - "src/engine.ts"
 Cohesion: 0.21
 Nodes (12): buildProbeTarget(), DEFAULT_MODEL_BY_PROVIDER, extractCandidateModels(), extractVerifiedModelName(), PROVIDERS_ALLOWING_EMPTY_KEY, validateBaseUrl(), VerifiableApiProvider, verifyApiConnectionEngine() (+4 more)
 
 ### Community 65 - "whatsapp-service/src/lib/engine.ts"
-Cohesion: 0.20
-Nodes (17): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), buildApp(), PORT, MetaApiRejectError (+9 more)
+Cohesion: 0.24
+Nodes (15): `MOD-08`: WhatsApp Marketing & CRM RAG Engine, check24HourServiceWindow(), evaluateRagConfidence(), processWhatsAppEvent(), whatsappRoutes(), MetaApiRejectError, Mod08EventType, Mod08MessagePayload (+7 more)
 
 ### Community 66 - "api.ts"
 Cohesion: 0.08
@@ -470,9 +475,9 @@ Nodes (31): dependencies, fastify@^5.2.0, @fastify/cors@^11.0.0, @fastify/helmet
 Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+8 more)
 
-### Community 69 - "ProjectWorkspaceModal.tsx"
-Cohesion: 0.20
-Nodes (18): FinOpsUnitEconomicsView(), UnitEconomicsProfitabilityCard(), UnitEconomicsProfitabilityCardProps, buildDefaultCompliance(), calculateProjectUnitEconomics(), FinOpsCalculatedSummary, calculateProfitMarginPercent(), ClientBillingShareRow (+10 more)
+### Community 69 - "N8nWorkflowsTab.tsx"
+Cohesion: 0.15
+Nodes (23): @xyflow/react, PullProjectFolderModal(), PullProjectFolderModalProps, SOURCE_TOOLS, getTemplates(), makeNodeStyle(), N8nWorkflowsTab(), N8nWorkflowsTabProps (+15 more)
 
 ### Community 70 - "marketing-engine-service"
 Cohesion: 0.33
@@ -515,8 +520,8 @@ Cohesion: 0.08
 Nodes (22): Before / After, Benchmarks, How It Work, <img src="../../docs/assets/dancing-rock.svg" width="20" height="20" alt="rock"/> Caveman (421 tokens), Install, Original (827 tokens), Part of Caveman, Provider / model (+14 more)
 
 ### Community 80 - "custom-api-gateway.ts"
-Cohesion: 0.21
-Nodes (17): CustomApiGatewayPanel(), CustomApiGatewayPanelProps, CustomApiSetupModal(), CustomApiSetupModalProps, PRESET_ORDER, API_PROVIDER_PRESETS, ApiProviderPreset, calculateBlendedCostPer1MTokens() (+9 more)
+Cohesion: 0.20
+Nodes (18): CustomApiGatewayPanel(), CustomApiGatewayPanelProps, CustomApiSetupModal(), CustomApiSetupModalProps, PRESET_ORDER, API_PROVIDER_PRESETS, ApiProviderPreset, calculateBlendedCostPer1MTokens() (+10 more)
 
 ### Community 81 - "gateway"
 Cohesion: 0.25
@@ -530,41 +535,41 @@ Nodes (20): caveman, Example output, How to invoke, See also, What it does, 1. A
 Cohesion: 0.50
 Nodes (4): main(), probe(), ProbeTarget, TARGETS
 
-### Community 84 - "2. Module-by-Module JSON Input/Output Contracts"
-Cohesion: 0.24
-Nodes (17): FinOpsUnitEconomicsViewProps, GitDockerStagingView(), GitDockerStagingViewProps, applyBranchAutomationAction(), generateDeterministicSha(), generateGitDockerCliCommands(), generateProjectComposeYaml(), generateProjectDockerfile() (+9 more)
+### Community 84 - "ProjectWorkspaceModal.tsx"
+Cohesion: 0.11
+Nodes (45): BuildAreaView(), FinOpsUnitEconomicsView(), FinOpsUnitEconomicsViewProps, GitDockerStagingView(), GitDockerStagingViewProps, ProjectWorkspaceModal(), WorkspaceTabId, AgentSwarmView() (+37 more)
 
 ### Community 85 - "governance-service"
-Cohesion: 0.11
-Nodes (41): PullProjectFolderModal(), MarketingEngineTab(), getTemplates(), makeNodeStyle(), N8nWorkflowsTab(), N8nWorkflowsTabProps, WorkflowNodeData, ProjectsTab() (+33 more)
+Cohesion: 0.12
+Nodes (30): DebugHotfixInspector(), GenerateLeadModal(), GenerateLeadModalProps, INDUSTRY_PRESETS, AlertsTab(), DeploymentsTab(), TeamTab(), analyzeStackTraceWithGraphify() (+22 more)
 
 ### Community 86 - "lead-pitch-service"
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, lead-pitch-service
 
-### Community 87 - "kafka"
-Cohesion: 0.29
-Nodes (7): container_name, image, networks, ports, restart, volumes, kafka
+### Community 87 - "auth-service/src/server.ts"
+Cohesion: 0.24
+Nodes (8): config, EnvConfig, envSchema, closeDb(), db, pool, app, shutdown()
 
 ### Community 88 - "agency-concurrency.perf.test.ts"
-Cohesion: 0.13
-Nodes (13): leadPitchRoutes(), buildApp(), PORT, marketingRoutes(), buildApp(), PORT, sreRoutes(), buildApp() (+5 more)
+Cohesion: 0.12
+Nodes (16): buildApp(), PORT, marketingRoutes(), buildApp(), PORT, qaSecopsRoutes(), buildApp(), PORT (+8 more)
 
-### Community 89 - "ProjectWorkspaceModal.tsx"
-Cohesion: 0.10
-Nodes (34): CAVEMAN_MODES, VramTokenOptimizerPanel(), VramTokenOptimizerPanelProps, BuildAreaView(), BuildAreaViewProps, ProjectWorkspaceModal(), WorkspaceTabId, AgentSwarmView() (+26 more)
+### Community 89 - "token-compressor.ts"
+Cohesion: 0.20
+Nodes (16): ARTICLE_AND_COPULA_WORDS, CavemanCompressionResult, compressToCavemanMd(), DEFAULT_TOKEN_OPTIMIZER_SETTINGS, estimateTokenCount(), extractAstSkeletonFromFile(), generateProjectContextCompactMd(), getCavemanSystemPrompt() (+8 more)
 
-### Community 90 - "LaunchUpLogo.tsx"
-Cohesion: 0.50
-Nodes (3): buildLaunchUpFaviconDataUrl(), LaunchUpFaviconOptions, LaunchUpLogoProps
+### Community 90 - "AppProvider"
+Cohesion: 0.18
+Nodes (10): buildLaunchUpFaviconDataUrl(), LaunchUpFaviconOptions, LaunchUpLogoProps, AppProvider(), getDefaultTelemetryScores(), loadPersisted(), savePersisted(), normalizePulledProjectToLaunchUp() (+2 more)
 
 ### Community 91 - "governance-service/src/routes/index.ts"
 Cohesion: 0.09
-Nodes (29): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, detectCircularTenancy(), BudgetExceededError, CircularTenancyError, GATE_STAGES, Mod10AuthRequest, Mod10AuthResponse, RbacDeniedError (+21 more)
+Nodes (26): `MOD-10`: M:N Tenancy, RBAC & FinOps Governance Core, detectCircularTenancy(), BudgetExceededError, CircularTenancyError, GATE_STAGES, Mod10AuthRequest, Mod10AuthResponse, RbacDeniedError (+18 more)
 
 ### Community 94 - "zod@^4.6.7"
-Cohesion: 0.13
-Nodes (23): DebugHotfixInspectorProps, GraphifyImpactAnalyzerPanel(), GraphifyImpactAnalyzerPanelProps, TemplatesTab(), buildGraphifyImpactAnalysis(), evaluatePreChangeEditGuard(), GraphifyFileEditCheck, GraphifyImpactAnalysis (+15 more)
+Cohesion: 0.14
+Nodes (22): DebugHotfixInspectorProps, GraphifyImpactAnalyzerPanel(), GraphifyImpactAnalyzerPanelProps, BuildAreaViewProps, buildGraphifyImpactAnalysis(), evaluatePreChangeEditGuard(), GraphifyFileEditCheck, GraphifyImpactAnalysis (+14 more)
 
 ### Community 95 - "cli.py"
 Cohesion: 0.20
@@ -618,9 +623,9 @@ Nodes (9): description, files, license, name, private, scripts, test, type (+1 m
 Cohesion: 0.33
 Nodes (4): benchmark_pair(), count_tokens(), main(), print_table()
 
-### Community 108 - "code-sanitizer.ts"
-Cohesion: 0.14
-Nodes (20): createDefaultProjectWorkspace(), collectFindings(), computeRiskScore(), getLineNumberAt(), maskPreview(), SAMPLE_STRIPE_PLACEHOLDER, SAMPLE_UNSAFE_TEMPLATE_SNIPPET, sanitizeCodeSnippet() (+12 more)
+### Community 108 - "src/types/index.ts"
+Cohesion: 0.07
+Nodes (37): collectFindings(), computeRiskScore(), getLineNumberAt(), maskPreview(), SAMPLE_STRIPE_PLACEHOLDER, SANITIZER_RULES, SanitizerRule, SEVERITY_WEIGHT (+29 more)
 
 ### Community 109 - "_body_candidate_error"
 Cohesion: 0.25
@@ -662,9 +667,9 @@ Nodes (6): container_name, networks, ports, restart, volumes, ba-intake-service
 Cohesion: 0.33
 Nodes (6): container_name, networks, ports, restart, volumes, backend-api-service
 
-### Community 119 - "project-service"
-Cohesion: 0.33
-Nodes (6): container_name, networks, ports, restart, volumes, project-service
+### Community 119 - "ref_fastify"
+Cohesion: 0.24
+Nodes (6): fastify, FastifyRequest, JwtPayload, fastify, FastifyRequest, JwtPayload
 
 ### Community 120 - "skills/caveman-learn — the Caveman Learn editing skill (Apache-2.0, public)"
 Cohesion: 0.40
@@ -699,8 +704,8 @@ Cohesion: 0.40
 Nodes (4): interface, default_prompt, display_name, short_description
 
 ### Community 128 - "auth-service/src/routes/index.ts"
-Cohesion: 0.08
-Nodes (32): config, EnvConfig, envSchema, closeDb(), db, pool, authenticate(), fastify (+24 more)
+Cohesion: 0.13
+Nodes (21): authenticate(), authorize(), authSchema, organizations, permissions, refreshTokens, rolePermissions, rolePermissionsRelations (+13 more)
 
 ### Community 129 - "@fastify/cors@^11.4.1"
 Cohesion: 0.33
@@ -710,9 +715,9 @@ Nodes (4): @fastify/cors@^11.4.1, @google/genai@^2.4.0, @fastify/cors, @google/g
 Cohesion: 0.23
 Nodes (12): checkPort(), cleanup(), __dirname, __filename, main(), processes, rootDir, SERVICES (+4 more)
 
-### Community 143 - "whatsapp-service"
-Cohesion: 0.33
-Nodes (6): whatsapp-service, container_name, networks, ports, restart, volumes
+### Community 143 - "client-service/src/server.ts"
+Cohesion: 0.27
+Nodes (7): config, EnvConfig, envSchema, closeDb(), pool, app, shutdown()
 
 ### Community 144 - "NoCodeEditorTab.tsx"
 Cohesion: 0.24
@@ -726,29 +731,49 @@ Nodes (12): context, dockerfile, interval, retries, test, timeout, services, swi
 Cohesion: 0.50
 Nodes (3): 1. Core Database & RBAC Relational Contract (Foundation for `MOD-10`), 2. Module-by-Module JSON Input/Output Contracts, LAUNCH UP — LOCKED MODULE INPUT/OUTPUT CONTRACTS (DESIGN-BY-CONTRACT)
 
+### Community 147 - "local-scanner.ts"
+Cohesion: 0.27
+Nodes (10): collectFilesRecursive(), importProjectFolderOnServer(), inferFriendlyName(), LocalModelWeightsScanResult, scanGoldenTemplatesDir(), scanLocalModelWeights(), ScannedWorkspaceFolderEntry, scanWorkspacesDir() (+2 more)
+
+### Community 148 - "client-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, client-service
+
 ### Community 168 - "LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE"
 Cohesion: 0.29
 Nodes (6): 1. NEW AI MODEL BOOT SEQUENCE (EXECUTE IN THIS EXACT ORDER), 2. MANDATORY CHECKPOINT SAVE PROTOCOL (BEFORE TOKEN EXHAUSTION), 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI), 4. MODULE COMPLETION & 5-STAGE TEST LEDGER, LAUNCH UP — UNIVERSAL AI MODEL CHECKPOINT & HANDOFF STATE, Required Actions Before Stopping:
 
+### Community 169 - "qa-secops-service"
+Cohesion: 0.33
+Nodes (6): container_name, networks, ports, restart, volumes, qa-secops-service
+
+### Community 170 - "SwarmAndModelsView.tsx"
+Cohesion: 0.47
+Nodes (5): AgentSwarmViewProps, AIModelsViewProps, MODEL_TIERS, ProjectModelRouting, ProjectWorkspaceState
+
+### Community 171 - "tabHeaders.ts"
+Cohesion: 0.50
+Nodes (3): getTabHeaderMeta(), TAB_HEADER_META, TabHeaderMeta
+
 ## Knowledge Gaps
 - **2 isolated node(s):** `RFC-7519`, `RFC-7519`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1110 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1114 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `verifyApiConnectionEngine()` connect `src/engine.ts` to `custom-api-gateway.ts`, `ProjectWorkspaceModal.tsx`, `governance-service/src/routes/index.ts`, `governance-service`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `verifyApiConnectionEngine()` connect `src/engine.ts` to `custom-api-gateway.ts`, `local-scanner.ts`, `governance-service`, `token-compressor.ts`, `governance-service/src/routes/index.ts`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **What connects `RFC-7519`, `RFC-7519` to the rest of the system?**
   _2 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `AppContext.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05172413793103448 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `useApp` to `AppContext.tsx`, `package.json`, `ProjectWorkspaceModal.tsx`, `custom-api-gateway.ts`, `NoCodeEditorTab.tsx`, `2. Module-by-Module JSON Input/Output Contracts`, `governance-service`, `ProjectWorkspaceModal.tsx`, `LaunchUpLogo.tsx`, `dependencies`, `zod@^4.6.7`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _Cohesion score 0.06980433632998413 - nodes in this community are weakly interconnected._
+- **Why does `react` connect `react` to `AppContext.tsx`, `package.json`, `N8nWorkflowsTab.tsx`, `SwarmAndModelsView.tsx`, `useApp`, `custom-api-gateway.ts`, `NoCodeEditorTab.tsx`, `ProjectWorkspaceModal.tsx`, `governance-service`, `AppProvider`, `dependencies`, `zod@^4.6.7`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.09425287356321839 - nodes in this community are weakly interconnected._
 - **Why does `bcrypt` connect `auth-service/package.json` to `auth-service/src/routes/index.ts`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Should `auth-service/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.05333333333333334 - nodes in this community are weakly interconnected._
