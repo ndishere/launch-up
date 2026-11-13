@@ -9,6 +9,7 @@ import { Client } from '../../types';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
 import { ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
+import { StandardContextInspector } from '../common/StandardContextInspector';
 import { GenerateLeadModal } from '../modals/GenerateLeadModal';
 
 export const ClientsTab: React.FC = () => {
@@ -154,185 +155,83 @@ export const ClientsTab: React.FC = () => {
         }
         sidePanelContent={
           activeClient ? (
-            <div className="space-y-4">
-              {/* Header Badge & Stage */}
-              <div className="flex items-center justify-between gap-2">
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border ${
-                    activeClient.status === 'Active'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-                      : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-                  }`}
-                >
-                  {getClientStage(activeClient)}
-                </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Source: {getClientSource(activeClient)}
-                </span>
-              </div>
-
-              {/* Business Name & Domain */}
-              <div>
-                <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight">
-                  {activeClient.name}
-                </h4>
-                <a
-                  href={`https://${activeClient.domain}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-mono text-xs text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1 mt-1"
-                >
-                  <span>{activeClient.domain}</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-
-              {/* Financial & Contract Spec */}
-              <div className="p-3.5 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Retainer Value</span>
-                  <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
-                    ${activeClient.monthlySubscription}/month
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Contract Tier</span>
-                  <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">{activeClient.tier}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Joined Date</span>
-                  <span className="text-slate-700 dark:text-slate-300">{activeClient.joinedDate || 'Recently'}</span>
-                </div>
-                {activeClient.email && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Email</span>
-                    <span className="text-slate-700 dark:text-slate-300 truncate max-w-[170px]">{activeClient.email}</span>
+            <StandardContextInspector
+              title={activeClient.name}
+              subtitle={`${activeClient.domain} · ${activeClient.tier} Tier`}
+              badge={activeClient.status}
+              badgeTone={activeClient.status === 'Active' ? 'good' : 'warn'}
+              overview={{
+                statusSummary: activeClient.notes || 'Active client account with automated lead discovery and software retainers.',
+                details: `Monthly Retainer: $${activeClient.monthlySubscription}/mo • Contract Tier: ${activeClient.tier} • Channel: ${activeClient.phone || activeClient.email || 'Direct'}`,
+                domainOrUrl: activeClient.domain,
+                previewUrl: `http://localhost:3000/#preview-${activeClient.id}`,
+                previewThumbnailLabel: 'Client Mobile Prototype (375px)',
+                primaryActionLabel: 'Create Project',
+                onPrimaryAction: () => setIsCreateProjectModalOpen(true),
+                secondaryActionLabel: 'Device Preview',
+                onSecondaryAction: () => setCurrentTab('preview-studio'),
+                customPreview: (
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">
+                        Linked Projects ({projects.filter((p) => p.clientIds?.includes(activeClient.id)).length})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setIsCreateProjectModalOpen(true)}
+                        className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                    {projects.filter((p) => p.clientIds?.includes(activeClient.id)).map((proj) => (
+                      <div
+                        key={proj.id}
+                        onClick={() => openProjectWorkspace(proj.id)}
+                        className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between gap-2 cursor-pointer hover:border-indigo-400 transition-colors"
+                      >
+                        <span className="font-semibold text-[11px] text-slate-800 dark:text-slate-200 truncate">{proj.name}</span>
+                        <span className="text-[10px] text-indigo-600 font-mono shrink-0">Open →</span>
+                      </div>
+                    ))}
                   </div>
-                )}
-                {activeClient.phone && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Phone</span>
-                    <span className="text-slate-700 dark:text-slate-300">{activeClient.phone}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Linked Projects */}
-              <div className="space-y-1.5 pt-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Linked Projects ({projects.filter((p) => p.clientIds?.includes(activeClient.id)).length})
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateProjectModalOpen(true)}
-                    className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
-                  >
-                    + New Project
-                  </button>
-                </div>
-                {projects.filter((p) => p.clientIds?.includes(activeClient.id)).length > 0 ? (
-                  <div className="space-y-1.5">
-                    {projects
-                      .filter((p) => p.clientIds?.includes(activeClient.id))
-                      .map((proj) => (
-                        <div
-                          key={proj.id}
-                          onClick={() => openProjectWorkspace(proj.id)}
-                          className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-300 dark:hover:border-slate-700 transition-colors cursor-pointer flex items-center justify-between gap-2"
-                        >
-                          <div className="min-w-0">
-                            <p className="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">{proj.name}</p>
-                            <p className="text-[10px] text-slate-400 truncate">{proj.framework || 'React'} · {proj.status}</p>
-                          </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        </div>
-                      ))}
-                  </div>
-                ) : (
-                  <div className="p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
-                    <span>No active software project linked yet.</span>
-                    <button
-                      type="button"
-                      onClick={() => setIsCreateProjectModalOpen(true)}
-                      className="mt-1.5 block mx-auto text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
-                    >
-                      Create Project for Client →
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Generated Pitch Proposal Preview */}
-              <div className="p-3 rounded-xl border border-indigo-200/80 dark:border-indigo-800/80 bg-indigo-50/50 dark:bg-indigo-950/40 space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Pitch Proposal Deck</span>
-                  </span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">
-                    Ready
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Personalized 6-slide deck with automated competitor audit, ROI projection, and mobile app mockup.
-                </p>
-                <a
-                  href={`http://localhost:3000/#proposal-${activeClient.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold inline-flex items-center gap-1 hover:underline pt-0.5"
-                >
-                  <span>View Interactive Pitch Deck</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-
-              {/* Notes */}
-              {activeClient.notes && (
-                <div className="space-y-1">
-                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Discovery Notes
-                  </span>
-                  <p className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                    {activeClient.notes}
-                  </p>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
-                <button
-                  onClick={() => setIsCreateProjectModalOpen(true)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Create Project for Client</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (activeClient.phone) {
-                      window.open(`https://wa.me/${activeClient.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(activeClient.name)},%20here%20is%20your%20software%20proposal%20and%20interactive%20prototype:%20http://localhost:3000/%23preview-${activeClient.id}`, '_blank');
-                    } else {
-                      window.location.href = `mailto:${activeClient.email}?subject=Launch%20Up%20Software%20Proposal%20for%20${encodeURIComponent(activeClient.name)}`;
-                    }
-                  }}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Send Proposal (WhatsApp / Email)</span>
-                </button>
-
-                <button
-                  onClick={() => setCurrentTab('preview-studio')}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Eye className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Open Multi-Viewport Preview (375px)</span>
-                </button>
-              </div>
-            </div>
+                ),
+              }}
+              legalShield={{
+                dpdpStatus: 'Verified',
+                gdprStatus: 'Verified',
+                ccpaStatus: 'Verified',
+                playSafetyStatus: 'Verified',
+                rlsSecurityStatus: '100% Pass',
+              }}
+              costPortability={{
+                baseReusedPercent: 88,
+                compressionActive: true,
+                estimatedAiCost: '₹18 / $0.22',
+                profitMarginPercent: 99.4,
+                monthlyRevenue: `$${activeClient.monthlySubscription}/mo`,
+                dockerBranchesStatus: 'Docker + Git Branches Ready',
+                localFolderPath: 'd:/Projects/launch-up',
+                portabilityNote: 'Export/Pull Compatible with Claude Code & Codex',
+              }}
+              approvalBar={{
+                decisionStatus: activeClient.status === 'Active' ? 'APPROVED' : 'PENDING',
+                approveLabel: 'Send Proposal',
+                onApprove: () => {
+                  if (activeClient.phone) {
+                    window.open(`https://wa.me/${activeClient.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(activeClient.name)},%20here%20is%20your%20software%20proposal%20and%20prototype:%20http://localhost:3000/%23preview-${activeClient.id}`, '_blank');
+                  } else {
+                    window.location.href = `mailto:${activeClient.email}?subject=Launch%20Up%20Proposal`;
+                  }
+                },
+                requestChangesLabel: 'Direct Message',
+                onRequestChanges: () => {
+                  if (activeClient.email) {
+                    window.location.href = `mailto:${activeClient.email}?subject=Launch%20Up%20Discussion`;
+                  }
+                },
+              }}
+            />
           ) : (
             <div className="text-center py-12 text-slate-400 text-xs">
               Select a client to view full details and pitch actions.

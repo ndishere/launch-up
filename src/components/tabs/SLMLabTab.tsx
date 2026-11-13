@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { SLMModel, SLMQuantization } from '../../types';
-import { ScreenAnalyticsHeader } from '../common/ScreenAnalyticsHeader';
+import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { VramTokenOptimizerPanel } from '../common/VramTokenOptimizerPanel';
 import { compressToCavemanMd } from '../../lib/token-compressor';
 
@@ -77,54 +77,58 @@ export const SLMLabTab: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Top Combined Analytics Section with Live Success/Error Rates */}
-      <ScreenAnalyticsHeader
-        title="AI Models &amp; Local PC Studio (Local PC Memory Saver)"
-        badge="Local GPU &amp; Private Endpoints"
-        description="Train, benchmark, and deploy custom language models (1.5B - 3.8B) for business automations. Run locally on device with Ollama or connect cloud endpoints with zero data leaks."
-        metrics={[
-          {
-            label: 'Trained Models',
-            value: slms.length,
-            subValue: 'Phi-3.5, Llama-3.2, Qwen',
-            status: 'good',
-          },
-          {
-            label: 'Inference Success Rate',
-            value: '99.7%',
-            subValue: 'Zero timeout crashes',
-            status: 'live',
-          },
-          {
-            label: 'Hallucination Rate',
-            value: '< 0.3%',
-            subValue: 'Pruned via domain DDL',
-            status: 'good',
-          },
-          {
-            label: 'Peak Token Throughput',
-            value: '260 tps',
-            subValue: 'WebGPU / ONNX Runtime',
-            status: 'good',
-          },
-          {
-            label: 'Edge Latency',
-            value: '4.8ms P99',
-            subValue: 'Zero network overhead',
-            status: 'good',
-          },
-        ]}
-        actions={
+    <div className="space-y-5 pb-12 animate-in fade-in duration-200">
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-4 pb-0.5">
+        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span>Local GPU & Private Endpoints</span>
+        </span>
+
+        <div className="flex items-center gap-2.5 ml-auto">
           <button
             onClick={() => setShowCreateModelModal(true)}
-            className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"
+            className="px-3.5 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-3.5 h-3.5" />
             <span>+ Train New Domain SLM</span>
           </button>
-        }
-      />
+        </div>
+      </div>
+
+      {/* Row 1: Unified 5-Cell Horizontal Summary Bar */}
+      <SummaryMetricGrid>
+        <SummaryMetricCard
+          title="Trained Models"
+          primaryValue={slms.length}
+          subtitle="Phi-3.5, Llama-3.2, Qwen"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Inference Success"
+          primaryValue="99.7%"
+          subtitle="Zero timeout crashes"
+          status="live"
+        />
+        <SummaryMetricCard
+          title="Hallucination Rate"
+          primaryValue="< 0.3%"
+          subtitle="Pruned via domain DDL"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Peak Throughput"
+          primaryValue="260 tps"
+          subtitle="WebGPU / ONNX Runtime"
+          status="good"
+        />
+        <SummaryMetricCard
+          title="Edge Latency"
+          primaryValue="4.8ms P99"
+          subtitle="Zero network overhead"
+          status="good"
+        />
+      </SummaryMetricGrid>
 
       {/* RTX 3050 (6GB VRAM) Hardware & 4-Layer Token Compression Optimizer */}
       <VramTokenOptimizerPanel />

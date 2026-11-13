@@ -10,9 +10,10 @@ import { MarketingCampaign } from '../../types';
 import { generateMarketingCalendar, sendWhatsAppMessage } from '../../services/api';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ExpandableRightDetailPanel, ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
+import { StandardContextInspector } from '../common/StandardContextInspector';
 
 export const MarketingEngineTab: React.FC = () => {
-  const { campaigns, rebalanceCampaign, createCampaign, clients, projects } = useApp();
+  const { campaigns, rebalanceCampaign, createCampaign, clients, projects, setCurrentTab } = useApp();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState('');
@@ -489,143 +490,106 @@ export const MarketingEngineTab: React.FC = () => {
           subtitle={selectedCalendarPost ? selectedCalendarPost.platform : (selectedCampaign?.channel || 'Select an item')}
         >
           {selectedCalendarPost ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800">
-                  {selectedCalendarPost.platform}
-                </span>
-                <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>EU AI Act Art. 50 Verified</span>
-                </span>
-              </div>
-
-              {/* Visual Preview Box */}
-              <div className="p-3 rounded-xl border border-pink-200/80 dark:border-pink-800/80 bg-pink-50/30 dark:bg-pink-950/30 space-y-2">
-                <span className="text-[10px] uppercase font-bold text-pink-600 dark:text-pink-400 block">
-                  Generated Social Post Copy
-                </span>
-                <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans">
-                  {selectedCalendarPost.caption}
-                </p>
-                <div className="pt-2 border-t border-pink-200/60 dark:border-pink-800/60 flex items-center justify-between text-[10px] text-slate-500">
-                  <span>Day {selectedCalendarPost.day} of 30</span>
-                  <span className="text-indigo-600 font-medium">Watermark Disclosed ✓</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setApprovedGateIds((prev) => new Set(prev).add(`cal-${selectedCalendarPost.day}`))}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
-                    approvedGateIds.has(`cal-${selectedCalendarPost.day}`)
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-pink-600 hover:bg-pink-700 text-white'
-                  }`}
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>
-                    {approvedGateIds.has(`cal-${selectedCalendarPost.day}`)
-                      ? 'Campaign Approved (Gate 4)'
-                      : 'Approve Campaign (Gate 4)'}
-                  </span>
-                </button>
-
-                <a
-                  href="https://canva.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Share2 className="w-3.5 h-3.5 text-pink-500" />
-                  <span>Open in Canva Pro</span>
-                </a>
-              </div>
-            </div>
+            <StandardContextInspector
+              title={`Day ${selectedCalendarPost.day} Creative`}
+              subtitle={`${selectedCalendarPost.platform} · Brand: ${businessName}`}
+              badge={selectedCalendarPost.platform}
+              badgeTone="live"
+              overview={{
+                statusSummary: selectedCalendarPost.caption,
+                domainOrUrl: 'canva.com',
+                previewUrl: 'https://canva.com',
+                previewThumbnailLabel: `Day ${selectedCalendarPost.day} of 30 · Social Post Creative`,
+                primaryActionLabel: 'Open in Canva Pro',
+                onPrimaryAction: () => window.open('https://canva.com', '_blank'),
+                secondaryActionLabel: 'Preview Studio',
+                onSecondaryAction: () => setCurrentTab('preview-studio'),
+              }}
+              legalShield={{
+                dpdpStatus: 'Verified',
+                gdprStatus: 'Verified',
+                ccpaStatus: 'Verified',
+                playSafetyStatus: 'Verified',
+                rlsSecurityStatus: '100% Pass',
+              }}
+              costPortability={{
+                baseReusedPercent: 92,
+                compressionActive: true,
+                estimatedAiCost: '₹4 / $0.05',
+                profitMarginPercent: 99.8,
+                monthlyRevenue: `$${totalMonthlySpend.toLocaleString()}/mo`,
+                dockerBranchesStatus: 'Social Assets Bundled in Git',
+                localFolderPath: 'd:/Projects/launch-up',
+                portabilityNote: 'Canva Templates Exportable to Figma & Adobe',
+              }}
+              approvalBar={{
+                decisionStatus: approvedGateIds.has(`cal-${selectedCalendarPost.day}`) ? 'APPROVED' : 'PENDING',
+                approveLabel: approvedGateIds.has(`cal-${selectedCalendarPost.day}`)
+                  ? 'Campaign Approved (Gate 4)'
+                  : 'Approve Campaign (Gate 4)',
+                onApprove: () => setApprovedGateIds((prev) => new Set(prev).add(`cal-${selectedCalendarPost.day}`)),
+              }}
+            />
           ) : selectedCampaign ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                  {selectedCampaign.status}
-                </span>
-                <span className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400">
-                  ROAS: {selectedCampaign.roas}x
-                </span>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                  {selectedCampaign.title}
-                </h4>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Client: <strong className="text-slate-700 dark:text-slate-300">{selectedCampaign.businessName}</strong>
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Channel</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedCampaign.channel}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Monthly Budget</span>
-                  <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">${selectedCampaign.budgetMonthly.toLocaleString()}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Leads Generated</span>
-                  <span className="font-bold text-purple-600">{selectedCampaign.leadsGenerated}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500">Manager</span>
-                  <span className="text-slate-700 dark:text-slate-300">{selectedCampaign.aiAgentManager}</span>
-                </div>
-              </div>
-
-              {/* Headlines */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  Top Converting Hooks
-                </span>
-                <div className="space-y-1">
-                  {selectedCampaign.generatedHeadlines.map((h, i) => (
-                    <p key={i} className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300">
-                      &ldquo;{h}&rdquo;
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setApprovedGateIds((prev) => new Set(prev).add(selectedCampaign.id))}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
-                    approvedGateIds.has(selectedCampaign.id)
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  }`}
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>
-                    {approvedGateIds.has(selectedCampaign.id)
-                      ? 'Campaign Approved (Gate 4)'
-                      : 'Approve Campaign (Gate 4)'}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => rebalanceCampaign(selectedCampaign.id)}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 text-pink-500" />
-                  <span>Rebalance Bids & Creatives</span>
-                </button>
-              </div>
-            </div>
+            <StandardContextInspector
+              title={selectedCampaign.title}
+              subtitle={`${selectedCampaign.businessName} · ${selectedCampaign.channel}`}
+              badge={selectedCampaign.status}
+              badgeTone="good"
+              overview={{
+                statusSummary: `Monthly Budget: $${selectedCampaign.budgetMonthly.toLocaleString()} · Leads Generated: ${selectedCampaign.leadsGenerated} · Manager: ${selectedCampaign.aiAgentManager}`,
+                details: `Target ROAS: ${selectedCampaign.roas}x. Conversion rate: ${selectedCampaign.conversionRate}%. ${selectedCampaign.creativeAssetCount} creative assets managed autonomously.`,
+                domainOrUrl: selectedCampaign.channel,
+                customPreview: (
+                  <div className="space-y-1.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                      Top Converting Hooks
+                    </span>
+                    <div className="space-y-1">
+                      {selectedCampaign.generatedHeadlines.map((h, i) => (
+                        <p key={i} className="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300">
+                          &ldquo;{h}&rdquo;
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                ),
+              }}
+              legalShield={{
+                dpdpStatus: 'Verified',
+                gdprStatus: 'Verified',
+                ccpaStatus: 'Verified',
+                playSafetyStatus: 'Verified',
+                rlsSecurityStatus: '100% Pass',
+              }}
+              costPortability={{
+                baseReusedPercent: 88,
+                compressionActive: true,
+                estimatedAiCost: '₹18 / $0.22',
+                profitMarginPercent: 99.4,
+                monthlyRevenue: `$${selectedCampaign.budgetMonthly.toLocaleString()}/mo`,
+                dockerBranchesStatus: 'Docker + Git Branches Ready',
+                localFolderPath: 'd:/Projects/launch-up',
+                portabilityNote: 'Export/Pull Compatible with Claude Code & Codex',
+              }}
+              approvalBar={{
+                decisionStatus: approvedGateIds.has(selectedCampaign.id) ? 'APPROVED' : 'PENDING',
+                approveLabel: approvedGateIds.has(selectedCampaign.id)
+                  ? 'Campaign Approved (Gate 4)'
+                  : 'Approve Campaign (Gate 4)',
+                onApprove: () => setApprovedGateIds((prev) => new Set(prev).add(selectedCampaign.id)),
+                customButtons: (
+                  <button
+                    type="button"
+                    onClick={() => rebalanceCampaign(selectedCampaign.id)}
+                    className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 text-pink-500" />
+                    <span>Rebalance Bids & Creatives</span>
+                  </button>
+                ),
+              }}
+            />
           ) : (
             <div className="text-center py-12 text-slate-400 text-xs">
               Select a campaign or calendar post to inspect.

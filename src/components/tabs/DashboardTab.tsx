@@ -10,6 +10,7 @@ import { useApp } from '../../context/AppContext';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
 import { ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
+import { StandardContextInspector } from '../common/StandardContextInspector';
 import { HealthPulseModal } from '../modals/HealthPulseModal';
 import { MICROSERVICE_CATALOG } from '../../services/api';
 
@@ -251,231 +252,65 @@ export const DashboardTab: React.FC = () => {
           </SummaryMetricGrid>
         }
         sidePanelContent={
-          <div className="space-y-4">
-            {/* Status Pill & Title */}
-            <div className="flex items-center justify-between gap-2">
-              <span
-                className={`px-2 py-0.5 text-[11px] font-semibold rounded-md border ${
-                  selectedItem.status === 'good'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-                    : selectedItem.status === 'warn'
-                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-                    : selectedItem.status === 'bad'
-                    ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
-                    : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
-                }`}
-              >
-                {selectedItem.statusLabel}
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Instant Action</span>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
-                {selectedItem.title}
-              </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
-                {selectedItem.details}
-              </p>
-            </div>
-
-            {/* Special Inspector View: Microservice & Health Pulse */}
-            {selectedItem.type === 'service-health' && (
-              <div className="space-y-3 pt-1">
-                <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Total Mesh Score</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{systemHealthPercent}%</span>
+          <StandardContextInspector
+            title={selectedItem.title}
+            subtitle={selectedItem.subtitle}
+            badge={selectedItem.statusLabel}
+            badgeTone={selectedItem.status}
+            overview={{
+              statusSummary: selectedItem.details,
+              domainOrUrl: selectedItem.domain || (selectedItem.clientName ? `${selectedItem.clientName}` : undefined),
+              previewUrl: selectedItem.previewUrl,
+              previewThumbnailLabel: 'Live Client Preview (375px)',
+              primaryActionLabel: selectedItem.actionType === 'open-workspace' ? 'Open Workspace' : selectedItem.actionType === 'send-message' ? 'Send WhatsApp' : undefined,
+              onPrimaryAction: selectedItem.actionType === 'open-workspace' ? () => projects[0] && openProjectWorkspace(projects[0].id) : () => setCurrentTab('clients'),
+              secondaryActionLabel: selectedItem.previewUrl ? 'Preview Studio' : undefined,
+              onSecondaryAction: () => setCurrentTab('preview-studio'),
+              customPreview: selectedItem.type === 'service-health' ? (
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="text-slate-600 dark:text-slate-300">Mesh Score: {systemHealthPercent}%</span>
+                    <span className="text-emerald-600 font-bold">{healthyMeshCount} of 10 Live</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Live Fastify Endpoints</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">{healthyMeshCount} of 10</span>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">10 Core Microservices</span>
-                  <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
-                    {Object.values(MICROSERVICE_CATALOG).map((svc) => {
-                      const isLive = Boolean(meshStatuses[svc.id]);
-                      return (
-                        <div
-                          key={svc.id}
-                          className="p-2 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between gap-2 text-[11px]"
-                        >
-                          <div className="min-w-0 flex items-center gap-2">
-                            <span
-                              className={`w-2 h-2 rounded-full shrink-0 ${
-                                isLive ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50' : 'bg-slate-400 dark:bg-slate-600'
-                              }`}
-                            />
-                            <span className="font-medium text-slate-800 dark:text-slate-200 truncate">{svc.name}</span>
-                          </div>
-                          <span className="font-mono text-[10px] text-slate-400 shrink-0">:{svc.port}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsHealthPulseOpen(true)}
-                  className="w-full py-2 px-3 rounded-xl text-xs font-semibold border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <Activity className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Open Full Mesh Diagnostics</span>
-                </button>
-              </div>
-            )}
-
-            {/* Special Inspector View: Approvals with Feedback Textarea */}
-            {selectedItem.type === 'approval' && (
-              <div className="space-y-3 pt-1">
-                {selectedItem.gateStage && (
-                  <div className="p-2.5 rounded-lg border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-xs">
-                    <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Governance Gate & Standard</span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block">{selectedItem.gateStage}</span>
-                  </div>
-                )}
-
-                {/* Feedback Input */}
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                    Feedback / Change Request Note
-                  </label>
-                  <textarea
-                    value={revisionFeedback}
-                    onChange={(e) => setRevisionFeedback(e.target.value)}
-                    placeholder="Enter any required adjustments, edge cases, or compliance instructions..."
-                    className="w-full p-2.5 text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500 resize-none h-16"
-                  />
-                </div>
-
-                {requestedChangesIds.has(selectedItem.id) && (
-                  <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-[11px] flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                    <span>Changes requested! Autonomous agent notified for revision.</span>
-                  </div>
-                )}
-
-                {approvedGateIds.has(selectedItem.id) && (
-                  <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-[11px] flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Gate signed off! Autonomous swarm authorized to proceed.</span>
-                  </div>
-                )}
-
-                {/* 1-Click Approve and Request Changes Buttons */}
-                <div className="grid grid-cols-2 gap-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => handleApproveGate(selectedItem.id)}
-                    disabled={approvedGateIds.has(selectedItem.id)}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-all ${
-                      approvedGateIds.has(selectedItem.id)
-                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer'
-                    }`}
+                    onClick={() => setIsHealthPulseOpen(true)}
+                    className="w-full py-1.5 px-3 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center gap-1.5 cursor-pointer text-xs font-semibold hover:bg-indigo-100 transition-colors"
                   >
-                    <Check className="w-3.5 h-3.5" />
-                    <span>{approvedGateIds.has(selectedItem.id) ? 'Approved' : 'Approve'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRequestChanges(selectedItem.id)}
-                    className="py-2 px-3 rounded-xl text-xs font-semibold border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 text-amber-800 dark:text-amber-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <XCircle className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Request Changes</span>
+                    <Activity className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Open Mesh Diagnostics</span>
                   </button>
                 </div>
-              </div>
-            )}
-
-            {/* Client / Target Details */}
-            {selectedItem.clientName && (
-              <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Client</span>
-                  <span className="font-semibold text-slate-900 dark:text-slate-100">{selectedItem.clientName}</span>
-                </div>
-                {selectedItem.domain && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Domain</span>
-                    <span className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400">{selectedItem.domain}</span>
-                  </div>
-                )}
-                {selectedItem.contact && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 dark:text-slate-400">Channel</span>
-                    <span className="text-slate-700 dark:text-slate-300">{selectedItem.contact}</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="space-y-2 pt-2">
-              {selectedItem.actionType === 'send-message' && (
-                <>
-                  <button
-                    onClick={() => setCurrentTab('clients')}
-                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>Send WhatsApp Closing Note</span>
-                  </button>
-
-                  {selectedItem.previewUrl && (
-                    <a
-                      href={selectedItem.previewUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>Open Customer Live Preview</span>
-                    </a>
-                  )}
-                </>
-              )}
-
-              {selectedItem.actionType === 'open-workspace' && (
-                <>
-                  <button
-                    onClick={() => {
-                      if (projects.length > 0) {
-                        openProjectWorkspace(projects[0].id);
-                      } else {
-                        setCurrentTab('projects');
-                      }
-                    }}
-                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>Open Autonomous Workspace</span>
-                  </button>
-
-                  <button
-                    onClick={() => setCurrentTab('preview-studio')}
-                    className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                  >
-                    <Eye className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Preview Multi-Viewport (375px–1920px)</span>
-                  </button>
-                </>
-              )}
-
-              <button
-                onClick={() => setCurrentTab('clients')}
-                className="w-full text-center text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline py-1 cursor-pointer"
-              >
-                View all client records →
-              </button>
-            </div>
-          </div>
+              ) : undefined,
+            }}
+            legalShield={{
+              dpdpStatus: 'Verified',
+              gdprStatus: 'Verified',
+              ccpaStatus: 'Verified',
+              playSafetyStatus: 'Verified',
+              rlsSecurityStatus: '100% Pass',
+            }}
+            costPortability={{
+              baseReusedPercent: 88,
+              compressionActive: true,
+              estimatedAiCost: '₹18 / $0.22',
+              profitMarginPercent: 99.4,
+              monthlyRevenue: `$${totalMRR.toLocaleString()}/mo`,
+              dockerBranchesStatus: 'Docker + Git Branches Ready',
+              localFolderPath: 'd:/Projects/launch-up',
+              portabilityNote: 'Export/Pull Compatible with Claude Code & Codex',
+            }}
+            approvalBar={{
+              decisionStatus: approvedGateIds.has(selectedItem.id) ? 'APPROVED' : requestedChangesIds.has(selectedItem.id) ? 'CHANGES_REQUESTED' : 'PENDING',
+              approveLabel: approvedGateIds.has(selectedItem.id) ? 'Approved' : 'Approve & Continue',
+              onApprove: () => handleApproveGate(selectedItem.id),
+              requestChangesLabel: 'Request Changes',
+              onRequestChanges: () => handleRequestChanges(selectedItem.id),
+              feedbackValue: revisionFeedback,
+              onFeedbackChange: setRevisionFeedback,
+              feedbackPlaceholder: 'Add feedback or revision instruction for autonomous agent...',
+            }}
+          />
         }
       >
         {/* Section 2: Main Content Area (Column 1) */}

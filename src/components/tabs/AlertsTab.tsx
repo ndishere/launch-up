@@ -9,6 +9,7 @@ import { healIncident } from '../../services/api';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ExpandableRightDetailPanel, ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
 import { DebugHotfixInspector } from '../common/DebugHotfixInspector';
+import { StandardContextInspector } from '../common/StandardContextInspector';
 
 export const AlertsTab: React.FC = () => {
   const { alerts, markAlertAsRead, clearAlert, projects } = useApp();
@@ -336,92 +337,69 @@ export const AlertsTab: React.FC = () => {
           subtitle={selectedAlert ? (selectedAlert.relatedEntity || 'System Alert') : 'Select an incident'}
         >
           {selectedAlert ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border ${
-                    selectedAlert.type === 'error'
-                      ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
-                      : selectedAlert.type === 'warning'
-                      ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
-                  }`}
-                >
-                  {selectedAlert.type.toUpperCase()}
-                </span>
-                <span className="text-[11px] text-slate-400">{selectedAlert.timeAgo}</span>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug">
-                  {selectedAlert.title}
-                </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">
-                  {selectedAlert.description}
-                </p>
-              </div>
-
-              {/* Plain-English Root Cause Analysis (RCA) */}
-              <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Root Cause Analysis (MOD-09)
-                </span>
-                <p className="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed">
-                  {selectedAlert.type === 'error'
-                    ? 'Uncaught exception in webhook handler caused 500 status code response to incoming client telemetry.'
-                    : 'Latency threshold exceeded by 180ms during concurrent traffic spike. Auto-scaling pool expanded.'}
-                </p>
-                <div className="pt-1.5 border-t border-slate-200/60 dark:border-slate-700 text-[10px] text-slate-500 flex items-center justify-between">
-                  <span>Graphify Node:</span>
-                  <span className="font-mono text-indigo-600 dark:text-indigo-400">services/rates.py:42</span>
-                </div>
-              </div>
-
-              {/* Sandbox Regression Status */}
-              <div className="p-3 rounded-xl border border-emerald-200/80 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/40 space-y-1 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-800 dark:text-emerald-200 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Sandbox Fix Verified</span>
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-600">Gate 5 Ready</span>
-                </div>
-                <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                  Zero regressions in test suite. Zero high CVEs in Trivy container audit.
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setApprovedQuickFixIds((prev) => new Set(prev).add(selectedAlert.id));
-                    markAlertAsRead(selectedAlert.id);
-                  }}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
-                    approvedQuickFixIds.has(selectedAlert.id)
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-amber-600 hover:bg-amber-700 text-white'
-                  }`}
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>
-                    {approvedQuickFixIds.has(selectedAlert.id)
-                      ? 'Quick Fix Deployed (Gate 5 Approved)'
-                      : 'Approve Quick Fix (Gate 5)'}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => markAlertAsRead(selectedAlert.id)}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <span>Mark as Acknowledged</span>
-                </button>
-              </div>
-            </div>
+            <StandardContextInspector
+              title={selectedAlert.title}
+              subtitle={selectedAlert.relatedEntity || 'System Incident (MOD-09)'}
+              badge={selectedAlert.type.toUpperCase()}
+              badgeTone={selectedAlert.type === 'error' ? 'bad' : selectedAlert.type === 'warning' ? 'warn' : 'live'}
+              overview={{
+                statusSummary: selectedAlert.description,
+                details: `Incident logged ${selectedAlert.timeAgo}. Autonomous Sentinel has isolated the fault domain with zero blast radius.`,
+                domainOrUrl: selectedAlert.relatedEntity,
+                customPreview: (
+                  <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                      Root Cause Analysis (MOD-09)
+                    </span>
+                    <p className="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed">
+                      {selectedAlert.type === 'error'
+                        ? 'Uncaught exception in webhook handler caused 500 status code response to incoming client telemetry.'
+                        : 'Latency threshold exceeded by 180ms during concurrent traffic spike. Auto-scaling pool expanded.'}
+                    </p>
+                    <div className="pt-1.5 border-t border-slate-200/60 dark:border-slate-700 text-[10px] text-slate-500 flex items-center justify-between">
+                      <span>Graphify Node:</span>
+                      <span className="font-mono text-indigo-600 dark:text-indigo-400">services/rates.py:42</span>
+                    </div>
+                  </div>
+                ),
+              }}
+              legalShield={{
+                dpdpStatus: 'Verified',
+                gdprStatus: 'Verified',
+                ccpaStatus: 'Verified',
+                playSafetyStatus: 'Verified',
+                rlsSecurityStatus: '100% Pass',
+              }}
+              costPortability={{
+                baseReusedPercent: 95,
+                compressionActive: true,
+                estimatedAiCost: '₹2 / $0.02',
+                profitMarginPercent: 99.9,
+                monthlyRevenue: '$2,500/mo',
+                dockerBranchesStatus: 'Hotfix Staged in Git Branch',
+                localFolderPath: 'd:/Projects/launch-up',
+                portabilityNote: 'Autonomous Sentinel Verified Clean',
+              }}
+              approvalBar={{
+                decisionStatus: approvedQuickFixIds.has(selectedAlert.id) ? 'APPROVED' : 'PENDING',
+                approveLabel: approvedQuickFixIds.has(selectedAlert.id)
+                  ? 'Quick Fix Deployed (Gate 5 Approved)'
+                  : 'Approve Quick Fix (Gate 5)',
+                onApprove: () => {
+                  setApprovedQuickFixIds((prev) => new Set(prev).add(selectedAlert.id));
+                  markAlertAsRead(selectedAlert.id);
+                },
+                customButtons: (
+                  <button
+                    type="button"
+                    onClick={() => markAlertAsRead(selectedAlert.id)}
+                    className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <span>Mark as Acknowledged</span>
+                  </button>
+                ),
+              }}
+            />
           ) : (
             <div className="text-center py-12 text-slate-400 text-xs">
               Select an alert from the feed to inspect root cause.

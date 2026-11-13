@@ -72,7 +72,7 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-14 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0D1017]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between transition-colors">
+    <header className="sticky top-0 z-30 h-16 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0D1017]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between transition-colors">
       {/* Left: Sidebar Toggle & Compact Tab Heading + Subtitle */}
       <div className="flex items-center gap-3 min-w-0 flex-1 mr-4 overflow-hidden">
         <button

@@ -26,6 +26,7 @@ import { useApp } from '../../context/AppContext';
 import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
+import { StandardContextInspector } from '../common/StandardContextInspector';
 import { PullProjectFolderModal } from '../modals/PullProjectFolderModal';
 import {
   synthesizeScope,
@@ -227,168 +228,111 @@ export const ProjectsTab: React.FC = () => {
         }
         sidePanelContent={
           selectedProject ? (
-            <div className="space-y-4">
-              {/* Header Badge & Server Target */}
-              <div className="flex items-center justify-between gap-2">
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border ${
-                    selectedProject.status === 'Live'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-                      : selectedProject.status === 'In Progress'
-                      ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
-                  }`}
-                >
-                  {selectedProject.status}
-                </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Target: {selectedProject.serverTarget}
-                </span>
-              </div>
+            <StandardContextInspector
+              title={selectedProject.name}
+              subtitle={`${getClientNames(selectedProject.clientIds)} · ${selectedProject.framework || 'React + Fastify'}`}
+              badge={selectedProject.status}
+              badgeTone={
+                selectedProject.status === 'Live'
+                  ? 'live'
+                  : selectedProject.status === 'In Progress'
+                  ? 'warn'
+                  : 'good'
+              }
+              overview={{
+                statusSummary: `Target: ${selectedProject.serverTarget} · System Health: ${selectedProject.healthPercent}% · Branch: ${selectedProject.branch}`,
+                details: `Rollback Guard: ${selectedProject.backupStatus}. Container sync verified with zero drift across edge endpoints.`,
+                domainOrUrl: selectedProject.serverTarget,
+                previewUrl: 'http://localhost:3000',
+                previewThumbnailLabel: 'Live Multi-Viewport Preview (375px–1920px)',
+                primaryActionLabel: 'Open Full Workspace',
+                onPrimaryAction: () => handleOpenWorkspace(selectedProject.id),
+                secondaryActionLabel: 'Preview Studio',
+                onSecondaryAction: () => setCurrentTab('preview-studio'),
+                customPreview: (
+                  <div className="p-3 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                        5-Step Build Checklist
+                      </span>
+                      <span className="text-[10px] text-emerald-600 font-semibold">
+                        {selectedProject.status === 'Live' || approvedGoLiveIds.has(selectedProject.id)
+                          ? '5/5 Complete'
+                          : '4/5 Staging Ready'}
+                      </span>
+                    </div>
 
-              {/* Title & Client */}
-              <div>
-                <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight">
-                  {selectedProject.name}
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Client: <strong className="text-slate-700 dark:text-slate-300">{getClientNames(selectedProject.clientIds)}</strong>
-                </p>
-              </div>
-
-              {/* 5-Step Progress Checklist */}
-              <div className="p-3.5 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                    5-Step Build Checklist
-                  </span>
-                  <span className="text-[10px] text-emerald-600 font-semibold">
-                    {selectedProject.status === 'Live' ? '5/5 Complete' : '4/5 Staging Ready'}
-                  </span>
-                </div>
-
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span className="line-through text-slate-400">1. Plan (PRD & Schema synthesized · MOD-02)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span className="line-through text-slate-400">2. Design (Theme tokens & layout · MOD-03)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span className="line-through text-slate-400">3. Build (Backend Fastify & Vite · MOD-04 & 05)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span className="line-through text-slate-400">4. Quality Check (Graphify AST & CVE audit)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                    {selectedProject.status === 'Live' || approvedGoLiveIds.has(selectedProject.id) ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    ) : (
-                      <div className="w-3.5 h-3.5 rounded-full border border-amber-500 flex items-center justify-center shrink-0">
-                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    <div className="space-y-1.5 text-xs">
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span className="line-through text-slate-400">1. Plan (PRD & Schema synthesized · MOD-02)</span>
                       </div>
-                    )}
-                    <span className={selectedProject.status === 'Live' || approvedGoLiveIds.has(selectedProject.id) ? 'line-through text-slate-400' : 'font-semibold text-slate-900 dark:text-slate-100'}>
-                      5. Live (Docker container & edge route)
-                    </span>
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span className="line-through text-slate-400">2. Design (Theme tokens & layout · MOD-03)</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span className="line-through text-slate-400">3. Build (Backend Fastify & Vite · MOD-04 & 05)</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span className="line-through text-slate-400">4. Quality Check (Graphify AST & CVE audit)</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                        {selectedProject.status === 'Live' || approvedGoLiveIds.has(selectedProject.id) ? (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        ) : (
+                          <div className="w-3.5 h-3.5 rounded-full border border-amber-500 flex items-center justify-center shrink-0">
+                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          </div>
+                        )}
+                        <span
+                          className={
+                            selectedProject.status === 'Live' || approvedGoLiveIds.has(selectedProject.id)
+                              ? 'line-through text-slate-400'
+                              : 'font-semibold text-slate-900 dark:text-slate-100'
+                          }
+                        >
+                          5. Live (Docker container & edge route)
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              {/* FinOps Unit Economics Box */}
-              <div className="p-3.5 rounded-xl border bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Unit Economics & Profit</span>
-                  </span>
-                  <span className="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                    99.4% Margin
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Monthly Client Retainer</span>
-                  <span className="font-bold text-slate-900 dark:text-slate-100 tabular-nums">
-                    ${selectedClient?.monthlySubscription || 2500}/mo
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Cloud & LLM Run Cost</span>
-                  <span className="font-mono text-slate-600 dark:text-slate-400">~$14.20/mo</span>
-                </div>
-                <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 dark:border-slate-700">
-                  <span className="text-slate-700 dark:text-slate-300 font-semibold">Net Agency Profit</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
-                    +${(selectedClient?.monthlySubscription || 2500) - 14}/mo
-                  </span>
-                </div>
-              </div>
-
-              {/* Technical Specifications */}
-              <div className="p-3 rounded-xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 space-y-1.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Framework</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedProject.framework || 'React + Fastify'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Git Branch</span>
-                  <span className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400">{selectedProject.branch}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">System Health</span>
-                  <span className="font-bold text-emerald-600">{selectedProject.healthPercent}%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Rollback Guard</span>
-                  <span className="text-slate-700 dark:text-slate-300">{selectedProject.backupStatus}</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleOpenWorkspace(selectedProject.id)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Open Full Workspace & Studios</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setApprovedGoLiveIds((prev) => new Set(prev).add(selectedProject.id));
-                    triggerDeployment(selectedProject.id, 'Production');
-                  }}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
-                    approvedGoLiveIds.has(selectedProject.id) || selectedProject.status === 'Live'
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                  }`}
-                >
-                  <Rocket className="w-3.5 h-3.5" />
-                  <span>
-                    {approvedGoLiveIds.has(selectedProject.id) || selectedProject.status === 'Live'
-                      ? 'Live in Production (Gate 3 Approved)'
-                      : 'Approve Go-Live (Gate 3)'}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setCurrentTab('preview-studio')}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Eye className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Multi-Viewport Preview (375px–1920px)</span>
-                </button>
-              </div>
-            </div>
+                ),
+              }}
+              legalShield={{
+                dpdpStatus: 'Verified',
+                gdprStatus: 'Verified',
+                ccpaStatus: 'Verified',
+                playSafetyStatus: 'Verified',
+                rlsSecurityStatus: '100% Pass',
+              }}
+              costPortability={{
+                baseReusedPercent: 88,
+                compressionActive: true,
+                estimatedAiCost: '₹18 / $0.22',
+                profitMarginPercent: 99.4,
+                monthlyRevenue: `$${selectedClient?.monthlySubscription || 2500}/mo`,
+                dockerBranchesStatus: 'Docker + Git Branches Ready',
+                localFolderPath: 'd:/Projects/launch-up',
+                portabilityNote: 'Export/Pull Compatible with Claude Code & Codex',
+              }}
+              approvalBar={{
+                decisionStatus:
+                  approvedGoLiveIds.has(selectedProject.id) || selectedProject.status === 'Live'
+                    ? 'APPROVED'
+                    : 'PENDING',
+                approveLabel:
+                  approvedGoLiveIds.has(selectedProject.id) || selectedProject.status === 'Live'
+                    ? 'Live in Production (Gate 3 Approved)'
+                    : 'Approve Go-Live (Gate 3)',
+                onApprove: () => {
+                  setApprovedGoLiveIds((prev) => new Set(prev).add(selectedProject.id));
+                  triggerDeployment(selectedProject.id, 'Production');
+                },
+              }}
+            />
           ) : (
             <div className="text-center py-12 text-slate-400 text-xs">
               Select a project from the left to view checklist and details.

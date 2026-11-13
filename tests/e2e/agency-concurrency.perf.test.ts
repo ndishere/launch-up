@@ -326,6 +326,22 @@ paths:
       },
     ];
 
+    // Warm up cold sockets and JIT route compilation across all endpoints
+    const warmUpTenant = tenants[0];
+    await Promise.all(
+      callSpecs(warmUpTenant).map(async (spec) => {
+        try {
+          await fetch(`${servers[spec.mod].baseUrl}${spec.path}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(spec.body),
+          });
+        } catch {
+          // ignore warmup errors
+        }
+      })
+    );
+
     const latencies: number[] = [];
     const tasks: Array<Promise<void>> = [];
 

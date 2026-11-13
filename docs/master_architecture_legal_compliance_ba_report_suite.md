@@ -181,3 +181,37 @@ To maintain executive clarity, reduce vertical visual noise, and provide an inst
      - **Marketing & WhatsApp (`MarketingEngineTab.tsx`):** 2-column layout with right inspector. Selecting a 30-day social calendar item or campaign opens visual post preview, EU AI Act Art. 50 disclosure status, and 1-click **`Approve Campaign (Gate 4)`** button.
      - **Website Health & Auto-Fix (`AlertsTab.tsx`):** 2-column layout with right inspector. Selecting an incident opens plain-English Root Cause Analysis (RCA), Graphify AST impact node (`services/rates.py:42`), sandbox regression test verification status, and 1-click **`Approve Quick Fix (Gate 5)`** button.
 
+
+---
+
+## 10. Clutter-Free 3-Section UI Standardization & Built-In 4-Card Inspector Architecture (Step A)
+
+1. **Clutter-Free 3-Section Screen Layout Enforced Across All 9 Tabs**:
+   - **Global Top Header (`h-16` fixed height):** Active tab Heading + Subtitle on the left (`min-w-0 flex-1 truncate` so resizing smoothly truncates with `...` without increasing header height), global search in the center, and quick actions/theme toggles on the right. Duplicate standalone `<h1>`/`<p>` headers inside tab bodies are eliminated.
+   - **Section 1 (Horizontal Row 1 — Unified 5-Cell Summary Bar):** Single unified container (`<SummaryMetricGrid />`) with `1px` vertical dividers (`divide-x`) and `19px` bold primary numbers.
+   - **Section 2 (Horizontal Row 2, Column 1 — Clean Main Content Area):** Cluttered inline banners and verbose technical code dumps are replaced with clean, scannable rows and minimalist cards with essential business information.
+   - **Section 3 (Horizontal Row 2, Column 2 — Dynamic Expandable/Collapsible Right Details Panel):** Automatically updates whenever a user clicks any item in Column 1, and can be collapsed or expanded anytime via the top-right `Details` toggle button (`<ExpandableDetailToggleButton />`) without breaking layout alignment or introducing horizontal scrollbars.
+
+2. **Standardized 4 Smart Cards Inside the Right-Side Expandable Details Panel (`StandardContextInspector.tsx`)**:
+   - **Card 1 (Overview & Visual Preview):** Status summary, domain/URL badge, live preview link/thumbnail, and quick action launch buttons (`Open Workspace`, `Open Device Preview`, `View Proposal`).
+   - **Card 2 (Global Legal & Security Compliance Shield):** 5-point verification badge row:
+     - DPDP Act & CERT-In Logs: Verified
+     - EU/UK GDPR, Cookie Consent & AI Act Disclosure: Verified
+     - US CCPA & WhatsApp 24h Opt-In Rule: Verified
+     - Google Play Data Safety & Account Deletion: Verified
+     - Data Isolation RLS & CVE Scan: 100% Pass
+   - **Card 3 (Cost Intelligence & Portability Passport):**
+     - Template & Token Savings: 88% Base Reused • Caveman + Graphify Active • Est. AI Cost: ₹18 / $0.22 • Net Margin: 99.4%
+     - 100% Portability: Docker + Git Branches Ready • Local Folder Path • Export/Pull Compatible with Claude Code & Codex
+   - **Card 4 (Sticky Bottom Approval & Maintenance Action Bar):** Decision buttons for human-in-the-loop governance (`Approve & Continue`, `Approve Go-Live`, `Approve Quick Fix`, `Request Changes`, or custom buttons).
+
+3. **Complete 9-Tab Coverage**:
+   - `Dashboard` (`DashboardTab.tsx`): Row 1 5-cell metrics, Column 1 follow-ups & active clients, Column 2 `StandardContextInspector` with live microservice health telemetry diagnostics.
+   - `Clients` (`ClientsTab.tsx`): Row 1 5-cell metrics, Column 1 client pipeline cards, Column 2 `StandardContextInspector` with Canva proposal preview and client outreach.
+   - `Projects` (`ProjectsTab.tsx`): Row 1 5-cell metrics, Column 1 autonomous factory strip & project cards, Column 2 `StandardContextInspector` with 5-step build checklist (*Plan -> Design -> Build -> Quality Check -> Live*) & Gate 3 Go-Live approval.
+   - `Services` (`MarketingEngineTab.tsx`, `AlertsTab.tsx`, `TelemetryHubTab.tsx`): Converted to 3-section layout with Row 1 5-cell metrics, Column 1 feeds, Column 2 `StandardContextInspector` with Gate 4/5 approvals & live WebSocket telemetry stream.
+   - `Tools/Apps` (`TemplatesTab.tsx`, `IntegrationsTab.tsx`, `NoCodeEditorTab.tsx`, `PreviewStudioTab.tsx`): Row 1 5-cell metrics, Column 1 template blueprints, Column 2 `StandardContextInspector` with 88% token reuse & Repomix skeletons.
+   - `AI Workshop` (`AgentCompanyTab.tsx`, `SLMLabTab.tsx`, `N8nWorkflowsTab.tsx`): Row 1 5-cell metrics, Column 1 fleet roster & local GPU VRAM optimizer, Column 2 `StandardContextInspector`.
+   - `Analytics` (`AnalyticsTab.tsx`): Converted to 3-section layout with Row 1 5-cell metrics, Column 1 campaigns attribution table with interactive row selection, Column 2 `StandardContextInspector`.
+   - `Teams` (`TeamTab.tsx`): Converted from `ScreenAnalyticsHeader` to 3-section layout with Row 1 5-cell metrics, Column 1 human approval gates 1-5 + RBAC tester + team members, Column 2 `StandardContextInspector` with Gate sign-off & revision actions.
+   - `Settings` (`SettingsTab.tsx`): Row 1 5-cell metrics, Column 1 theme mode & color palette selection, Column 2 `StandardContextInspector` with auto-persisted workspace tokens & state reset.
