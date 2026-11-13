@@ -154,3 +154,30 @@ To maintain executive clarity, reduce vertical visual noise, and provide an inst
      - **Gate 5 (`HOTFIX_MERGE`)** → **`Quick Fix Approval`**
    - Microservices are surfaced with their human business function: *Lead Finder (MOD-01)*, *Scope Planner (MOD-02)*, *Web Builder (MOD-03)*, *Mobile App Builder (MOD-04)*, *Backend Engine (MOD-05)*, *Quality & Security Check (MOD-06)*, *Canva Marketing (MOD-07)*, *WhatsApp CRM (MOD-08)*, *Auto-Fix Care (MOD-09)*, and *Access & Approvals (MOD-10)*.
    - Hardware and token compression settings are labeled with intuitive business descriptions: *Local PC Memory Saver (VRAM & KV-Cache)* and *Smart Token Cost Saver (/caveman)*.
+
+---
+
+## 9. Canonical 3-Section Screen Layout & Contextual Inspector Standards (Phase 2A)
+
+1. **Standard 3-Section Screen Grid Across Core Tabs (`ThreeZoneScreenLayout.tsx`)**:
+   - **Row 1 (Top Summary Section):** The single unified 5-cell horizontal `<SummaryMetricGrid />` with `19px` primary values, `1px` vertical dividers, and real-time status tones (`good`, `warn`, `bad`, `live`, `neutral`).
+   - **Row 2, Column 1 (Main Content Area):** `flex-1 min-w-0` clean workspace with plain-English filter pills, action buttons, and selectable rows/cards. Every selected item is styled with a subtle indigo selection highlight ring (`ring-2 ring-indigo-500/80 bg-indigo-50/20 dark:bg-indigo-950/20`).
+   - **Row 2, Column 2 (Dynamic Expandable/Collapsible Right Details Panel):** Integrated `<ExpandableRightDetailPanel />` that updates whenever an item in Column 1 is selected, with a companion `<ExpandableDetailToggleButton />` in the top toolbar to expand or collapse the panel without causing layout shifts or horizontal scrollbars.
+
+2. **Core Tab Implementations (Phase 2A Deliverables)**:
+   - **Dashboard (`DashboardTab.tsx`):**
+     - Clicking the 5th summary card (*Agency Health*) opens live telemetry for all 10 core Launch Up microservices (`:8004..:8013`) with health pulse diagnostics.
+     - Selecting an item in the Approvals Inbox opens Column 2 with a visual preview, human feedback textarea, and 1-click **`Approve`** / **`Request Changes`** buttons.
+     - Selecting a follow-up lead renders client contact details, live customer preview link, and 1-click WhatsApp closing note dispatch.
+   - **Clients (`ClientsTab.tsx`):**
+     - Top toolbar contains `Generate Lead (Scan)`, `+ Add Client`, and `<ExpandableDetailToggleButton />`.
+     - Selecting any client in Kanban or Table view opens Column 2 displaying contact information, retainer value, linked software projects with quick `Create Project for Client` action, a Canva pitch proposal preview card with external link, and quick action buttons.
+   - **Projects (`ProjectsTab.tsx`):**
+     - Standardized into `ThreeZoneScreenLayout`.
+     - Row 1 renders the unified 5-cell summary bar (Total Projects, Live Production, Build Swarm, Container Sync, Rollback Guard).
+     - Row 2 Column 1 provides `Pull Project from Folder` and `+ New Project` toolbar actions, the Autonomous App Factory strip, and minimalist project cards with selection rings.
+     - Row 2 Column 2 provides the selected project inspector with a 5-step build checklist (*Plan -> Design -> Build -> Quality Check -> Live*), FinOps unit economics profit summary ($2,500 retainer, ~$14.20 infra/LLM cost, 99.4% margin), technical specs (Server Target, Git Branch, Staging Port, Health), and action buttons (**`Open Full Workspace`**, **`Approve Go-Live (Gate 3)`**, **`Multi-Viewport Preview`**).
+   - **Services (`ServicesTab.tsx`, `MarketingEngineTab.tsx`, `AlertsTab.tsx`):**
+     - **Marketing & WhatsApp (`MarketingEngineTab.tsx`):** 2-column layout with right inspector. Selecting a 30-day social calendar item or campaign opens visual post preview, EU AI Act Art. 50 disclosure status, and 1-click **`Approve Campaign (Gate 4)`** button.
+     - **Website Health & Auto-Fix (`AlertsTab.tsx`):** 2-column layout with right inspector. Selecting an incident opens plain-English Root Cause Analysis (RCA), Graphify AST impact node (`services/rates.py:42`), sandbox regression test verification status, and 1-click **`Approve Quick Fix (Gate 5)`** button.
+

@@ -40,42 +40,43 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-13T21:00:00+05:30`
+- **Last Updated Timestamp:** `2026-11-13T21:30:00+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `CONSOLIDATION TO 9 CLEAN PRIMARY TABS + SUB-VIEW SWITCHERS + PLAIN-ENGLISH DOMAIN LABELS`
-- **Architecture Alignment:** Successfully consolidated the navigation architecture into exactly 9 primary tabs and domain-friendly plain-English business labels while strictly preserving our Slate & Indigo Launch Up theme, Global Header Heading + Subtitle (`...` truncation), Unified 5-Cell Summary Bar, and Expandable Right Details Panel:
-  1. **Consolidated 9-Tab Sidebar (`src/components/layout/Sidebar.tsx`):**
-     - Pinned left sidebar navigation to exactly 9 primary tabs: `Dashboard`, `Clients`, `Projects`, `Services`, `Tools/Apps`, `AI Workshop`, `Analytics`, `Teams`, and `Settings`.
-     - Preserves existing sleek design tokens, theme-adaptive `<LaunchUpLogo size={34} />`, Agency Plan card, and user profile footer.
-  2. **Zero-Feature-Loss Sub-View Switchers Inside Merged Tabs (`src/components/tabs/*.tsx` & `src/App.tsx`):**
-     - **Projects (`ProjectsTabWrapper.tsx`):** Sub-views: *All Projects* (`ProjectsTab`), *Project Builder* (`ProjectBuilderTab`), and *Deployments & Releases* (`DeploymentsTab`).
-     - **Services (`ServicesTab.tsx`):** Sub-views: *Marketing & WhatsApp* (`MarketingEngineTab`), *Website Health & Auto-Fix* (`AlertsTab`), and *Live Uptime & Logs* (`TelemetryHubTab`).
-     - **Tools/Apps (`ToolsAppsTab.tsx`):** Sub-views: *Project Templates* (`TemplatesTab`), *Connected Accounts* (`IntegrationsTab`), *Visual Page Editor* (`NoCodeEditorTab`), and *Device Previewer* (`PreviewStudioTab`).
-     - **AI Workshop (`AIWorkshopTab.tsx`):** Sub-views: *AI Team Helpers* (`AgentCompanyTab`), *AI Models & Local PC* (`SLMLabTab`), and *Automation Flows* (`N8nWorkflowsTab`).
-  3. **Global Header Tab Metadata Registry (`src/constants/tabHeaders.ts`):**
-     - Added plain-English titles and subtitles for all 9 primary tabs and consolidated sub-views (`tools-apps`, `ai-workshop`, etc.).
-     - Single-line `truncate` with fixed `h-14` header bar and hover tooltips for complete accessibility.
-  4. **Plain-English Business Domain Labels:**
-     - Replaced technical `Gate 1..Gate 5` labels across the UI with clear action titles: **`Proposal Approval`** (Gate 1), **`Project Plan Sign-Off`** (Gate 2), **`Go-Live Approval`** (Gate 3), **`Campaign Approval`** (Gate 4), and **`Quick Fix Approval`** (Gate 5).
-     - Replaced visible microservice codes in headers and catalog with friendly names: *Lead Finder (MOD-01)*, *Scope Planner (MOD-02)*, *Web Builder (MOD-03)*, *Mobile App Builder (MOD-04)*, *Backend Engine (MOD-05)*, *Quality & Security Check (MOD-06)*, *Canva Marketing (MOD-07)*, *WhatsApp CRM (MOD-08)*, *Auto-Fix Care (MOD-09)*, *Access & Approvals (MOD-10)*.
-     - Labeled hardware and compression settings in AI Workshop with plain-English subtitles: *Local PC Memory Saver (VRAM & KV-Cache)* and *Smart Token Cost Saver (/caveman)*.
+- **Active Module ID:** `PHASE 2A: 3-SECTION STANDARDIZATION & PLAIN-ENGLISH INSPECTORS (DASHBOARD, CLIENTS, PROJECTS, SERVICES)`
+- **Architecture Alignment:** Successfully standardized the canonical 3-Section Layout (Row 1: Unified 5-Cell Summary Bar | Row 2, Column 1: Main Content Workspace | Row 2, Column 2: Dynamic Expandable/Collapsible Right Details Panel) across our first 4 core tabs while strictly preserving our Slate & Indigo Launch Up theme, Global Header Heading + Subtitle (`...` truncation), and zero horizontal overflow:
+  1. **Dashboard Command Center (`src/components/tabs/DashboardTab.tsx`):**
+     - Row 1: Unified 5-cell summary bar with `19px` primary values. Clicking the 5th summary card (*Agency Health*) opens the live microservice health telemetry in Column 2.
+     - Row 2 Column 1: Top toolbar `<ExpandableDetailToggleButton>`, follow-ups list, funnel metrics, approvals inbox, and active client table with subtle indigo selection highlight ring (`ring-2 ring-indigo-500/80 bg-indigo-50/20 dark:bg-indigo-950/20`).
+     - Row 2 Column 2: Rich inspector displaying live status of all 10 microservices (:8004..:8013) with pulse button, visual approval preview with feedback textarea and 1-click **`Approve`** / **`Request Changes`** buttons, and client follow-up actions.
+  2. **Clients Funnel & Accounts (`src/components/tabs/ClientsTab.tsx`):**
+     - Row 1: 5-cell summary bar (Active Retainers, Pipeline Leads, Monthly Retainers, Avg Retainer, Fast-Track Protos).
+     - Row 2 Column 1: Top toolbar with `Generate Lead (Scan)`, `+ Add Client`, and `<ExpandableDetailToggleButton>`. Kanban and Table views with subtle indigo selection ring.
+     - Row 2 Column 2: Contextual inspector showing client contact details, linked projects with quick `Create Project for Client` action, Canva pitch proposal preview card with interactive link, and action buttons (`Create Project for Client`, `Send Proposal (WhatsApp/Email)`, `Open Multi-Viewport Preview`).
+  3. **Projects SDLC & Studios (`src/components/tabs/ProjectsTab.tsx`):**
+     - Converted to `ThreeZoneScreenLayout`.
+     - Row 1: 5-cell summary bar (Total Projects, Live Production, Build Swarm, Container Sync, Rollback Guard).
+     - Row 2 Column 1: Top toolbar with `Pull Project from Folder`, `+ New Project`, and `<ExpandableDetailToggleButton>`. Autonomous App Factory strip (MOD-02..05), filter toolbar, and minimalist project cards with selection highlight.
+     - Row 2 Column 2: Selected project inspector showing 5-step build checklist (*Plan -> Design -> Build -> Quality Check -> Live*), FinOps unit economics profit summary ($2,500 retainer, ~$14.20 infra/LLM cost, 99.4% margin), technical specs (Server Target, Branch, Port, Health), and action buttons (**`Open Full Workspace`**, **`Approve Go-Live (Gate 3)`**, **`Multi-Viewport Preview`**).
+  4. **Services Engine (`src/components/tabs/ServicesTab.tsx`, `MarketingEngineTab.tsx`, `AlertsTab.tsx`):**
+     - **Marketing & WhatsApp (`MarketingEngineTab.tsx`):** 2-column layout with `<ExpandableRightDetailPanel>` and toolbar toggle. Clicking any 30-day social calendar item or campaign card opens Column 2 with visual post preview, EU AI Act Art. 50 disclosure status, and 1-click **`Approve Campaign (Gate 4)`** button.
+     - **Website Health & Auto-Fix (`AlertsTab.tsx`):** 2-column layout with `<ExpandableRightDetailPanel>` and toolbar toggle. Clicking any alert opens Column 2 showing plain-English Root Cause Analysis (RCA), Graphify AST impact node (`services/rates.py:42`), sandbox regression test verification status, and 1-click **`Approve Quick Fix (Gate 5)`** button.
   5. **Verification & Monorepo Test Suite:**
      - TypeScript `tsc --noEmit` exit 0 (0 errors).
-     - Vite production build exit 0 (built in 1.39s).
+     - Vite production build exit 0 (built in 1.48s).
      - Full monorepo test suite: **200/200 tests passing (100% pass rate)** across 60 suites.
-     - Graphify AST updated: **2,586 nodes, 4,915 edges, 171 communities**.
+     - Graphify AST updated: **2,587 nodes, 4,942 edges, 164 communities**.
 - **Current TDD Stage:**
   - `[x] Stage 0: Test Stubs Generated` — 60 test suites across all 10 modules, Studio, Workspace Sprints 1–4, Gateway Verifier, 4-Layer Token Optimizer, and Template/Folder/Impact Adapter
   - `[x] Stage 1: Unit Tests Passing` — 113/113 PASS (82 MOD-01..MOD-10 + 17 Sprints 1–4 + 4 Custom API Gateway + 5 Token Optimizer + 5 Template/Folder/Impact `TFI-01..05`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
   - `[x] Stage 4: Cross-Module Performance & Concurrency` — 4/4 PASS (`STAGE4-CROSS-01..04`)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2586` nodes, `4915` edges, `171` communities)
-  - `[x] Cross-Module Monorepo Regression` — 200/200 PASS across 60 test suites in 10.22s (100% pass rate)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle built in `1.39s`
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2587` nodes, `4942` edges, `164` communities)
+  - `[x] Cross-Module Monorepo Regression` — 200/200 PASS across 60 test suites in 11.66s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle built in `1.48s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **9-Tab Navigation Consolidation, Sub-View Switchers, and Plain-English Domain Labels COMPLETE with 0 regressions, 200/200 tests passing, and Graphify AST updated.**
-  - **Next Step:** Continue standard feature work or tab refinements.
+  - **Platform Milestone:** **Phase 2A Standard 3-Section Layout & Plain-English Inspector Views COMPLETE across Dashboard, Clients, Projects, and Services with 0 regressions, 200/200 tests passing, and Graphify AST updated.**
+  - **Next Step:** Phase 2B (Standardize 3-Section Layout and Contextual Inspectors across remaining tabs: Tools/Apps, AI Workshop, Analytics, Teams, Settings).
 - **Known Blockers / Unresolved Errors:**
   - `None. All 200 tests passing (100%), TypeScript 0 errors, Vite production build clean.`
 

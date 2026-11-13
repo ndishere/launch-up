@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { 
   Users, Plus, Search, ExternalLink, Mail, Phone, 
   Sparkles, Filter, ChevronRight, Eye, FolderKanban, 
-  MessageSquare, LayoutGrid, Table as TableIcon
+  MessageSquare, LayoutGrid, Table as TableIcon, FolderGit2
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Client } from '../../types';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
 import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
+import { ExpandableDetailToggleButton } from '../common/ExpandableRightDetailPanel';
 import { GenerateLeadModal } from '../modals/GenerateLeadModal';
 
 export const ClientsTab: React.FC = () => {
@@ -16,6 +17,7 @@ export const ClientsTab: React.FC = () => {
     projects,
     setSelectedClient, 
     setIsAddClientModalOpen,
+    setIsCreateProjectModalOpen,
     setCurrentTab,
     openProjectWorkspace,
   } = useApp();
@@ -109,6 +111,11 @@ export const ClientsTab: React.FC = () => {
               <Plus className="w-3.5 h-3.5" />
               <span>+ Add Client</span>
             </button>
+
+            <ExpandableDetailToggleButton
+              isOpen={isSidePanelOpen}
+              onToggle={() => setIsSidePanelOpen((prev) => !prev)}
+            />
           </>
         }
         summaryMetrics={
@@ -210,6 +217,77 @@ export const ClientsTab: React.FC = () => {
                 )}
               </div>
 
+              {/* Linked Projects */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    Linked Projects ({projects.filter((p) => p.clientIds?.includes(activeClient.id)).length})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateProjectModalOpen(true)}
+                    className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
+                  >
+                    + New Project
+                  </button>
+                </div>
+                {projects.filter((p) => p.clientIds?.includes(activeClient.id)).length > 0 ? (
+                  <div className="space-y-1.5">
+                    {projects
+                      .filter((p) => p.clientIds?.includes(activeClient.id))
+                      .map((proj) => (
+                        <div
+                          key={proj.id}
+                          onClick={() => openProjectWorkspace(proj.id)}
+                          className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-300 dark:hover:border-slate-700 transition-colors cursor-pointer flex items-center justify-between gap-2"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">{proj.name}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{proj.framework || 'React'} · {proj.status}</p>
+                          </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
+                    <span>No active software project linked yet.</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsCreateProjectModalOpen(true)}
+                      className="mt-1.5 block mx-auto text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                    >
+                      Create Project for Client →
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Generated Pitch Proposal Preview */}
+              <div className="p-3 rounded-xl border border-indigo-200/80 dark:border-indigo-800/80 bg-indigo-50/50 dark:bg-indigo-950/40 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Pitch Proposal Deck</span>
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">
+                    Ready
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Personalized 6-slide deck with automated competitor audit, ROI projection, and mobile app mockup.
+                </p>
+                <a
+                  href={`http://localhost:3000/#proposal-${activeClient.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold inline-flex items-center gap-1 hover:underline pt-0.5"
+                >
+                  <span>View Interactive Pitch Deck</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
               {/* Notes */}
               {activeClient.notes && (
                 <div className="space-y-1">
@@ -225,39 +303,33 @@ export const ClientsTab: React.FC = () => {
               {/* Action Buttons */}
               <div className="space-y-2 pt-2">
                 <button
-                  onClick={() => setCurrentTab('preview-studio')}
+                  onClick={() => setIsCreateProjectModalOpen(true)}
                   className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-colors"
                 >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Open Multi-Viewport Preview (375px)</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    const clientProj = projects.find((p) => p.clientIds?.includes(activeClient.id)) || projects[0];
-                    if (clientProj) {
-                      openProjectWorkspace(clientProj.id);
-                    } else {
-                      setCurrentTab('projects');
-                    }
-                  }}
-                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                >
-                  <FolderKanban className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Open Client Project Workspace</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Create Project for Client</span>
                 </button>
 
                 <button
                   onClick={() => {
                     if (activeClient.phone) {
-                      window.open(`https://wa.me/${activeClient.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(activeClient.name)},%20your%20software%20prototype%20is%20ready!`, '_blank');
+                      window.open(`https://wa.me/${activeClient.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(activeClient.name)},%20here%20is%20your%20software%20proposal%20and%20interactive%20prototype:%20http://localhost:3000/%23preview-${activeClient.id}`, '_blank');
                     } else {
-                      window.location.href = `mailto:${activeClient.email}?subject=Launch%20Up%20Prototype%20Demo`;
+                      window.location.href = `mailto:${activeClient.email}?subject=Launch%20Up%20Software%20Proposal%20for%20${encodeURIComponent(activeClient.name)}`;
                     }
                   }}
-                  className="w-full text-center text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline py-1 cursor-pointer"
+                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
-                  Send personalized pitch message →
+                  <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Send Proposal (WhatsApp / Email)</span>
+                </button>
+
+                <button
+                  onClick={() => setCurrentTab('preview-studio')}
+                  className="w-full py-2 px-4 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Open Multi-Viewport Preview (375px)</span>
                 </button>
               </div>
             </div>
@@ -361,7 +433,7 @@ export const ClientsTab: React.FC = () => {
                           }}
                           className={`p-3 rounded-xl border transition-all cursor-pointer ${
                             isSelected
-                              ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30 ring-1 ring-indigo-500/20'
+                              ? 'ring-2 ring-indigo-500/80 border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
                               : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
                           }`}
                         >
@@ -428,7 +500,7 @@ export const ClientsTab: React.FC = () => {
                         setSelectedClient(client);
                       }}
                       className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer ${
-                        isSelected ? 'bg-indigo-50/30 dark:bg-indigo-950/20 font-semibold' : ''
+                        isSelected ? 'bg-indigo-50/60 dark:bg-indigo-950/40 font-semibold ring-1 ring-indigo-500/50' : ''
                       }`}
                     >
                       <td className="py-3 font-semibold text-slate-900 dark:text-slate-100">
