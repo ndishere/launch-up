@@ -17,24 +17,15 @@ export const BillingTab: React.FC = () => {
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              Billing & Subscriptions
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 rounded-md">
-              Stripe Active
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Client retainers, renewals, and automated settlement history.
-          </p>
-        </div>
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-3 pb-0.5">
+        <span className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 rounded-md">
+          Stripe Active
+        </span>
 
         <button
           onClick={() => setIsUpgradeModalOpen(true)}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors ml-auto"
         >
           <Zap className="w-3.5 h-3.5" />
           <span>Plans</span>

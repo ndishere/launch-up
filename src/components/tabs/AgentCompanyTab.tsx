@@ -127,28 +127,12 @@ export const AgentCompanyTab: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Clean Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center">
-              <Bot className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                Company of Agents
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold">
-                  Autonomous Fleet
-                </span>
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                Autonomous specialist agents coordinating to intake businesses, build FDE online systems, train SLMs, and run marketing.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5">
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-4 pb-0.5">
+        <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold">
+          Autonomous Fleet
+        </span>
+        <div className="flex items-center gap-2.5 ml-auto">
           <button
             onClick={() => setShowIntakeForm(true)}
             className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 rounded-xl transition-colors flex items-center gap-2"

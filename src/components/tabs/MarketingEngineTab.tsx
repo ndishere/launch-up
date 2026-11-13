@@ -104,28 +104,13 @@ export const MarketingEngineTab: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white">
-              <Megaphone className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                Digital Marketing & Growth Automation Engine
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800 font-semibold">
-                  Autonomous ROAS
-                </span>
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                Self-driving marketing campaigns powered by Vortex Growth Agent. Autonomous copy generation, ad creative testing, and real-time bid optimization.
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-4 pb-0.5">
+        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800 font-semibold">
+          Autonomous ROAS
+        </span>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 ml-auto">
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all flex items-center gap-2"

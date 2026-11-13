@@ -11,20 +11,11 @@ export const IntegrationsTab: React.FC = () => {
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              Integrations
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 rounded-md">
-              {integrations.filter((i) => i.connected).length} Connected
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Connect cloud infrastructure, Git providers, payments, and webhook dispatchers.
-          </p>
-        </div>
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-3 pb-0.5">
+        <span className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 rounded-md">
+          {integrations.filter((i) => i.connected).length} Connected
+        </span>
       </div>
 
       {/* Unified 5-Cell Horizontal Summary Bar */}

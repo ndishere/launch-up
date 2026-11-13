@@ -110,21 +110,11 @@ CREATE INDEX idx_backups_pid_created ON backups(project_id, created_at DESC);`;
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
-              System Design & SDLC Architecture
-            </h1>
-            <span className="px-2.5 py-0.5 text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 rounded-full">
-              Production Standard
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            End-to-end SDLC lifecycle documentation, high-performance database schema (M:M relations), and secure deployment specifications.
-          </p>
-        </div>
+      {/* Sub-tab Navigation Toolbar */}
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 pb-0.5">
+        <span className="px-2.5 py-0.5 text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 rounded-full w-fit">
+          Production Standard
+        </span>
 
         {/* Sub-tab Navigation */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

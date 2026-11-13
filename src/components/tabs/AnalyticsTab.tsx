@@ -44,25 +44,16 @@ export const AnalyticsTab: React.FC = () => {
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              Analytics
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-md">
-              Attribution
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Traffic performance, conversion rates, SEO health, and acquisition channels.
-          </p>
-        </div>
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-3 pb-0.5">
+        <span className="px-2 py-0.5 text-[11px] font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-md">
+          Attribution
+        </span>
 
         <select
           value={selectedProject}
           onChange={(e) => setSelectedProject(e.target.value)}
-          className="bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none"
+          className="bg-white dark:bg-[#111318] border border-slate-200/80 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none ml-auto"
         >
           <option value="All">All Projects</option>
           {projects.map((p) => (

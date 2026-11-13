@@ -60,22 +60,13 @@ export const TemplatesTab: React.FC = () => {
 
   return (
     <div className="space-y-5 pb-10 animate-in fade-in duration-150">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-              Templates
-            </h1>
-            <span className="px-2 py-0.5 text-[11px] font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-md">
-              Verified
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Starter architectures for enterprise web, mobile, and SaaS stacks.
-          </p>
-        </div>
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between gap-3 pb-0.5">
+        <span className="px-2 py-0.5 text-[11px] font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-md">
+          Verified
+        </span>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <button
             type="button"
             onClick={handleScanTemplates}

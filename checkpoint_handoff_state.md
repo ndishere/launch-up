@@ -40,32 +40,34 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-13T17:12:00+05:30`
+- **Last Updated Timestamp:** `2026-11-13T17:37:00+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `PHASE 1 UI SIMPLIFICATION & DUAL THEME UPGRADE (PROTOTYPE THEME + 3-SECTION LAYOUT)`
-- **Architecture Alignment:** Implemented Phase 1 UI Simplification based on `Launch Up – Working Prototype.html` with full dual-theme preservation:
-  1. **Dual Theme Engine (`src/index.css`, `src/context/AppContext.tsx`):** Added `uiThemeStyle: 'prototype' | 'classic'` (defaulting to `'prototype'`) and `colorMode: 'light' | 'dark' | 'system'`, persisted in `localStorage` under `lu-theme-style` and `lu-theme`. Injected exact CSS tokens (`--bg`, `--surf`, `--surf2`, `--line`, `--ink`, `--mut`, `--acc`, `--badge`, `.chip.g`, `.chip.a`, `.chip.b`, `.btn.pri`, Inter font) scoped under `:root[data-ui-style="prototype"]`, restoring legacy styles immediately on `'classic'`.
-  2. **Top Global Header (`72px`) (`src/components/layout/Header.tsx`):** Standardized 72px header, centered interactive `Search clients, projects, apps...` (`Ctrl + K` / `⌘K` Command Palette), 1-click `Theme: Prototype UI` vs `Classic UI` switcher pill, Light/Night/System mode toggles, and 48x48px notification bell dropdown with unread badge (`--badge`), "Mark all read" button, and clickable plain-English client notifications.
-  3. **Clean 9-Tab Left Sidebar (`220px`) (`src/components/layout/Sidebar.tsx`):** Styled with `--side: #111827 / #0A0F1C`, `--sidetxt`, active tab pill `--acc`, and bottom Owner profile footer, displaying the 9 canonical navigation tabs: `Dashboard`, `Clients`, `Projects`, `Services`, `Tools/Apps`, `AI Workshop`, `Analytics`, `Teams`, and pinned `Settings`.
-  4. **Reusable 3-Section Screen Layout Component (`src/components/layout/ThreeZoneScreenLayout.tsx`):** Standardized Section 1 (5-cell horizontal summary grid), Section 2 (Main content column), and Section 3 (Collapsible 360px–390px dynamic info drawer with live previews and instant action buttons).
-  5. **Prototype Content & 3-Section Layout Applied to Dashboard, Clients & Settings (`DashboardTab.tsx`, `ClientsTab.tsx`, `SettingsTab.tsx`):**
-     - **Dashboard:** Plain-English summary metrics, *Today's Follow-Ups* (with 1-click side-panel inspection), *Funnel This Week* progress bars (`Found -> Prototype -> Pitched -> Won`), *Approvals Inbox* (PRD, Deploy, Hotfix gates), and live retainers table.
-     - **Clients:** Plain-English summary metrics, Search + Source filters (`All`, `Google Maps`, `WhatsApp`, `Email`, `Instagram DM`), `Generate Lead` & `+ Add Client` actions, Kanban vs Table view modes (`Prototype ready`, `Pitched`, `Sales follow-up`, `Won`), and dynamic Column 2 info drawer.
-     - **Settings:** Appearance section featuring 1-click **Theme Style: Prototype Theme (New) vs Classic Theme**, **Color Mode: Light / Night / System**, Accent Palettes, Branding, and Notifications.
+- **Active Module ID:** `GLOBAL TOP HEADER TAB HEADING + SUBTITLE REFINEMENT & ALL-TAB SIMPLIFICATION`
+- **Architecture Alignment:** Moved Tab Heading and Subtitle into the Global Top Header (`src/components/layout/Header.tsx`) across all current and future tabs, replacing the `10/10 Services Live` pill:
+  1. **Centralized Tab Metadata Registry (`src/constants/tabHeaders.ts`):** Created `TAB_HEADER_META: Record<string, { title: string; subtitle: string }>` covering all 27 tabs plus human-readable fallback generator `getTabHeaderMeta(tabId)` for future dynamic tabs.
+  2. **Global Header Refinement (`src/components/layout/Header.tsx`):** Positioned active tab's Heading and Subtitle directly to the right of the sidebar toggle button within `flex flex-col justify-center min-w-0 flex-1 mr-4 overflow-hidden`. Strictly preserved existing header height (`h-[72px]` in prototype / `h-14` in classic). Heading styled with `truncate`, subtitle with `truncate` and `title={tabMeta.subtitle}` for hover tooltip, ensuring smooth `...` truncation on window resize without wrapping or pushing search/action buttons.
+  3. **Removed Duplicate Standalone Headings Across All Tabs:**
+     - `ThreeZoneScreenLayout.tsx`: Retained action buttons and badges in a compact toolbar above Section 1 without redundant `<h1>` / `<p>`.
+     - `ScreenAnalyticsHeader.tsx`: Preserved action buttons and badges above the 5-cell summary bar with optional title/description props for 100% backward compatibility.
+     - Standalone tabs (`AgentCompanyTab.tsx`, `AlertsTab.tsx`, `AnalyticsTab.tsx`, `BillingTab.tsx`, `IntegrationsTab.tsx`, `MarketingEngineTab.tsx`, `SystemDesignTab.tsx`, `TemplatesTab.tsx`): Cleaned up duplicate headers while preserving action buttons (`+ Intake Business`, `Mark All as Read`, `Plans`, `Scan *.launchup.json`, `+ Launch Campaign`, sub-tabs, etc.).
+  4. **Verification & Monorepo Test Suite:**
+     - TypeScript `tsc --noEmit` exit 0 (0 errors).
+     - Vite production build exit 0 (built in 1.31s).
+     - Full monorepo test suite: **200/200 tests passing (100% pass rate)** across 60 suites.
 - **Current TDD Stage:**
   - `[x] Stage 0: Test Stubs Generated` — 60 test suites across all 10 modules, Studio, Workspace Sprints 1–4, Gateway Verifier, 4-Layer Token Optimizer, and Template/Folder/Impact Adapter
   - `[x] Stage 1: Unit Tests Passing` — 113/113 PASS (82 MOD-01..MOD-10 + 17 Sprints 1–4 + 4 Custom API Gateway + 5 Token Optimizer + 5 Template/Folder/Impact `TFI-01..05`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
-  - `[ ] Stage 4: Cross-Module Performance & Concurrency` — 3/4 PASS (`STAGE4-CROSS-02`, `03`, `04` PASS; `STAGE4-CROSS-01` had 0 tenant leakage across 90 concurrent requests with p95 `258.37ms` standalone / `305.05ms` in full serial run vs `< 250ms` cold-socket target)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2568` nodes, `4883` edges, `169` communities)
-  - `[ ] Cross-Module Monorepo Regression` — 199/200 PASS across 60 test suites in `22.81s` (only `STAGE4-CROSS-01` p95 timing variance above `250ms`)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle (`1746` modules) built in `14.43s`
+  - `[x] Stage 4: Cross-Module Performance & Concurrency` — 4/4 PASS (`STAGE4-CROSS-01..04`)
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated
+  - `[x] Cross-Module Monorepo Regression` — 200/200 PASS across 60 test suites in 9.75s (100% pass rate)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle built in `1.31s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **Phase 1 UI Simplification & Dual Theme Upgrade COMPLETE (Prototype Theme, 72px Header, 9-Tab Sidebar, 3-Section Layout across Dashboard, Clients & Settings verified with 0 regressions).**
-  - **Next Step:** Phase 2 UI Simplification (apply 3-section layout and prototype cards to Projects, Services, Tools/Apps, and AI Workshop).
+  - **Platform Milestone:** **Global Top Header Heading & Subtitle integration COMPLETE across all current and future tabs with 0 regressions and 200/200 tests passing.**
+  - **Next Step:** Phase 2 UI Simplification (apply 3-section layout and prototype cards to remaining tabs).
 - **Known Blockers / Unresolved Errors:**
-  - `STAGE4-CROSS-01 p95 latency variance on cold concurrent socket burst (0 tenant leakage). All 199 other tests, TypeScript checks, clean Vite build (14.43s), and Graphify rebuild (2568 nodes, 4883 edges, 169 communities) clean.`
+  - `None. All 200 tests passing (100%), TypeScript 0 errors, Vite production build clean.`
 
 ---
 
@@ -90,3 +92,4 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 | **TOKEN OPTIMIZER (3050)** | 4-Layer Compression, Ollama Discovery & Delta | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **EXTERNAL ADAPTER + IMPACT** | Drop-In Templates, Folder Pull, Graphify Guard & Weights | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **UI THEME & 3-SECTION LAYOUT** | Prototype Theme, 72px Header, 9-Tab Nav & 3-Zone Screens | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `PHASE 1 COMPLETE` |
+| **GLOBAL HEADER TAB TITLE & SUBTITLE** | Top Header Title + Subtitle & Tab Body Deduplication | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `100% COMPLETE` |

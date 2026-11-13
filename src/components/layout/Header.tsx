@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Theme, ThemeMode, ColorPalette } from '../../types';
+import { getTabHeaderMeta } from '../../constants/tabHeaders';
 
 export const Header: React.FC = () => {
   const { 
@@ -23,6 +24,7 @@ export const Header: React.FC = () => {
     setSearchQuery,
     alerts,
     markAlertAsRead,
+    currentTab,
     setCurrentTab,
     setIsCommandPaletteOpen,
     setIsAddClientModalOpen,
@@ -32,6 +34,7 @@ export const Header: React.FC = () => {
 
   const isPrototype = uiThemeStyle === 'prototype';
   const liveCount = Object.values(meshStatuses).filter(Boolean).length;
+  const tabMeta = getTabHeaderMeta(currentTab);
 
   const [showAlertsDropdown, setShowAlertsDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -124,12 +127,12 @@ export const Header: React.FC = () => {
           : 'h-14 bg-white/90 dark:bg-[#0D1017]/90 border-b border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md text-slate-800 dark:text-slate-200'
       }`}
     >
-      {/* Left: Sidebar Toggle & Microservices Mesh Pill */}
-      <div className="flex items-center gap-3">
+      {/* Left: Sidebar Toggle & Compact Tab Heading + Subtitle */}
+      <div className="flex items-center gap-3 min-w-0 flex-1 mr-4 overflow-hidden">
         <button
           id="sidebar-toggle-btn"
           onClick={() => setIsSidebarCollapsed((prev: boolean) => !prev)}
-          className={`p-2 rounded-xl transition-colors focus:outline-none ${
+          className={`p-2 rounded-xl transition-colors focus:outline-none shrink-0 ${
             isPrototype
               ? 'text-[var(--mut)] hover:text-[var(--ink)] hover:bg-[var(--surf2)] border border-[var(--line)]'
               : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -140,24 +143,27 @@ export const Header: React.FC = () => {
           <Menu className="w-4 h-4" />
         </button>
 
-        <button
-          onClick={() => setCurrentTab('team')}
-          className={`hidden sm:inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold transition-colors cursor-pointer ${
-            isPrototype
-              ? 'bg-[var(--surf2)] border-[var(--line)] text-[var(--ink2)] hover:border-[var(--acc)]'
-              : 'bg-slate-50 dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-indigo-300'
-          }`}
-          title="Microservices Mesh Control: Click to view Governance Gates & RBAC"
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${liveCount > 0 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-          <span className="font-mono text-[11px]">
-            {liveCount > 0 ? `${liveCount}/10 Services Live` : 'Mesh Ready'}
-          </span>
-        </button>
+        <div className="flex flex-col justify-center min-w-0 flex-1 overflow-hidden">
+          <h1
+            className={`text-sm sm:text-base font-bold tracking-tight leading-tight truncate ${
+              isPrototype ? 'text-[var(--ink)]' : 'text-slate-900 dark:text-white'
+            }`}
+          >
+            {tabMeta.title}
+          </h1>
+          <p
+            title={tabMeta.subtitle}
+            className={`text-[11px] sm:text-xs leading-tight truncate mt-0.5 ${
+              isPrototype ? 'text-[var(--mut)]' : 'text-slate-500 dark:text-slate-400'
+            }`}
+          >
+            {tabMeta.subtitle}
+          </p>
+        </div>
       </div>
 
       {/* Center: Command Palette Trigger (Search clients, projects, apps...) */}
-      <div className="flex-1 max-w-md mx-3 hidden md:block">
+      <div className="flex-1 max-w-xs lg:max-w-sm mx-2 sm:mx-3 hidden md:block shrink-0">
         <button
           id="global-command-palette-btn"
           type="button"

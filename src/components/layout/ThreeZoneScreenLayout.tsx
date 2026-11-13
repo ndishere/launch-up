@@ -3,7 +3,7 @@ import { PanelRightClose, PanelRightOpen, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 export interface ThreeZoneScreenLayoutProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   badge?: string;
   headerActions?: React.ReactNode;
@@ -40,47 +40,31 @@ export const ThreeZoneScreenLayout: React.FC<ThreeZoneScreenLayoutProps> = ({
 
   return (
     <div className={`space-y-5 pb-12 animate-in fade-in duration-150 ${className}`}>
-      {/* Screen Title & Header Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h1
-              className={`text-xl font-bold tracking-tight ${
-                isPrototype ? 'text-[var(--ink)]' : 'text-slate-900 dark:text-slate-100'
+      {/* Action Toolbar & Badge (Tab Heading & Subtitle are displayed in Global Top Header) */}
+      {(headerActions || badge) && (
+        <div className="flex items-center justify-between gap-2 flex-wrap pb-0.5">
+          {badge ? (
+            <span
+              className={`px-2 py-0.5 text-[11px] font-semibold rounded-md border inline-flex items-center gap-1.5 ${
+                isPrototype
+                  ? 'chip g'
+                  : 'bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border-indigo-200/60 dark:border-indigo-800/50'
               }`}
             >
-              {title}
-            </h1>
-            {badge && (
-              <span
-                className={`px-2 py-0.5 text-[11px] font-semibold rounded-md border inline-flex items-center gap-1.5 ${
-                  isPrototype
-                    ? 'chip g'
-                    : 'bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border-indigo-200/60 dark:border-indigo-800/50'
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                {badge}
-              </span>
-            )}
-          </div>
-          {subtitle && (
-            <p
-              className={`text-xs mt-1 max-w-2xl ${
-                isPrototype ? 'text-[var(--mut)]' : 'text-slate-500 dark:text-slate-400'
-              }`}
-            >
-              {subtitle}
-            </p>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              {badge}
+            </span>
+          ) : (
+            <div />
+          )}
+
+          {headerActions && (
+            <div className="flex items-center gap-2 shrink-0 flex-wrap ml-auto">
+              {headerActions}
+            </div>
           )}
         </div>
-
-        {headerActions && (
-          <div className="flex items-center gap-2 shrink-0 flex-wrap">
-            {headerActions}
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Section 1: Top Unified 5-Cell Summary Metric Bar */}
       <div className="w-full">
