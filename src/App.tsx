@@ -40,7 +40,8 @@ import { ClientPortalModal } from './components/modals/ClientPortalModal';
 import { ProjectWorkspaceModal } from './components/workspace/ProjectWorkspaceModal';
 
 const AppLayout: React.FC = () => {
-  const { currentTab } = useApp();
+  const { currentTab, uiThemeStyle } = useApp();
+  const isPrototype = uiThemeStyle === 'prototype';
 
   const renderActiveTab = () => {
     switch (currentTab) {
@@ -102,7 +103,14 @@ const AppLayout: React.FC = () => {
 
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50/80 dark:bg-[#090B10] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
+    <div
+      className={`flex h-screen w-screen overflow-hidden transition-colors duration-200 ${
+        isPrototype
+          ? 'bg-[var(--bg)] text-[var(--ink)]'
+          : 'bg-slate-50/80 dark:bg-[#090B10] text-slate-900 dark:text-slate-100 font-sans'
+      }`}
+      style={isPrototype ? { backgroundColor: 'var(--bg)', color: 'var(--ink)' } : undefined}
+    >
       {/* Sidebar Navigation */}
       <Sidebar />
 

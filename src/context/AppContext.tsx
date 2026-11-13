@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
-  Theme, ThemeMode, ColorPalette, TabId, Client, Project, DeploymentLog, SystemAlert, 
+  Theme, ThemeMode, ColorPalette, UiThemeStyle, TabId, Client, Project, DeploymentLog, SystemAlert, 
   BackupRecord, Invoice, Template, Integration, TeamMember,
   AutonomousAgent, BusinessAutomationIntake, SLMModel, MarketingCampaign,
   RemoteTelemetryPackage, FDESystemArchitecture,
@@ -157,6 +157,10 @@ const getDefaultTelemetryScores = () => ({
 });
 
 interface AppContextType {
+  uiThemeStyle: UiThemeStyle;
+  setUiThemeStyle: (style: UiThemeStyle) => void;
+  colorMode: ThemeMode;
+  setColorMode: (mode: ThemeMode) => void;
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
   palette: ColorPalette;
@@ -477,9 +481,18 @@ export const PALETTE_DEFINITIONS: Record<ColorPalette, {
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // UI Theme Style: 'prototype' | 'classic' (defaulting to 'prototype')
+  const [uiThemeStyle, setUiThemeStyle] = useState<UiThemeStyle>(() => {
+    const saved = localStorage.getItem('lu-theme-style') as UiThemeStyle | null;
+    if (saved && (saved === 'prototype' || saved === 'classic')) {
+      return saved;
+    }
+    return 'prototype';
+  });
+
   // Color Mode: 'dark' | 'light' | 'system'
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-    const saved = localStorage.getItem('launchup_theme_mode') as ThemeMode | null;
+    const saved = (localStorage.getItem('lu-theme') || localStorage.getItem('launchup_theme_mode')) as ThemeMode | null;
     if (saved && ['dark', 'light', 'system'].includes(saved)) {
       return saved;
     }
@@ -522,6 +535,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Apply mode & palette to root HTML element
   useEffect(() => {
     const root = document.documentElement;
+
+    // 0. Set UI Theme Style ('prototype' | 'classic') & Mode
+    root.setAttribute('data-ui-style', uiThemeStyle);
+    root.setAttribute('data-mode', resolvedTheme);
     
     // 1. Handle Light / Dark class
     if (resolvedTheme === 'dark') {
@@ -532,7 +549,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // 2. Set data attributes
     root.setAttribute('data-palette', palette);
-    root.setAttribute('data-theme', palette);
+    root.setAttribute(
+      'data-theme',
+      uiThemeStyle === 'prototype' ? (resolvedTheme === 'dark' ? 'dark' : 'light') : palette
+    );
 
     // 3. Directly inject all palette CSS variables onto root inline style
     const pal = PALETTE_DEFINITIONS[palette] || PALETTE_DEFINITIONS.indigo;
@@ -557,7 +577,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (faviconEl) {
       faviconEl.href = buildLaunchUpFaviconDataUrl({
         isDark: resolvedTheme === 'dark',
-        accent: pal.accent,
+        accent: uiThemeStyle === 'prototype' ? (resolvedTheme === 'dark' ? '#4F46E5' : '#4338CA') : pal.accent,
         shade200: pal.colors[200],
         shade300: pal.colors[300],
         shade400: pal.colors[400],
@@ -566,10 +586,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // 5. Save preferences
+    localStorage.setItem('lu-theme-style', uiThemeStyle);
+    localStorage.setItem('lu-theme', themeMode);
     localStorage.setItem('launchup_theme_mode', themeMode);
     localStorage.setItem('launchup_palette', palette);
     localStorage.setItem('launchup_theme', resolvedTheme);
-  }, [resolvedTheme, palette, themeMode]);
+  }, [uiThemeStyle, resolvedTheme, palette, themeMode]);
 
   const toggleTheme = () => {
     setThemeMode((prev) => {
@@ -1733,6 +1755,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider
       value={{
+        uiThemeStyle,
+        setUiThemeStyle,
+        colorMode: themeMode,
+        setColorMode: setThemeMode,
         themeMode,
         setThemeMode,
         palette,

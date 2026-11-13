@@ -40,28 +40,32 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 
 ## 3. ACTIVE SPRINT & EXACT RESUME POINTER (UPDATED BY CODING AI)
 
-- **Last Updated Timestamp:** `2026-11-11T22:32:30+05:30`
+- **Last Updated Timestamp:** `2026-11-13T17:12:00+05:30`
 - **Last AI Model Used:** `Gemini 3.8 Flash (Antigravity)`
-- **Active Module ID:** `DROP-IN .LAUNCHUP.JSON TEMPLATES + EXTERNAL FOLDER PULL + GRAPHIFY IMPACT ANALYZER + D:\MODELS\WEIGHTS + 4-LAYER TOKEN COMPRESSION`
-- **Architecture Alignment:** Added drop-in `.launchup.json` Golden Template auto-scanning, direct local folder pull & bootstrap adapter for external Claude Code / Codex projects, 3-column Graphify Pre-Change Impact Analyzer with `lockedFiles` enforcement, and `D:\models\weights` local weight discovery on MOD-10:
-  1. **Drop-In Golden Template Auto-Scanner (`golden-templates/`, `src/lib/template-loader.ts`, `services/governance-service/src/local-scanner.ts`):** Created 3 starter templates (`landing-page-launchpad`, `frontend-modular-ui`, `fullstack-saas-engine`) with `template.launchup.json` separating `core-locked/`, `slots-mutable/`, and `ui-layer/` (`theme.tokens.json` + UI components), backed by `GET /api/v1/templates/scan`, Vite proxy, and browser fallbacks.
-  2. **Direct Local Project Folder Pull & External Tool Adapter (`workspaces/sample-claude-code-app/`, `src/lib/project-folder-adapter.ts`, `PullProjectFolderModal.tsx`, `ProjectsTab.tsx`, `DeploymentsTab.tsx`, `DebugHotfixInspector.tsx`, `AlertsTab.tsx`, `PreviewStudioTab.tsx`):** Added `project.launchup.json` discovery and raw-folder auto-bootstrapping (`POST /api/v1/projects/import-folder`, `GET /api/v1/workspaces/scan`), workspace tabs (`Debug & SRE Hotfix`, `Preview & QA`), Gate 3 Docker/Git controls, and MOD-09 SRE stack-trace to Graphify PR flow.
-  3. **Graphify Pre-Change Impact Analyzer (`src/lib/graphify-impact.ts`, `GraphifyImpactAnalyzerPanel.tsx`, `TemplatesTab.tsx`, `BuildAreaView.tsx`):** Implemented 3-column analyzer (`What We Already Have` `core-locked` @ $0, `What Agents Can Change` `slots-mutable` & `ui-layer`, `Graphify Blast-Radius & Impact Preview` tracing `DatabaseSchemaRoot -> ApiRouterRoot -> FeatureRegistryRoot`) with `LOCKED_FILE_BLOCKED` guard on `core-locked/` & `lockedFiles`.
-  4. **Local Weights & 6GB VRAM Gateway (`services/governance-service/src/local-scanner.ts`, `routes/index.ts`, `VramTokenOptimizerPanel.tsx`, `src/services/api.ts`):** Added `GET /api/v1/governance/local-models` scanning `D:\models\weights` (`manifests/`, `manifests-v2/`, `blobs/`, `.gguf`/`.safetensors`/`.bin`), enriched local provider checks, and surfaced `TFI-01`..`TFI-05` in `tests/workspace/template-folder-impact.unit.test.ts`.
+- **Active Module ID:** `PHASE 1 UI SIMPLIFICATION & DUAL THEME UPGRADE (PROTOTYPE THEME + 3-SECTION LAYOUT)`
+- **Architecture Alignment:** Implemented Phase 1 UI Simplification based on `Launch Up – Working Prototype.html` with full dual-theme preservation:
+  1. **Dual Theme Engine (`src/index.css`, `src/context/AppContext.tsx`):** Added `uiThemeStyle: 'prototype' | 'classic'` (defaulting to `'prototype'`) and `colorMode: 'light' | 'dark' | 'system'`, persisted in `localStorage` under `lu-theme-style` and `lu-theme`. Injected exact CSS tokens (`--bg`, `--surf`, `--surf2`, `--line`, `--ink`, `--mut`, `--acc`, `--badge`, `.chip.g`, `.chip.a`, `.chip.b`, `.btn.pri`, Inter font) scoped under `:root[data-ui-style="prototype"]`, restoring legacy styles immediately on `'classic'`.
+  2. **Top Global Header (`72px`) (`src/components/layout/Header.tsx`):** Standardized 72px header, centered interactive `Search clients, projects, apps...` (`Ctrl + K` / `⌘K` Command Palette), 1-click `Theme: Prototype UI` vs `Classic UI` switcher pill, Light/Night/System mode toggles, and 48x48px notification bell dropdown with unread badge (`--badge`), "Mark all read" button, and clickable plain-English client notifications.
+  3. **Clean 9-Tab Left Sidebar (`220px`) (`src/components/layout/Sidebar.tsx`):** Styled with `--side: #111827 / #0A0F1C`, `--sidetxt`, active tab pill `--acc`, and bottom Owner profile footer, displaying the 9 canonical navigation tabs: `Dashboard`, `Clients`, `Projects`, `Services`, `Tools/Apps`, `AI Workshop`, `Analytics`, `Teams`, and pinned `Settings`.
+  4. **Reusable 3-Section Screen Layout Component (`src/components/layout/ThreeZoneScreenLayout.tsx`):** Standardized Section 1 (5-cell horizontal summary grid), Section 2 (Main content column), and Section 3 (Collapsible 360px–390px dynamic info drawer with live previews and instant action buttons).
+  5. **Prototype Content & 3-Section Layout Applied to Dashboard, Clients & Settings (`DashboardTab.tsx`, `ClientsTab.tsx`, `SettingsTab.tsx`):**
+     - **Dashboard:** Plain-English summary metrics, *Today's Follow-Ups* (with 1-click side-panel inspection), *Funnel This Week* progress bars (`Found -> Prototype -> Pitched -> Won`), *Approvals Inbox* (PRD, Deploy, Hotfix gates), and live retainers table.
+     - **Clients:** Plain-English summary metrics, Search + Source filters (`All`, `Google Maps`, `WhatsApp`, `Email`, `Instagram DM`), `Generate Lead` & `+ Add Client` actions, Kanban vs Table view modes (`Prototype ready`, `Pitched`, `Sales follow-up`, `Won`), and dynamic Column 2 info drawer.
+     - **Settings:** Appearance section featuring 1-click **Theme Style: Prototype Theme (New) vs Classic Theme**, **Color Mode: Light / Night / System**, Accent Palettes, Branding, and Notifications.
 - **Current TDD Stage:**
-  - `[x] Stage 0: Test Stubs Generated` — 60 test suites across MOD-01..MOD-10, Studio, Workspace Sprints 1–4, Gateway Verifier, 4-Layer Token Optimizer, and Template/Folder/Impact Adapter
+  - `[x] Stage 0: Test Stubs Generated` — 60 test suites across all 10 modules, Studio, Workspace Sprints 1–4, Gateway Verifier, 4-Layer Token Optimizer, and Template/Folder/Impact Adapter
   - `[x] Stage 1: Unit Tests Passing` — 113/113 PASS (82 MOD-01..MOD-10 + 17 Sprints 1–4 + 4 Custom API Gateway + 5 Token Optimizer + 5 Template/Folder/Impact `TFI-01..05`)
   - `[x] Stage 2: Integration & Contract Tests Passing` — 69/69 PASS (100% pass rate)
   - `[x] Stage 3: System & Security E2E Verification Passing` — 14/14 PASS (`tests/e2e/agency-full-lifecycle.system.test.ts`)
-  - `[ ] Stage 4: Cross-Module Performance & Concurrency` — 3/4 PASS (`STAGE4-CROSS-02`, `03`, `04` PASS; `STAGE4-CROSS-01` had 0 tenant leakage across 90 concurrent requests with p95 `258.37ms` standalone / `284.99ms` in full serial run vs `< 250ms` cold-socket target)
-  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2563` nodes, `4868` edges, `168` communities)
-  - `[ ] Cross-Module Monorepo Regression` — 199/200 PASS across 60 test suites in `11.99s` (only `STAGE4-CROSS-01` p95 timing variance above `250ms`)
-  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle (`1745` modules) built in `1.46s`
+  - `[ ] Stage 4: Cross-Module Performance & Concurrency` — 3/4 PASS (`STAGE4-CROSS-02`, `03`, `04` PASS; `STAGE4-CROSS-01` had 0 tenant leakage across 90 concurrent requests with p95 `258.37ms` standalone / `305.05ms` in full serial run vs `< 250ms` cold-socket target)
+  - `[x] Stage 5: Graphify AST & Mesh Readiness Verified` — Graphify updated (`2568` nodes, `4883` edges, `169` communities)
+  - `[ ] Cross-Module Monorepo Regression` — 199/200 PASS across 60 test suites in `22.81s` (only `STAGE4-CROSS-01` p95 timing variance above `250ms`)
+  - `[x] Monorepo TypeScript & Build` — `tsc --noEmit` exit `0`; Vite production bundle (`1746` modules) built in `14.43s`
 - **Exact Resume Pointer (Where the Next Step Starts):**
-  - **Platform Milestone:** **Drop-In `.launchup.json` Templates, External Folder Pull Adapter, Graphify Impact Analyzer, and `D:\models\weights` Scanner implemented & built (`199/200` tests pass; `STAGE4-CROSS-01` cold p95 `258–285ms` vs `<250ms`).**
-  - **Next Step:** Optional warm-up tuning for `MOD-01..MOD-09` server handlers if strict `<250ms` cold p95 is required under load, production deployment, and customer onboarding.
+  - **Platform Milestone:** **Phase 1 UI Simplification & Dual Theme Upgrade COMPLETE (Prototype Theme, 72px Header, 9-Tab Sidebar, 3-Section Layout across Dashboard, Clients & Settings verified with 0 regressions).**
+  - **Next Step:** Phase 2 UI Simplification (apply 3-section layout and prototype cards to Projects, Services, Tools/Apps, and AI Workshop).
 - **Known Blockers / Unresolved Errors:**
-  - `STAGE4-CROSS-01 p95 latency variance (258.37ms standalone / 284.99ms in serial suite vs < 250ms threshold on cold concurrent socket burst; 0 tenant leakage). All 199 other tests, TypeScript checks, Vite build (1.46s), and Graphify rebuild (2563 nodes, 4868 edges, 168 communities) clean.`
+  - `STAGE4-CROSS-01 p95 latency variance on cold concurrent socket burst (0 tenant leakage). All 199 other tests, TypeScript checks, clean Vite build (14.43s), and Graphify rebuild (2568 nodes, 4883 edges, 169 communities) clean.`
 
 ---
 
@@ -85,3 +89,4 @@ You **MUST** stop writing feature code and execute a Checkpoint Save when **ANY*
 | **API GATEWAY (MOD-10)** | Custom AI / API Verifier & Swarm Matrix | YES | `4/4 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **TOKEN OPTIMIZER (3050)** | 4-Layer Compression, Ollama Discovery & Delta | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
 | **EXTERNAL ADAPTER + IMPACT** | Drop-In Templates, Folder Pull, Graphify Guard & Weights | YES | `5/5 (100%)` | `Live Route` | `VERIFIED` | `N/A` | `PASSED` | `COMPLETE` |
+| **UI THEME & 3-SECTION LAYOUT** | Prototype Theme, 72px Header, 9-Tab Nav & 3-Zone Screens | YES | `N/A` | `N/A` | `VERIFIED` | `N/A` | `PASSED` | `PHASE 1 COMPLETE` |

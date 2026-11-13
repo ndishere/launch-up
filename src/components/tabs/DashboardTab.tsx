@@ -1,757 +1,672 @@
 import React, { useState } from 'react';
 import { 
   Users, FolderKanban, Rocket, DollarSign, Activity, Plus, 
-  ArrowUpRight, ArrowDownRight, AlertTriangle, AlertCircle, 
-  Info, CheckCircle2, Eye, MoreVertical, ChevronRight, ChevronDown,
-  Bot, Sparkles, Cpu, Radio, Network, Megaphone
+  ArrowUpRight, CheckCircle2, Eye, ChevronRight,
+  Sparkles, ExternalLink, ShieldCheck, Check, Clock, Phone, Mail,
+  MessageSquare, FileText, ArrowRight, Play
 } from 'lucide-react';
-import { useApp, PALETTE_DEFINITIONS } from '../../context/AppContext';
-import { Client } from '../../types';
+import { useApp } from '../../context/AppContext';
 import { SummaryMetricGrid, SummaryMetricCard } from '../common/SummaryMetricCard';
+import { ThreeZoneScreenLayout } from '../layout/ThreeZoneScreenLayout';
 import { HealthPulseModal } from '../modals/HealthPulseModal';
+
+interface DashboardSelectedItem {
+  type: 'follow-up' | 'approval' | 'client';
+  id: string;
+  title: string;
+  subtitle: string;
+  status: 'good' | 'warn' | 'live';
+  statusLabel: string;
+  clientName?: string;
+  domain?: string;
+  contact?: string;
+  previewUrl?: string;
+  details: string;
+  actionType: 'approve-gate' | 'open-preview' | 'send-message' | 'open-workspace';
+  gateStage?: string;
+}
 
 export const DashboardTab: React.FC = () => {
   const { 
     clients, 
     projects, 
-    alerts, 
-    agents,
-    slms,
-    intakes,
-    telemetryPackages,
-    palette,
     setCurrentTab, 
     setIsAddClientModalOpen,
-    setActiveCanvasProjectId,
     openProjectWorkspace,
     setSelectedClient,
-    triggerDeployment,
-    createManualBackup,
     meshStatuses,
     systemHealthPercent,
-    healthPulseLogs,
+    uiThemeStyle,
   } = useApp();
 
-  const currentPal = PALETTE_DEFINITIONS[palette] || PALETTE_DEFINITIONS.indigo;
-  const chartColors = currentPal.chart;
-
-  const [timeRange, setTimeRange] = useState<'7D' | '30D' | '90D'>('30D');
-  const [trafficFilter, setTrafficFilter] = useState('Last 30 Days');
+  const isPrototype = uiThemeStyle === 'prototype';
   const [isHealthPulseOpen, setIsHealthPulseOpen] = useState(false);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
+  // Metrics
   const activeClientsCount = clients.filter((c) => c.status === 'Active').length;
   const clientRetentionPct = clients.length > 0 ? Math.round((activeClientsCount / clients.length) * 100) : 100;
   const liveProjectsCount = projects.filter((p) => p.status === 'Live').length;
   const inProgressProjectsCount = projects.filter((p) => p.status === 'In Progress').length;
-  const activeProjectsCount = liveProjectsCount + inProgressProjectsCount;
-  const pendingProjectsCount = projects.filter((p) => p.status === 'Pending').length;
+  const totalMRR = clients.reduce((acc, c) => acc + (c.monthlySubscription || 0), 0);
   const healthyMeshCount = Object.values(meshStatuses).filter(Boolean).length;
-  const totalMeshCount = Math.max(Object.keys(meshStatuses).length, 10);
-  const recoveredCount = healthPulseLogs.filter((l) => l.status === 'RECOVERED').length;
-  const pulseStatusTone =
-    systemHealthPercent >= 80 ? 'good' : systemHealthPercent > 0 ? 'warn' : 'bad';
+  const pulseStatusTone = systemHealthPercent >= 80 ? 'good' : systemHealthPercent > 0 ? 'warn' : 'bad';
 
-  // Specific recent clients matching screenshot
-  const recentClients = [
+  // Today's Follow-Ups
+  const followUps = [
     {
-      clientName: 'Acme Co.',
-      domain: 'acme.co',
-      initial: 'A',
-      project: 'Marketing Website',
-      status: 'Live',
-      deployed: 'May 30, 2024',
-      health: '100%',
+      id: 'fu-1',
+      clientName: 'Fresh Bite Café',
+      domain: 'freshbite.cafe',
+      contact: '+91 98765 43210 (WhatsApp)',
+      previewUrl: 'http://localhost:3000/#preview-freshbite',
+      actionTitle: 'Opened preview link 2h ago',
+      actionDesc: 'Customer spent 4 minutes reviewing the 375px mobile viewport. Send personalized closing message.',
+      badge: 'High Intent',
+      badgeTone: 'good' as const,
     },
     {
-      clientName: 'TechFlow',
-      domain: 'techflow.io',
-      initial: 'T',
-      project: 'CRM Platform',
-      status: 'Live',
-      deployed: 'May 28, 2024',
-      health: '99.8%',
+      id: 'fu-2',
+      clientName: 'Smile Dental Clinic',
+      domain: 'smiledental.example',
+      contact: 'dr.sharma@smiledental.example',
+      previewUrl: 'http://localhost:3000/#preview-smiledental',
+      actionTitle: 'PRD synthesized & DPDP verified',
+      actionDesc: 'Requirements document signed by co-owner. Ready for Gate 2 final approval to trigger coding swarm.',
+      badge: 'Gate 2 Sign-off',
+      badgeTone: 'warn' as const,
     },
     {
-      clientName: 'GrowthLabs',
-      domain: 'growthlabs.ai',
-      initial: 'G',
-      project: 'Landing Page',
-      status: 'In Progress',
-      deployed: '—',
-      health: '—',
+      id: 'fu-3',
+      clientName: 'Apex Logistics',
+      domain: 'apexroute.example',
+      contact: 'ops@apexroute.example',
+      previewUrl: 'http://localhost:3000/#preview-apex',
+      actionTitle: 'Auto-healing SRE hotfix generated',
+      actionDesc: 'Incident SENTRY_5XX resolved on isolated branch feature/dev. Gate 5 PR awaits review.',
+      badge: 'Hotfix PR',
+      badgeTone: 'live' as const,
     },
     {
-      clientName: 'Visionary Inc.',
-      domain: 'visionary.com',
-      initial: 'V',
-      project: 'E-commerce Site',
-      status: 'Live',
-      deployed: 'May 25, 2024',
-      health: '100%',
-    },
-    {
-      clientName: 'BrandBoost',
-      domain: 'brandboost.io',
-      initial: 'B',
-      project: 'Marketing Website',
-      status: 'Pending',
-      deployed: '—',
-      health: '—',
+      id: 'fu-4',
+      clientName: 'Urban Fit Studio',
+      domain: 'urbanfit.example',
+      contact: '+1 415 555 0199',
+      previewUrl: 'http://localhost:3000/#preview-urbanfit',
+      actionTitle: 'Prototype ready across viewports',
+      actionDesc: 'Tailwind landing page built with 88% reusable code tokens. Share demo link with owner.',
+      badge: 'Ready for Review',
+      badgeTone: 'good' as const,
     },
   ];
 
+  // Approvals Inbox (Governance Gates)
+  const [approvedGateIds, setApprovedGateIds] = useState<Set<string>>(new Set());
+  const approvalItems = [
+    {
+      id: 'gate-prd-1',
+      title: 'Gate 2: Synthesized PRD & DDL',
+      project: 'Smile Dental Clinic Portal',
+      law: 'DPDP_INDIA & GDPR_EU',
+      author: 'CEO Agent & Tech Architect',
+      summary: 'Verified RLS enabled on 100% of tables, zero unmapped OpenAPI endpoints.',
+    },
+    {
+      id: 'gate-deploy-1',
+      title: 'Gate 3: Production Deploy Approval',
+      project: 'Acme SaaS Web App',
+      law: 'CCPA_US Compliant',
+      author: 'QA & SecOps Agent',
+      summary: 'Docker-compose container built, 0 vulnerability CVEs, 100% test pass rate.',
+    },
+    {
+      id: 'gate-hotfix-1',
+      title: 'Gate 5: Autonomous SRE Hotfix Merge',
+      project: 'Express Delivery Rates API',
+      law: 'Self-Healing Engine (MOD-09)',
+      author: 'Autonomous SRE Agent',
+      summary: 'Healed TypeError on rates calculator. Verified 0 regression on 90 concurrent requests.',
+    },
+  ];
+
+  // Active Selected Item in Column 2 (Dynamic Info Panel)
+  const [selectedItem, setSelectedItem] = useState<DashboardSelectedItem>({
+    type: 'follow-up',
+    id: followUps[0].id,
+    title: followUps[0].actionTitle,
+    subtitle: followUps[0].clientName,
+    status: followUps[0].badgeTone,
+    statusLabel: followUps[0].badge,
+    clientName: followUps[0].clientName,
+    domain: followUps[0].domain,
+    contact: followUps[0].contact,
+    previewUrl: followUps[0].previewUrl,
+    details: followUps[0].actionDesc,
+    actionType: 'send-message',
+  });
+
+  const handleApproveGate = (gateId: string) => {
+    setApprovedGateIds((prev) => new Set([...prev, gateId]));
+  };
+
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-200">
-      {/* Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-            Dashboard
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Monitor clients, active projects, and live pipeline health.
-          </p>
-        </div>
+    <>
+      <ThreeZoneScreenLayout
+        title="Agency Command Center"
+        subtitle="Autonomous 1-Person Software Factory: Real-time client pipelines, follow-ups, and approval inbox."
+        badge="Phase 1 Prototype"
+        isSidePanelOpen={isSidePanelOpen}
+        onToggleSidePanel={() => setIsSidePanelOpen((prev) => !prev)}
+        sidePanelTitle={selectedItem.subtitle || 'Details & Actions'}
+        sidePanelSubtitle={selectedItem.title}
+        headerActions={
+          <>
+            <button
+              onClick={() => setIsHealthPulseOpen(true)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition-colors cursor-pointer ${
+                isPrototype
+                  ? 'bg-[var(--surf)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surf2)]'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <Activity className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Mesh Health ({healthyMeshCount}/10)</span>
+            </button>
 
-        <div className="flex items-center gap-2">
-          <button
-            id="add-client-dashboard-btn"
-            onClick={() => setIsAddClientModalOpen(true)}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add Client</span>
-          </button>
-        </div>
-      </div>
+            <button
+              id="dashboard-add-client-btn"
+              onClick={() => setIsAddClientModalOpen(true)}
+              className="btn pri btn-pri px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer hover:brightness-110"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+ Add Client</span>
+            </button>
+          </>
+        }
+        summaryMetrics={
+          <SummaryMetricGrid>
+            <SummaryMetricCard
+              title="Active Retainers"
+              primaryValue={activeClientsCount}
+              subtitle={`${clientRetentionPct}% Retention`}
+              status="good"
+            />
+            <SummaryMetricCard
+              title="Live Software"
+              primaryValue={liveProjectsCount}
+              subtitle={`${inProgressProjectsCount} In Build Swarm`}
+              status="live"
+            />
+            <SummaryMetricCard
+              title="Monthly Revenue"
+              primaryValue={`$${totalMRR.toLocaleString()}/mo`}
+              subtitle="Gross Retainers"
+              status="good"
+            />
+            <SummaryMetricCard
+              title="Actions Pending"
+              primaryValue={followUps.length + (approvalItems.length - approvedGateIds.size)}
+              subtitle="Follow-ups & Gates"
+              status="warn"
+            />
+            <SummaryMetricCard
+              title="Agency Health"
+              primaryValue={`${systemHealthPercent}%`}
+              subtitle={`${healthyMeshCount}/10 Services Live`}
+              status={pulseStatusTone}
+              onClick={() => setIsHealthPulseOpen(true)}
+            />
+          </SummaryMetricGrid>
+        }
+        sidePanelContent={
+          <div className="space-y-4">
+            {/* Status Pill & Title */}
+            <div className="flex items-center justify-between gap-2">
+              <span
+                className={
+                  selectedItem.status === 'good'
+                    ? 'chip g'
+                    : selectedItem.status === 'warn'
+                    ? 'chip a'
+                    : 'chip b'
+                }
+              >
+                {selectedItem.statusLabel}
+              </span>
+              <span className="text-[11px] text-[var(--mut)]">Instant Action</span>
+            </div>
 
-      {/* Standardized 5-Cell Summary Bar */}
-      <SummaryMetricGrid>
-        <SummaryMetricCard
-          title="Total Clients"
-          primaryValue={clients.length}
-          subtitle="+12% growth this month"
-          status="good"
-        />
-        <SummaryMetricCard
-          title="Active Clients"
-          primaryValue={activeClientsCount}
-          subtitle={`${clientRetentionPct}% active retention`}
-          status="good"
-        />
-        <SummaryMetricCard
-          title="Total Projects"
-          primaryValue={projects.length}
-          subtitle={`${pendingProjectsCount} queued in pipeline`}
-          status="live"
-        />
-        <SummaryMetricCard
-          title="Active Projects"
-          primaryValue={activeProjectsCount}
-          subtitle={`${liveProjectsCount} Live • ${inProgressProjectsCount} Building`}
-          status="live"
-        />
-        <SummaryMetricCard
-          id="dashboard-pulse-health-card"
-          title="System & Pulse Health"
-          primaryValue={`${systemHealthPercent}% Healthy`}
-          subtitle={
-            recoveredCount > 0
-              ? `${healthyMeshCount}/${totalMeshCount} Mesh • ${recoveredCount} Self-Healed`
-              : `${healthyMeshCount}/${totalMeshCount} Mesh • Max 3x Heal`
-          }
-          secondaryCaption="External APIs: Checked on Project Start"
-          status={pulseStatusTone}
-          onClick={() => setIsHealthPulseOpen(true)}
-        />
-      </SummaryMetricGrid>
+            <div>
+              <h4 className="text-sm font-bold text-[var(--ink)] leading-snug">
+                {selectedItem.title}
+              </h4>
+              <p className="text-xs text-[var(--mut)] mt-1.5 leading-relaxed">
+                {selectedItem.details}
+              </p>
+            </div>
 
-      <HealthPulseModal
-        isOpen={isHealthPulseOpen}
-        onClose={() => setIsHealthPulseOpen(false)}
-      />
+            {/* Client / Target Details */}
+            {selectedItem.clientName && (
+              <div
+                className={`p-3 rounded-xl border space-y-2 text-xs ${
+                  isPrototype
+                    ? 'bg-[var(--surf2)] border-[var(--line)]'
+                    : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--mut)]">Client</span>
+                  <span className="font-semibold text-[var(--ink)]">{selectedItem.clientName}</span>
+                </div>
+                {selectedItem.domain && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--mut)]">Domain</span>
+                    <span className="font-mono text-[11px] text-[var(--acc)]">{selectedItem.domain}</span>
+                  </div>
+                )}
+                {selectedItem.contact && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--mut)]">Contact</span>
+                    <span className="text-[var(--ink2)]">{selectedItem.contact}</span>
+                  </div>
+                )}
+              </div>
+            )}
 
-      {/* Middle Row: Projects Overview (Stacked Area Chart) + Deployment Status (Donut) + System Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Projects Overview - Stacked Area Chart (6 cols) */}
-        <div className="lg:col-span-6 bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Projects Overview
-              </h2>
-
-              {/* Time Range Selector */}
-              <div className="inline-flex p-1 bg-slate-100 dark:bg-slate-900/80 rounded-lg text-xs font-medium border border-slate-200/60 dark:border-slate-800">
-                {(['7D', '30D', '90D'] as const).map((r) => (
+            {/* Action Buttons */}
+            <div className="space-y-2 pt-2">
+              {selectedItem.type === 'approval' ? (
+                <button
+                  onClick={() => handleApproveGate(selectedItem.id)}
+                  disabled={approvedGateIds.has(selectedItem.id)}
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-all ${
+                    approvedGateIds.has(selectedItem.id)
+                      ? 'bg-emerald-600 text-white cursor-default'
+                      : 'btn pri btn-pri hover:brightness-110 cursor-pointer'
+                  }`}
+                >
+                  <Check className="w-4 h-4" />
+                  <span>
+                    {approvedGateIds.has(selectedItem.id)
+                      ? 'Gate Approved Successfully'
+                      : 'Approve Gate & Advance Swarm'}
+                  </span>
+                </button>
+              ) : (
+                <>
                   <button
-                    key={r}
-                    onClick={() => setTimeRange(r)}
-                    className={`px-2.5 py-1 rounded-md transition-colors ${
-                      timeRange === r
-                        ? 'bg-indigo-600 text-white font-semibold'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    onClick={() => {
+                      if (projects.length > 0) {
+                        openProjectWorkspace(projects[0].id);
+                      } else {
+                        setCurrentTab('projects');
+                      }
+                    }}
+                    className="w-full btn pri btn-pri py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer hover:brightness-110"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Open Autonomous Workspace</span>
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentTab('preview-studio')}
+                    className={`w-full py-2 px-4 rounded-xl text-xs font-semibold border flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+                      isPrototype
+                        ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)] text-[var(--ink)]'
+                        : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
                     }`}
                   >
-                    {r}
+                    <Eye className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Preview Multi-Viewport (375px–1920px)</span>
                   </button>
-                ))}
-              </div>
-            </div>
+                </>
+              )}
 
-            {/* Legend */}
-            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-600 dark:text-slate-400 mb-6">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chartColors.primary }} />
-                <span>Live</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chartColors.secondary }} />
-                <span>In Progress</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chartColors.tertiary }} />
-                <span>Pending</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-                <span>On Hold</span>
-              </div>
-            </div>
-
-            {/* Stacked Area Chart Container */}
-            <div className="relative h-56 w-full">
-              {/* Y-Axis labels */}
-              <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[11px] text-slate-400 select-none">
-                <span>80</span>
-                <span>60</span>
-                <span>40</span>
-                <span>20</span>
-                <span>0</span>
-              </div>
-
-              {/* Chart SVG */}
-              <div className="ml-7 h-full flex flex-col justify-between">
-                <svg className="w-full h-48 overflow-visible" viewBox="0 0 500 180" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="areaLive" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={chartColors.primary} stopOpacity="0.45" />
-                      <stop offset="100%" stopColor={chartColors.primary} stopOpacity="0.02" />
-                    </linearGradient>
-                    <linearGradient id="areaProgress" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={chartColors.secondary} stopOpacity="0.35" />
-                      <stop offset="100%" stopColor={chartColors.secondary} stopOpacity="0.01" />
-                    </linearGradient>
-                    <linearGradient id="areaPending" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={chartColors.tertiary} stopOpacity="0.25" />
-                      <stop offset="100%" stopColor={chartColors.tertiary} stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Horizontal Grid lines */}
-                  <line x1="0" y1="0" x2="500" y2="0" stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" strokeDasharray="3 3" />
-                  <line x1="0" y1="45" x2="500" y2="45" stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" strokeDasharray="3 3" />
-                  <line x1="0" y1="90" x2="500" y2="90" stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" strokeDasharray="3 3" />
-                  <line x1="0" y1="135" x2="500" y2="135" stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" strokeDasharray="3 3" />
-                  <line x1="0" y1="180" x2="500" y2="180" stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
-
-                  {/* Stacked Area: Live top layer */}
-                  <path
-                    d="M 0 130 C 70 120, 120 95, 170 85 C 220 75, 270 90, 330 70 C 390 50, 440 40, 500 25 L 500 180 L 0 180 Z"
-                    fill="url(#areaLive)"
-                  />
-                  <path
-                    d="M 0 130 C 70 120, 120 95, 170 85 C 220 75, 270 90, 330 70 C 390 50, 440 40, 500 25"
-                    fill="none"
-                    stroke={chartColors.primary}
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Layer 2: In Progress */}
-                  <path
-                    d="M 0 148 C 80 142, 130 125, 180 118 C 240 110, 290 120, 340 105 C 400 90, 450 78, 500 68 L 500 180 L 0 180 Z"
-                    fill="url(#areaProgress)"
-                  />
-                  <path
-                    d="M 0 148 C 80 142, 130 125, 180 118 C 240 110, 290 120, 340 105 C 400 90, 450 78, 500 68"
-                    fill="none"
-                    stroke={chartColors.secondary}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Layer 3: Pending */}
-                  <path
-                    d="M 0 165 C 90 162, 140 152, 190 148 C 250 144, 300 150, 350 140 C 410 130, 460 125, 500 115 L 500 180 L 0 180 Z"
-                    fill="url(#areaPending)"
-                  />
-                  <path
-                    d="M 0 165 C 90 162, 140 152, 190 148 C 250 144, 300 150, 350 140 C 410 130, 460 125, 500 115"
-                    fill="none"
-                    stroke={chartColors.tertiary}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-
-                {/* X-Axis dates */}
-                <div className="flex justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <span>May 6</span>
-                  <span>May 13</span>
-                  <span>May 20</span>
-                  <span>May 27</span>
-                  <span>Jun 3</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Deployment Status - Donut Chart (3 cols) */}
-        <div className="lg:col-span-3 bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Deployment Status
-              </h2>
-              <span className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 rounded-md inline-flex items-center gap-1 border border-emerald-200/60 dark:border-emerald-800/60 whitespace-nowrap">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                100% Passing
-              </span>
-            </div>
-
-            {/* Donut Chart - Centered & Responsive */}
-            <div className="py-2">
-              <div className="relative w-32 h-32 mx-auto flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                  {/* Background Circle */}
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="38" 
-                    fill="transparent" 
-                    stroke="currentColor" 
-                    className="text-slate-100 dark:text-slate-800" 
-                    strokeWidth="11" 
-                  />
-                  
-                  {/* Segment: Live (55% = 44/80) -> strokeDasharray="131.3 107.5" offset 0 */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke={chartColors.primary}
-                    strokeWidth="11"
-                    strokeDasharray="131.3 107.5"
-                    strokeDashoffset="0"
-                  />
-                  {/* Segment: In Progress (30% = 24/80) -> 71.6 167.2 offset -131.3 */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke={chartColors.secondary}
-                    strokeWidth="11"
-                    strokeDasharray="71.6 167.2"
-                    strokeDashoffset="-131.3"
-                  />
-                  {/* Segment: Pending (15% = 12/80) -> 35.8 203 offset -202.9 */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="38"
-                    fill="transparent"
-                    stroke={chartColors.tertiary}
-                    strokeWidth="11"
-                    strokeDasharray="35.8 203"
-                    strokeDashoffset="-202.9"
-                  />
-                </svg>
-
-                {/* Inner Donut Text: 80 Total */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-2xl font-bold text-slate-900 dark:text-white leading-none tracking-tight">
-                    80
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-medium mt-1">
-                    Total
-                  </span>
-                </div>
-              </div>
-
-              {/* Legend - Full width, pristine alignment, zero wrapping */}
-              <div className="space-y-2 text-xs w-full mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <div className="flex items-center justify-between py-0.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: chartColors.primary }} />
-                    <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">Live</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                    <span className="font-semibold text-slate-900 dark:text-white tabular-nums">44</span>
-                    <span className="text-[11px] text-slate-400 tabular-nums">(55%)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between py-0.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: chartColors.secondary }} />
-                    <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">In Progress</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                    <span className="font-semibold text-slate-900 dark:text-white tabular-nums">24</span>
-                    <span className="text-[11px] text-slate-400 tabular-nums">(30%)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between py-0.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: chartColors.tertiary }} />
-                    <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">Pending</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                    <span className="font-semibold text-slate-900 dark:text-white tabular-nums">12</span>
-                    <span className="text-[11px] text-slate-400 tabular-nums">(15%)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between py-0.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                    <span className="text-slate-600 dark:text-slate-300 whitespace-nowrap">Failed</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">0</span>
-                    <span className="text-[11px] text-emerald-600/80 dark:text-emerald-400/80 font-medium tabular-nums">(0% · Clean)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setCurrentTab('deployments')}
-            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-1 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800"
-          >
-            <span>View All Deployments</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* System Alerts (3 cols) */}
-        <div className="lg:col-span-3 bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                System Alerts
-              </h2>
-              <button
-                onClick={() => setCurrentTab('alerts')}
-                className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                View All
-              </button>
-            </div>
-
-            {/* Alert List items matching screenshot */}
-            <div className="space-y-4">
-              {/* Alert 1 */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      Deployment Succeeded
-                    </p>
-                    <span className="text-[10px] text-slate-400">Just now</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
-                    TechFlow CRM v2.8.2 deployed & verified healthy
-                  </p>
-                </div>
-              </div>
-
-              {/* Alert 2 */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
-                  <AlertTriangle className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      High Response Time
-                    </p>
-                    <span className="text-[10px] text-slate-400">15m ago</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
-                    GrowthLabs website response time is above 2s
-                  </p>
-                </div>
-              </div>
-
-              {/* Alert 3 */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
-                  <Info className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      SSL Certificate Expiring
-                    </p>
-                    <span className="text-[10px] text-slate-400">1h ago</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
-                    Acme Co. SSL certificate expires in 7 days
-                  </p>
-                </div>
-              </div>
-
-              {/* Alert 4 */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      Backup Completed
-                    </p>
-                    <span className="text-[10px] text-slate-400">2h ago</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
-                    Daily backup completed successfully
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Row: Recent Clients Table (8 cols) + Traffic Overview (4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Recent Clients Table */}
-        <div className="lg:col-span-8 bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Recent Clients
-              </h2>
               <button
                 onClick={() => setCurrentTab('clients')}
-                className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                className="w-full text-center text-xs text-[var(--acc)] font-medium hover:underline py-1 cursor-pointer"
               >
-                <span>View All Clients</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                View all client records →
               </button>
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    <th className="pb-3 pl-1">Client</th>
-                    <th className="pb-3">Project</th>
-                    <th className="pb-3">Status</th>
-                    <th className="pb-3">Deployed</th>
-                    <th className="pb-3">Health</th>
-                    <th className="pb-3 text-right pr-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                  {recentClients.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors">
-                      {/* Client info */}
-                      <td className="py-3.5 pl-1">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700 shrink-0">
-                            {item.initial}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-900 dark:text-white leading-tight">
-                              {item.clientName}
-                            </p>
-                            <p className="text-[11px] text-slate-400 leading-tight">
-                              {item.domain}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Project */}
-                      <td className="py-3.5 font-medium text-slate-700 dark:text-slate-300">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const matched = projects.find((p) => p.name === item.project) || projects[0];
-                            if (matched) openProjectWorkspace(matched.id);
-                          }}
-                          className="text-left hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline transition-colors"
-                        >
-                          {item.project}
-                        </button>
-                      </td>
-
-                      {/* Status badge */}
-                      <td className="py-3.5">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium ${
-                            item.status === 'Live'
-                              ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60'
-                              : item.status === 'In Progress'
-                              ? 'bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/60'
-                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
-                          }`}
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-
-                      {/* Deployed */}
-                      <td className="py-3.5 text-slate-500 dark:text-slate-400">
-                        {item.deployed}
-                      </td>
-
-                      {/* Health */}
-                      <td className="py-3.5">
-                        {item.health !== '—' ? (
-                          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                            <span>{item.health}</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">—</span>
-                        )}
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-3.5 text-right pr-2">
-                        <div className="inline-flex items-center gap-1.5 text-slate-400">
-                          <button
-                            onClick={() => {
-                              const found = clients.find(c => c.name === item.clientName);
-                              if (found) setSelectedClient(found);
-                              setCurrentTab('clients');
-                            }}
-                            className="p-1.5 rounded-md hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                            title="View Client Details"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setCurrentTab('projects')}
-                            className="p-1.5 rounded-md hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                            title="More actions"
-                          >
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          </div>
+        }
+      >
+        {/* Section 2: Main Content Area (Column 1) */}
+        
+        {/* Card 1: Today's Follow-Ups */}
+        <div
+          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
+            isPrototype
+              ? 'bg-[var(--surf)] border-[var(--line)]'
+              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+                <span>Today&apos;s Follow-Ups</span>
+                <span className="chip a text-[10px]">{followUps.length} actions</span>
+              </h2>
+              <p className="text-xs text-[var(--mut)] mt-0.5">
+                High-intent leads and clients awaiting communication or review.
+              </p>
             </div>
+            <button
+              onClick={() => setCurrentTab('clients')}
+              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+            >
+              View pipeline
+            </button>
+          </div>
+
+          <div className="space-y-2.5">
+            {followUps.map((fu) => {
+              const isSelected = selectedItem.id === fu.id;
+              return (
+                <div
+                  key={fu.id}
+                  onClick={() =>
+                    setSelectedItem({
+                      type: 'follow-up',
+                      id: fu.id,
+                      title: fu.actionTitle,
+                      subtitle: fu.clientName,
+                      status: fu.badgeTone,
+                      statusLabel: fu.badge,
+                      clientName: fu.clientName,
+                      domain: fu.domain,
+                      contact: fu.contact,
+                      previewUrl: fu.previewUrl,
+                      details: fu.actionDesc,
+                      actionType: 'send-message',
+                    })
+                  }
+                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    isSelected
+                      ? isPrototype
+                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-1 ring-[var(--acc)]'
+                        : 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
+                      : isPrototype
+                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)] hover:border-[var(--acc)]'
+                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-xs text-[var(--ink)]">{fu.clientName}</span>
+                      <span className="font-mono text-[11px] text-[var(--mut)]">({fu.domain})</span>
+                      <span
+                        className={
+                          fu.badgeTone === 'good'
+                            ? 'chip g text-[10px]'
+                            : fu.badgeTone === 'warn'
+                            ? 'chip a text-[10px]'
+                            : 'chip b text-[10px]'
+                        }
+                      >
+                        {fu.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--ink2)] font-medium mt-1">
+                      {fu.actionTitle}
+                    </p>
+                    <p className="text-[11px] text-[var(--mut)] mt-0.5 line-clamp-1">
+                      {fu.actionDesc}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-[var(--acc)] font-semibold flex items-center gap-1 group-hover:underline">
+                      <span>Take Action</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Traffic Overview */}
-        <div className="lg:col-span-4 bg-white dark:bg-[#111318] rounded-xl p-6 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Traffic Overview
-              </h2>
-
-              <div className="relative">
-                <button className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 font-medium px-2 py-1 rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
-                  <span>{trafficFilter}</span>
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-              </div>
+        {/* Card 2: Funnel This Week (Found -> Prototype -> Pitched -> Won) */}
+        <div
+          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
+            isPrototype
+              ? 'bg-[var(--surf)] border-[var(--line)]'
+              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--ink)]">Funnel This Week</h2>
+              <p className="text-xs text-[var(--mut)] mt-0.5">
+                Conversion progress across the 1-Person autonomous pipeline.
+              </p>
             </div>
+            <span className="chip g text-xs font-bold">33.3% Close Rate</span>
+          </div>
 
-            {/* Total Visitors Big Number */}
-            <div className="mb-4">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Total Visitors
-              </span>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  23,456
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { stage: '1. Found Leads', count: 24, percent: 100, barColor: 'bg-indigo-500' },
+              { stage: '2. Prototypes Ready', count: 18, percent: 75, barColor: 'bg-sky-500' },
+              { stage: '3. Pitched Outreach', count: 12, percent: 50, barColor: 'bg-amber-500' },
+              { stage: '4. Won Retainers', count: 8, percent: 33, barColor: 'bg-emerald-500' },
+            ].map((step, idx) => (
+              <div
+                key={step.stage}
+                className={`p-3.5 rounded-xl border ${
+                  isPrototype
+                    ? 'bg-[var(--surf2)] border-[var(--line)]'
+                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800'
+                }`}
+              >
+                <span className="text-[11px] font-medium text-[var(--mut)] block">
+                  {step.stage}
                 </span>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  ↑ 18.6%
-                </span>
-              </div>
-            </div>
-
-            {/* Spline Area Line Chart */}
-            <div className="relative h-28 w-full my-2">
-              <div className="absolute left-0 top-0 bottom-4 flex flex-col justify-between text-[10px] text-slate-400">
-                <span>15K</span>
-                <span>10K</span>
-                <span>5K</span>
-                <span>0</span>
-              </div>
-              <div className="ml-7 h-full flex flex-col justify-between">
-                <svg className="w-full h-20 overflow-visible" viewBox="0 0 300 70" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="trafficGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={chartColors.traffic} stopOpacity="0.4" />
-                      <stop offset="100%" stopColor={chartColors.traffic} stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M 0 55 C 30 50, 45 35, 75 38 C 105 42, 130 15, 160 22 C 190 28, 220 50, 250 40 C 275 32, 290 10, 300 15 L 300 70 L 0 70 Z"
-                    fill="url(#trafficGrad)"
+                <div className="flex items-baseline justify-between mt-1.5">
+                  <span className="text-xl font-bold text-[var(--ink)] tabular-nums">
+                    {step.count}
+                  </span>
+                  <span className="text-[11px] font-semibold text-[var(--mut)]">
+                    {step.percent}%
+                  </span>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2.5 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${step.barColor}`}
+                    style={{ width: `${step.percent}%` }}
                   />
-                  <path
-                    d="M 0 55 C 30 50, 45 35, 75 38 C 105 42, 130 15, 160 22 C 190 28, 220 50, 250 40 C 275 32, 290 10, 300 15"
-                    fill="none"
-                    stroke={chartColors.traffic}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-
-                {/* X-axis dates */}
-                <div className="flex justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
-                  <span>May 6</span>
-                  <span>May 13</span>
-                  <span>May 20</span>
-                  <span>May 27</span>
-                  <span>Jun 3</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* 3 stats matching screenshot bottom */}
-          <div className="grid grid-cols-3 gap-2 pt-4 border-t border-slate-100 dark:border-slate-800 text-left">
-            <div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">Page Views</p>
-              <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">56,789</p>
-              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">↑ 16.4%</p>
-            </div>
-            <div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">Unique Visitors</p>
-              <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">23,456</p>
-              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">↑ 18.6%</p>
-            </div>
-            <div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">Bounce Rate</p>
-              <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">32.4%</p>
-              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">↓ 4.3%</p>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
-    </div>
+
+        {/* Card 3: Approvals Inbox (Governance Gates) */}
+        <div
+          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
+            isPrototype
+              ? 'bg-[var(--surf)] border-[var(--line)]'
+              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--ink)] flex items-center gap-2">
+                <span>Approvals Inbox</span>
+                <span className="chip b text-[10px]">
+                  {approvalItems.length - approvedGateIds.size} pending
+                </span>
+              </h2>
+              <p className="text-xs text-[var(--mut)] mt-0.5">
+                Human-in-the-loop Governance Gates (MOD-10) guarding quality & security before production.
+              </p>
+            </div>
+            <button
+              onClick={() => setCurrentTab('team')}
+              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+            >
+              All Gates & RBAC
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {approvalItems.map((gate) => {
+              const isApproved = approvedGateIds.has(gate.id);
+              const isSelected = selectedItem.id === gate.id;
+
+              return (
+                <div
+                  key={gate.id}
+                  onClick={() =>
+                    setSelectedItem({
+                      type: 'approval',
+                      id: gate.id,
+                      title: gate.title,
+                      subtitle: gate.project,
+                      status: isApproved ? 'good' : 'warn',
+                      statusLabel: isApproved ? 'Approved' : 'Awaiting Decision',
+                      details: gate.summary,
+                      actionType: 'approve-gate',
+                      gateStage: gate.law,
+                    })
+                  }
+                  className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    isSelected
+                      ? isPrototype
+                        ? 'border-[var(--acc)] bg-[var(--surf2)] shadow-xs ring-1 ring-[var(--acc)]'
+                        : 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30'
+                      : isPrototype
+                      ? 'border-[var(--line)] bg-[var(--surf)] hover:bg-[var(--surf2)]'
+                      : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-xs text-[var(--ink)]">{gate.title}</span>
+                      <span className="chip b text-[10px]">{gate.law}</span>
+                      {isApproved && <span className="chip g text-[10px]">Approved</span>}
+                    </div>
+                    <p className="text-xs text-[var(--ink2)] font-medium mt-1">
+                      Project: {gate.project}
+                    </p>
+                    <p className="text-[11px] text-[var(--mut)] mt-0.5">
+                      {gate.summary}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    {isApproved ? (
+                      <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                        <Check className="w-4 h-4" />
+                        <span>Approved</span>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleApproveGate(gate.id);
+                        }}
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Approve</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Card 4: Recent Active Clients Quick View */}
+        <div
+          className={`rounded-2xl border p-5 shadow-xs transition-colors ${
+            isPrototype
+              ? 'bg-[var(--surf)] border-[var(--line)]'
+              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--ink)]">Active Client Retainers</h2>
+              <p className="text-xs text-[var(--mut)] mt-0.5">
+                Current onboarded businesses and live software deployments.
+              </p>
+            </div>
+            <button
+              onClick={() => setCurrentTab('clients')}
+              className="text-xs text-[var(--acc)] font-semibold hover:underline cursor-pointer"
+            >
+              Open Clients View →
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-[var(--line)] text-[var(--mut)] font-semibold">
+                  <th className="pb-2.5">Business</th>
+                  <th className="pb-2.5">Domain</th>
+                  <th className="pb-2.5">Tier</th>
+                  <th className="pb-2.5">Retainer</th>
+                  <th className="pb-2.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--line)]">
+                {clients.slice(0, 5).map((client) => (
+                  <tr
+                    key={client.id}
+                    onClick={() => {
+                      setSelectedClient(client);
+                      setSelectedItem({
+                        type: 'client',
+                        id: client.id,
+                        title: `Client Profile: ${client.name}`,
+                        subtitle: client.name,
+                        status: client.status === 'Active' ? 'good' : 'warn',
+                        statusLabel: client.status,
+                        clientName: client.name,
+                        domain: client.domain,
+                        contact: client.email,
+                        details: `Subscribed on ${client.tier} tier for $${client.monthlySubscription}/mo. Linked to ${projects.filter(p => p.clientIds?.includes(client.id)).length} projects.`,
+                        actionType: 'open-workspace',
+                      });
+                    }}
+                    className="hover:bg-[var(--surf2)] transition-colors cursor-pointer group"
+                  >
+                    <td className="py-3 font-semibold text-[var(--ink)]">
+                      {client.name}
+                    </td>
+                    <td className="py-3 font-mono text-[11px] text-[var(--mut)]">
+                      {client.domain}
+                    </td>
+                    <td className="py-3">
+                      <span className="chip b text-[10px]">{client.tier}</span>
+                    </td>
+                    <td className="py-3 font-bold text-[var(--ink)] tabular-nums">
+                      ${client.monthlySubscription}/mo
+                    </td>
+                    <td className="py-3 text-right">
+                      <span className="text-[var(--acc)] font-semibold text-xs group-hover:underline">
+                        Details →
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ThreeZoneScreenLayout>
+
+      {/* Health Pulse Modal */}
+      {isHealthPulseOpen && (
+        <HealthPulseModal isOpen={isHealthPulseOpen} onClose={() => setIsHealthPulseOpen(false)} />
+      )}
+    </>
   );
 };

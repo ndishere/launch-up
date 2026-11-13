@@ -1,6 +1,7 @@
 export type ThemeMode = 'dark' | 'light' | 'system';
 export type ColorPalette = 'indigo' | 'cyan' | 'emerald' | 'amber' | 'rose';
 export type Theme = 'dark' | 'light' | 'system' | 'indigo' | 'cyan' | 'emerald' | 'amber' | 'rose' | 'midnight-cyber' | 'emerald-matrix' | 'sunset-amber' | 'nordic-frost';
+export type UiThemeStyle = 'prototype' | 'classic';
 
 export type TabId = 
   | 'dashboard'

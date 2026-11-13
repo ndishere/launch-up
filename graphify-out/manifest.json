@@ -150,9 +150,9 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1794383561.1877618,
-    "seen": 1794383713.5244877,
-    "ast_hash": "5d9a7775f13450996e430729a8384106",
+    "mtime": 1794570035.0086434,
+    "seen": 1794570088.3800132,
+    "ast_hash": "1cd569f874d676ef039bb118bbc68a7a",
     "semantic_hash": ""
   },
   "src/components/common/ScreenAnalyticsHeader.tsx": {
@@ -162,15 +162,15 @@
     "semantic_hash": ""
   },
   "src/components/layout/Header.tsx": {
-    "mtime": 1794378886.7548594,
-    "seen": 1794381073.8233726,
-    "ast_hash": "b139f38282a0a0c3bc5130c7ffb6c481",
+    "mtime": 1794570035.5731258,
+    "seen": 1794570088.3800387,
+    "ast_hash": "afbaee400d6b0a4b08557aba653614b2",
     "semantic_hash": ""
   },
   "src/components/layout/Sidebar.tsx": {
-    "mtime": 1794378886.8670442,
-    "seen": 1794381073.8233762,
-    "ast_hash": "bdb72db48965865fc0803560d7e247a9",
+    "mtime": 1794570035.7713373,
+    "seen": 1794570088.3800414,
+    "ast_hash": "fefd5bd9048e089462fd3a936d05cd11",
     "semantic_hash": ""
   },
   "src/components/modals/AddClientModal.tsx": {
@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   "src/components/tabs/ClientsTab.tsx": {
-    "mtime": 1794378888.319227,
-    "seen": 1794381073.82673,
-    "ast_hash": "cd62382683a585c0c1da33370d519919",
+    "mtime": 1794570036.201453,
+    "seen": 1794570088.3800817,
+    "ast_hash": "116f144d5f310dbc7253c0dcd0743790",
     "semantic_hash": ""
   },
   "src/components/tabs/ConnectedAppsTab.tsx": {
@@ -252,9 +252,9 @@
     "semantic_hash": ""
   },
   "src/components/tabs/DashboardTab.tsx": {
-    "mtime": 1794383823.442274,
-    "seen": 1794385098.2898781,
-    "ast_hash": "5a019bbd32a48ac68383c328229329af",
+    "mtime": 1794570036.6273234,
+    "seen": 1794570088.380086,
+    "ast_hash": "d001b75555b3ec59fde80d00877e973d",
     "semantic_hash": ""
   },
   "src/components/tabs/DeploymentsTab.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "src/components/tabs/SettingsTab.tsx": {
-    "mtime": 1794398966.137955,
-    "seen": 1794399106.4119487,
-    "ast_hash": "1d5d2aea73a9a52de2de3a692068fa25",
+    "mtime": 1794570036.9556668,
+    "seen": 1794570088.3801131,
+    "ast_hash": "c42a094e5ad487fb04fc8f6c5ffd39c6",
     "semantic_hash": ""
   },
   "src/components/tabs/SystemDesignTab.tsx": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "src/context/AppContext.tsx": {
-    "mtime": 1794416388.2686806,
-    "seen": 1794416507.5438244,
-    "ast_hash": "bba50a7dd31fbe0cfc718d8af41c7616",
+    "mtime": 1794570037.2753837,
+    "seen": 1794570088.3801432,
+    "ast_hash": "ffab777b08919583fe5ad9add6265803",
     "semantic_hash": ""
   },
   "src/data/mockData.ts": {
@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1794415658.633324,
-    "seen": 1794416507.5438566,
-    "ast_hash": "0481770274929664efd44922143d5ff5",
+    "mtime": 1794569488.5409286,
+    "seen": 1794570088.38018,
+    "ast_hash": "5ad7573c2b9c5499dfdfc1a3afe531bf",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "checkpoint_handoff_state.md": {
-    "mtime": 1794404537.7477093,
-    "seen": 1794416507.5440276,
-    "ast_hash": "a5137fe2ca0ca88fc81c5974d8f4a80d",
+    "mtime": 1794416682.8282952,
+    "seen": 1794570088.3803723,
+    "ast_hash": "2212f27b21868870eb6037caed7f2733",
     "semantic_hash": ""
   },
   "contracts/module_input_output_contracts.md": {
@@ -1080,9 +1080,9 @@
     "semantic_hash": ""
   },
   "src/components/common/SummaryMetricCard.tsx": {
-    "mtime": 1794380104.6141121,
-    "seen": 1794381073.8233676,
-    "ast_hash": "023a3f608996334dfdd31c24d6357a9e",
+    "mtime": 1794570035.3009272,
+    "seen": 1794570088.3800333,
+    "ast_hash": "7b839b2c7c35855a6cfa60983e4107d0",
     "semantic_hash": ""
   },
   "src/components/modals/GenerateLeadModal.tsx": {
@@ -1755,6 +1755,12 @@
     "mtime": 1794415626.7612343,
     "seen": 1794416507.5440485,
     "ast_hash": "1036baed1b6dc86fdeaae44f1b9877e2",
+    "semantic_hash": ""
+  },
+  "src/components/layout/ThreeZoneScreenLayout.tsx": {
+    "mtime": 1794569658.7159257,
+    "seen": 1794570088.3800447,
+    "ast_hash": "5fae526be453dc52696ca832935a077e",
     "semantic_hash": ""
   },
   "package-lock.json": {

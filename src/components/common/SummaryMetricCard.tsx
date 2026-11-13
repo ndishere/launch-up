@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 export type MetricStatusTone = 'good' | 'live' | 'warn' | 'bad' | 'neutral';
 
@@ -32,13 +33,22 @@ const BADGE_STYLES: Record<MetricStatusTone, string> = {
 export const SummaryMetricGrid: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = '',
-}) => (
-  <div
-    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80 dark:divide-slate-800 ${className}`}
-  >
-    {children}
-  </div>
-);
+}) => {
+  const { uiThemeStyle } = useApp();
+  const isPrototype = uiThemeStyle === 'prototype';
+
+  return (
+    <div
+      className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 rounded-2xl shadow-xs overflow-hidden transition-colors ${
+        isPrototype
+          ? 'bg-[var(--surf)] border border-[var(--line)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--line)]'
+          : 'border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/90 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80 dark:divide-slate-800'
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
   title,
@@ -49,15 +59,34 @@ export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
   onClick,
   id,
 }) => {
+  const { uiThemeStyle } = useApp();
+  const isPrototype = uiThemeStyle === 'prototype';
+
   const interactiveClasses = onClick
-    ? 'cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500/30 text-left group'
+    ? isPrototype
+      ? 'cursor-pointer hover:bg-[var(--surf2)] focus:outline-none text-left group'
+      : 'cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500/30 text-left group'
     : '';
+
+  const getBadgeStyle = () => {
+    if (isPrototype) {
+      if (status === 'good') return 'chip g';
+      if (status === 'warn' || status === 'bad') return 'chip a';
+      if (status === 'live') return 'chip b';
+      return 'chip text-[var(--mut)] bg-[var(--surf2)] border border-[var(--line)]';
+    }
+    return `inline-block max-w-full truncate text-[11px] font-medium px-2 py-0.5 rounded-md border ${BADGE_STYLES[status]}`;
+  };
 
   const content = (
     <>
       {/* Top Row: Title + Status Dot */}
       <div className="flex items-center justify-between gap-2 w-full">
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
+        <span
+          className={`text-xs font-medium truncate ${
+            isPrototype ? 'text-[var(--mut)]' : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
           {title}
         </span>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -70,22 +99,25 @@ export const SummaryMetricCard: React.FC<SummaryMetricCardProps> = ({
 
       {/* Middle Row: Primary Value */}
       <div className="mt-2">
-        <span className="text-[19px] leading-snug font-bold tracking-tight whitespace-nowrap text-slate-900 dark:text-slate-100 tabular-nums block">
+        <span
+          className={`text-[19px] leading-snug font-bold tracking-tight whitespace-nowrap tabular-nums block ${
+            isPrototype ? 'text-[var(--ink)]' : 'text-slate-900 dark:text-slate-100'
+          }`}
+        >
           {primaryValue}
         </span>
       </div>
 
       {/* Bottom Row: Clean Subtitle Badge + Optional Secondary Caption */}
       <div className="mt-2.5 flex flex-col items-start gap-1 w-full min-w-0">
-        <span
-          className={`inline-block max-w-full truncate text-[11px] font-medium px-2 py-0.5 rounded-md border ${BADGE_STYLES[status]}`}
-          title={subtitle}
-        >
+        <span className={getBadgeStyle()} title={subtitle}>
           {subtitle}
         </span>
         {secondaryCaption && (
           <span
-            className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-full"
+            className={`text-[10px] truncate max-w-full ${
+              isPrototype ? 'text-[var(--mut)]' : 'text-slate-400 dark:text-slate-500'
+            }`}
             title={secondaryCaption}
           >
             {secondaryCaption}
