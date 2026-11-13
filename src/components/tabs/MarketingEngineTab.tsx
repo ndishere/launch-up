@@ -168,15 +168,15 @@ export const MarketingEngineTab: React.FC = () => {
               </span>
               <div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  MOD-07: Canva Pro Marketing Engine (Port 8011)
+                  Canva Marketing Engine (MOD-07)
                 </h3>
                 <p className="text-[11px] text-slate-500">
-                  Autofill 30-day content calendar with EU AI Act Art. 50 disclosure & Gate 4.
+                  Autofill 30-day content calendar with EU AI Act Art. 50 disclosure &amp; Campaign Approval (Gate 4).
                 </p>
               </div>
             </div>
             <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-pink-50 dark:bg-pink-950/70 text-pink-600 dark:text-pink-300">
-              MOD-07 Active
+              Canva Marketing Active
             </span>
           </div>
 
@@ -216,7 +216,7 @@ export const MarketingEngineTab: React.FC = () => {
                   className="w-full py-1.5 px-3 text-xs font-bold text-white bg-pink-600 hover:bg-pink-700 rounded-lg transition-all flex items-center justify-center gap-1.5"
                 >
                   {generatingCalendar ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                  <span>Generate Calendar & Gate 4</span>
+                  <span>Generate Calendar &amp; Campaign Approval</span>
                 </button>
               </div>
             </div>
@@ -234,7 +234,7 @@ export const MarketingEngineTab: React.FC = () => {
                 </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                Gate 4 Issued: <strong className="font-mono text-slate-700 dark:text-slate-300">{calendarResult.data?.approval_gate_id}</strong>
+                Campaign Approval Issued: <strong className="font-mono text-slate-700 dark:text-slate-300">{calendarResult.data?.approval_gate_id}</strong>
               </div>
               <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
                 {calendarResult.data?.calendar_items?.slice(0, 3).map((item: any, idx: number) => (
@@ -260,15 +260,15 @@ export const MarketingEngineTab: React.FC = () => {
               </span>
               <div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  MOD-08: WhatsApp Marketing & CRM RAG (Port 8012)
+                  WhatsApp CRM Engine (MOD-08)
                 </h3>
                 <p className="text-[11px] text-slate-500">
-                  Real-time Meta 24h window enforcement, pgvector RAG, and Chatwoot escalation.
+                  Real-time Meta 24h window enforcement, knowledge base search, and team escalation.
                 </p>
               </div>
             </div>
             <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-300">
-              MOD-08 Active
+              WhatsApp CRM Active
             </span>
           </div>
 

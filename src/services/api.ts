@@ -32,16 +32,16 @@ export interface ServiceEndpointConfig {
 }
 
 export const MICROSERVICE_CATALOG: Record<string, ServiceEndpointConfig> = {
-  'MOD-10': { id: 'MOD-10', name: 'Governance & RBAC Core', port: 8004, healthUrl: 'http://localhost:8004/health', primaryPath: '/api/v1/governance/verify' },
-  'MOD-01': { id: 'MOD-01', name: 'Lead Discovery & Pitch Engine', port: 8005, healthUrl: 'http://localhost:8005/health', primaryPath: '/api/v1/leads/discover' },
-  'MOD-02': { id: 'MOD-02', name: 'BA Intake & Scope Synthesizer', port: 8006, healthUrl: 'http://localhost:8006/health', primaryPath: '/api/v1/intake/synthesize' },
-  'MOD-03': { id: 'MOD-03', name: 'Responsive Web & Landing Builder', port: 8007, healthUrl: 'http://localhost:8007/health', primaryPath: '/api/v1/web/build' },
-  'MOD-04': { id: 'MOD-04', name: 'Android Mobile App Builder', port: 8008, healthUrl: 'http://localhost:8008/health', primaryPath: '/api/v1/mobile/build' },
-  'MOD-05': { id: 'MOD-05', name: 'Backend API & RLS Engine', port: 8009, healthUrl: 'http://localhost:8009/health', primaryPath: '/api/v1/backend/build' },
-  'MOD-06': { id: 'MOD-06', name: 'Autonomous QA & SecOps Verifier', port: 8010, healthUrl: 'http://localhost:8010/health', primaryPath: '/api/v1/qa/verify' },
-  'MOD-07': { id: 'MOD-07', name: 'Canva Pro Marketing Engine', port: 8011, healthUrl: 'http://localhost:8011/health', primaryPath: '/api/v1/marketing/calendar' },
-  'MOD-08': { id: 'MOD-08', name: 'WhatsApp Marketing & CRM Engine', port: 8012, healthUrl: 'http://localhost:8012/health', primaryPath: '/api/v1/whatsapp/send' },
-  'MOD-09': { id: 'MOD-09', name: 'Autonomous SRE & Self-Healing Ops', port: 8013, healthUrl: 'http://localhost:8013/health', primaryPath: '/api/v1/sre/heal' },
+  'MOD-10': { id: 'MOD-10', name: 'Access & Approvals (MOD-10)', port: 8004, healthUrl: 'http://localhost:8004/health', primaryPath: '/api/v1/governance/verify' },
+  'MOD-01': { id: 'MOD-01', name: 'Lead Finder (MOD-01)', port: 8005, healthUrl: 'http://localhost:8005/health', primaryPath: '/api/v1/leads/discover' },
+  'MOD-02': { id: 'MOD-02', name: 'Scope Planner (MOD-02)', port: 8006, healthUrl: 'http://localhost:8006/health', primaryPath: '/api/v1/intake/synthesize' },
+  'MOD-03': { id: 'MOD-03', name: 'Web Builder (MOD-03)', port: 8007, healthUrl: 'http://localhost:8007/health', primaryPath: '/api/v1/web/build' },
+  'MOD-04': { id: 'MOD-04', name: 'Mobile App Builder (MOD-04)', port: 8008, healthUrl: 'http://localhost:8008/health', primaryPath: '/api/v1/mobile/build' },
+  'MOD-05': { id: 'MOD-05', name: 'Backend Engine (MOD-05)', port: 8009, healthUrl: 'http://localhost:8009/health', primaryPath: '/api/v1/backend/build' },
+  'MOD-06': { id: 'MOD-06', name: 'Quality & Security Check (MOD-06)', port: 8010, healthUrl: 'http://localhost:8010/health', primaryPath: '/api/v1/qa/verify' },
+  'MOD-07': { id: 'MOD-07', name: 'Canva Marketing (MOD-07)', port: 8011, healthUrl: 'http://localhost:8011/health', primaryPath: '/api/v1/marketing/calendar' },
+  'MOD-08': { id: 'MOD-08', name: 'WhatsApp CRM (MOD-08)', port: 8012, healthUrl: 'http://localhost:8012/health', primaryPath: '/api/v1/whatsapp/send' },
+  'MOD-09': { id: 'MOD-09', name: 'Auto-Fix Care (MOD-09)', port: 8013, healthUrl: 'http://localhost:8013/health', primaryPath: '/api/v1/sre/heal' },
 };
 
 // Generic Fetch Wrapper with timeout and fallback

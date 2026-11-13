@@ -149,10 +149,10 @@ export const DeploymentsTab: React.FC = () => {
             </span>
             <div>
               <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                MOD-06: Autonomous QA, SecOps & Gate 3 Verifier (Port 8010)
+                Quality &amp; Security Check (MOD-06) · Go-Live Approval (Gate 3)
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Execute Playwright E2E tests, Semgrep SAST scans, Trivy CVE checks, Gitleaks, and Lighthouse audits to issue Gate 3 (DEPLOY_STAGING).
+                Execute automated end-to-end tests, security scans, and audits to issue Go-Live Approval (Gate 3 · DEPLOY_STAGING).
               </p>
             </div>
           </div>
@@ -162,7 +162,7 @@ export const DeploymentsTab: React.FC = () => {
             className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-emerald-600/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
           >
             {runningQA ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-            <span>Run QA & SecOps Verification</span>
+            <span>Run QA &amp; Security Verification</span>
           </button>
         </div>
 
@@ -171,7 +171,7 @@ export const DeploymentsTab: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Verification Results: Gate 3 Approved</span>
+                <span>Verification Results: Go-Live Approval Granted (Gate 3)</span>
               </span>
               <span className={`text-[10px] font-mono font-bold ${qaResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
                 {qaResult.isLive ? '●  Live Fastify 8010' : '● ‹ In-Memory Fallback'}
@@ -221,14 +221,14 @@ export const DeploymentsTab: React.FC = () => {
               <div className="flex items-center gap-2 flex-wrap">
                 <Terminal className="w-4 h-4 text-indigo-500" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Pulled Folder Runtime &amp; Gate 3 Staging — {selectedProject?.name}
+                  Pulled Folder Runtime &amp; Go-Live Staging — {selectedProject?.name}
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300">
                   {selectedProject?.sourceTool} · Port {pulledRuntime.localDevPort}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                Reads <code>runtimeAndDeploy</code> from <code>project.launchup.json</code> to drive Docker Compose staging, Git branch promotion, and Gate 3 approval.
+                Reads <code>runtimeAndDeploy</code> from <code>project.launchup.json</code> to drive Docker Compose staging, Git branch promotion, and Go-Live Approval (Gate 3).
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -256,7 +256,7 @@ export const DeploymentsTab: React.FC = () => {
                 className="px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg inline-flex items-center gap-1"
               >
                 <Check className="w-3.5 h-3.5" />
-                <span>Approve Gate 3 ({promotedBranch})</span>
+                <span>Approve Go-Live ({promotedBranch})</span>
               </button>
             </div>
           </div>

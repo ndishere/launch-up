@@ -5,29 +5,17 @@ import { Header } from './components/layout/Header';
 
 // Tabs
 import { DashboardTab } from './components/tabs/DashboardTab';
-import { AgentCompanyTab } from './components/tabs/AgentCompanyTab';
-import { FDESystemsTab } from './components/tabs/FDESystemsTab';
-import { SLMLabTab } from './components/tabs/SLMLabTab';
-import { MarketingEngineTab } from './components/tabs/MarketingEngineTab';
-import { TelemetryHubTab } from './components/tabs/TelemetryHubTab';
-import { ProjectsTab } from './components/tabs/ProjectsTab';
 import { ClientsTab } from './components/tabs/ClientsTab';
-import { DeploymentsTab } from './components/tabs/DeploymentsTab';
-import { SystemDesignTab } from './components/tabs/SystemDesignTab';
-import { TemplatesTab } from './components/tabs/TemplatesTab';
-import { IntegrationsTab } from './components/tabs/IntegrationsTab';
+import { ProjectsTabWrapper } from './components/tabs/ProjectsTabWrapper';
+import { ServicesTab } from './components/tabs/ServicesTab';
+import { ToolsAppsTab } from './components/tabs/ToolsAppsTab';
+import { AIWorkshopTab } from './components/tabs/AIWorkshopTab';
 import { AnalyticsTab } from './components/tabs/AnalyticsTab';
-import { AlertsTab } from './components/tabs/AlertsTab';
 import { TeamTab } from './components/tabs/TeamTab';
-import { BillingTab } from './components/tabs/BillingTab';
 import { SettingsTab } from './components/tabs/SettingsTab';
+import { BillingTab } from './components/tabs/BillingTab';
+import { SystemDesignTab } from './components/tabs/SystemDesignTab';
 import { ProjectCanvasTab } from './components/tabs/ProjectCanvasTab';
-import { ConnectedAppsTab } from './components/tabs/ConnectedAppsTab';
-import { WorkflowsTab } from './components/tabs/WorkflowsTab';
-import { N8nWorkflowsTab } from './components/tabs/N8nWorkflowsTab';
-import { ProjectBuilderTab } from './components/tabs/ProjectBuilderTab';
-import { NoCodeEditorTab } from './components/tabs/NoCodeEditorTab';
-import { PreviewStudioTab } from './components/tabs/PreviewStudioTab';
 
 // Modals & Drawers
 import { CreateProjectModal } from './components/modals/CreateProjectModal';
@@ -49,48 +37,38 @@ const AppLayout: React.FC = () => {
       case 'clients':
         return <ClientsTab />;
       case 'projects':
-        return <ProjectsTab />;
+      case 'project-builder':
+      case 'deployments':
+        return <ProjectsTabWrapper />;
       case 'project-canvas':
         return <ProjectCanvasTab />;
-      case 'slm-lab':
-        return <SLMLabTab />;
-      case 'deployments':
-        return <DeploymentsTab />;
+      case 'services':
+      case 'marketing-engine':
+      case 'alerts':
+      case 'telemetry-hub':
+      case 'remote-telemetry':
+      case 'fde-systems':
+        return <ServicesTab />;
+      case 'tools-apps':
       case 'templates':
-        return <TemplatesTab />;
+      case 'integrations':
       case 'connected-apps':
-        return <ConnectedAppsTab />;
+      case 'nocode-editor':
+      case 'preview-studio':
+        return <ToolsAppsTab />;
+      case 'ai-workshop':
+      case 'agent-company':
+      case 'ams':
+      case 'slm-lab':
+      case 'workflows':
+      case 'n8n-workflows':
+        return <AIWorkshopTab />;
       case 'analytics':
         return <AnalyticsTab />;
       case 'team':
         return <TeamTab />;
-      case 'ams':
-      case 'agent-company':
-        return <AgentCompanyTab />;
-      case 'remote-telemetry':
-      case 'telemetry-hub':
-        return <TelemetryHubTab />;
-      case 'services':
-      case 'fde-systems':
-        return <FDESystemsTab />;
-      case 'workflows':
-        return <WorkflowsTab />;
-      case 'n8n-workflows':
-        return <N8nWorkflowsTab />;
-      case 'project-builder':
-        return <ProjectBuilderTab />;
-      case 'nocode-editor':
-        return <NoCodeEditorTab />;
-      case 'preview-studio':
-        return <PreviewStudioTab />;
-      case 'alerts':
-        return <AlertsTab />;
       case 'settings':
         return <SettingsTab />;
-      case 'marketing-engine':
-        return <MarketingEngineTab />;
-      case 'integrations':
-        return <IntegrationsTab />;
       case 'billing':
         return <BillingTab />;
       case 'system-design':

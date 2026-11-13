@@ -80,9 +80,9 @@ export const SLMLabTab: React.FC = () => {
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
       {/* Top Combined Analytics Section with Live Success/Error Rates */}
       <ScreenAnalyticsHeader
-        title="SLM (Small Language Model) Lab & Studio"
-        badge="Edge & Private GPU Fleet"
-        description="Train, benchmark, and deploy custom Small Language Models (1.5B - 3.8B) for business automations. Run locally on device with Ollama/vLLM or online via private endpoints with zero data leaks."
+        title="AI Models &amp; Local PC Studio (Local PC Memory Saver)"
+        badge="Local GPU &amp; Private Endpoints"
+        description="Train, benchmark, and deploy custom language models (1.5B - 3.8B) for business automations. Run locally on device with Ollama or connect cloud endpoints with zero data leaks."
         metrics={[
           {
             label: 'Trained Models',

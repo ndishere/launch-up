@@ -73,7 +73,7 @@ export const DebugHotfixInspector: React.FC<DebugHotfixInspectorProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             <Bug className="w-4 h-4 text-rose-500" />
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Debug &amp; SRE Hotfix Inspector (Graphify AST + Gate 5 PR)
+              Auto-Fix Care &amp; SRE Hotfix Inspector (Graphify AST + Quick Fix Approval)
             </h3>
             {activeProject?.sourceTool && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
@@ -82,7 +82,7 @@ export const DebugHotfixInspector: React.FC<DebugHotfixInspectorProps> = ({
             )}
           </div>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-            Paste a runtime stack trace or run a health probe to trace faulty nodes in <code>graphify-out/GRAPH_REPORT.md</code>, verify regression, and queue a Gate 5 Hotfix PR.
+            Paste a runtime stack trace or run a health probe to trace faulty nodes in <code>graphify-out/GRAPH_REPORT.md</code>, verify regression, and queue a Quick Fix Approval (Gate 5) PR.
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export const DebugHotfixInspector: React.FC<DebugHotfixInspectorProps> = ({
             ) : (
               <Play className="w-3.5 h-3.5" />
             )}
-            <span>Trace &amp; Queue Gate 5 PR</span>
+            <span>Trace &amp; Queue Quick Fix PR</span>
           </button>
         </div>
       </div>
@@ -142,7 +142,7 @@ export const DebugHotfixInspector: React.FC<DebugHotfixInspectorProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="font-bold text-slate-900 dark:text-white inline-flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              <span>Fault Isolated · Regression Verified · Gate 5 PR Queued ({gate5Id})</span>
+              <span>Fault Isolated · Regression Verified · Quick Fix PR Queued ({gate5Id})</span>
             </span>
             <span className="text-[10px] font-mono text-slate-500">
               {isLiveSre ? '● Live MOD-09 (8013)' : '○ Graphify Fallback'}
@@ -163,7 +163,7 @@ export const DebugHotfixInspector: React.FC<DebugHotfixInspectorProps> = ({
               </span>
             </div>
             <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-              <span className="text-slate-400 block">Lock &amp; Gate 5 Status</span>
+              <span className="text-slate-400 block">Lock &amp; Quick Fix Status (Gate 5)</span>
               <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                 {traceResult.blockedByLock ? 'Core-Locked Guarded' : 'Mutable Slot Patched'} ·{' '}
                 {traceResult.gate5Status}

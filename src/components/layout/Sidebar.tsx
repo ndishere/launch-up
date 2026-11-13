@@ -34,27 +34,48 @@ export const Sidebar: React.FC = () => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'clients', label: 'Clients', icon: Users, badge: clients.length },
     { id: 'projects', label: 'Projects', icon: FolderKanban, badge: projects.length },
-    { id: 'slm-lab', label: 'SLM Lab', icon: Cpu },
-    { id: 'deployments', label: 'Deployments', icon: Rocket },
-    { id: 'templates', label: 'Templates', icon: LayoutTemplate },
-    { id: 'connected-apps', label: 'Connected Apps', icon: Layers },
+    { id: 'services', label: 'Services', icon: Network, badge: unreadAlerts > 0 ? unreadAlerts : undefined },
+    { id: 'tools-apps', label: 'Tools/Apps', icon: Layers },
+    { id: 'ai-workshop', label: 'AI Workshop', icon: Cpu },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'team', label: 'Team & Gates', icon: UserCheck },
-    { id: 'ams', label: 'Agent Swarm', icon: Bot },
-    { id: 'remote-telemetry', label: 'Telemetry', icon: Radio, badge: telemetryPackages.length },
-    { id: 'services', label: 'Services', icon: Network },
-    { id: 'workflows', label: 'Workflows', icon: GitFork },
-    { id: 'alerts', label: 'Alerts', icon: Bell, badge: unreadAlerts > 0 ? unreadAlerts : undefined },
+    { id: 'team', label: 'Teams', icon: UserCheck },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   const isProjectsActive =
     currentTab === 'projects' ||
-    currentTab === 'project-canvas' ||
     currentTab === 'project-builder' ||
+    currentTab === 'deployments' ||
+    currentTab === 'project-canvas';
+
+  const isServicesActive =
+    currentTab === 'services' ||
+    currentTab === 'marketing-engine' ||
+    currentTab === 'alerts' ||
+    currentTab === 'telemetry-hub' ||
+    currentTab === 'remote-telemetry' ||
+    currentTab === 'fde-systems';
+
+  const isToolsAppsActive =
+    currentTab === 'tools-apps' ||
+    currentTab === 'templates' ||
+    currentTab === 'integrations' ||
+    currentTab === 'connected-apps' ||
     currentTab === 'nocode-editor' ||
-    currentTab === 'preview-studio' ||
+    currentTab === 'preview-studio';
+
+  const isAiWorkshopActive =
+    currentTab === 'ai-workshop' ||
+    currentTab === 'agent-company' ||
+    currentTab === 'ams' ||
+    currentTab === 'slm-lab' ||
+    currentTab === 'workflows' ||
     currentTab === 'n8n-workflows';
+
+  const isSettingsActive =
+    currentTab === 'settings' ||
+    currentTab === 'billing' ||
+    currentTab === 'system-design';
 
   return (
     <>
@@ -96,12 +117,25 @@ export const Sidebar: React.FC = () => {
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
-              item.id === 'projects'
+              item.id === 'dashboard'
+                ? currentTab === 'dashboard'
+                : item.id === 'clients'
+                ? currentTab === 'clients'
+                : item.id === 'projects'
                 ? isProjectsActive
-                : currentTab === item.id ||
-                  (item.id === 'ams' && currentTab === 'agent-company') ||
-                  (item.id === 'remote-telemetry' && currentTab === 'telemetry-hub') ||
-                  (item.id === 'services' && currentTab === 'fde-systems');
+                : item.id === 'services'
+                ? isServicesActive
+                : item.id === 'tools-apps'
+                ? isToolsAppsActive
+                : item.id === 'ai-workshop'
+                ? isAiWorkshopActive
+                : item.id === 'analytics'
+                ? currentTab === 'analytics'
+                : item.id === 'team'
+                ? currentTab === 'team'
+                : item.id === 'settings'
+                ? isSettingsActive
+                : false;
 
             return (
               <button

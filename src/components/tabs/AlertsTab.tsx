@@ -106,15 +106,15 @@ export const AlertsTab: React.FC = () => {
             </span>
             <div>
               <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                MOD-09: Autonomous SRE & Self-Healing Ops (Port 8013)
+                Auto-Fix Care &amp; Self-Healing Ops (MOD-09)
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Ingest Sentry 500 webhooks, resolve Graphify AST blast-radius, generate sandbox hotfixes, and issue Gate 5 (HOTFIX_MERGE).
+                Ingest crash reports, trace fault impact with Graphify, generate sandbox hotfixes, and issue Quick Fix Approval (Gate 5 · HOTFIX_MERGE).
               </p>
             </div>
           </div>
           <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-300">
-            MOD-09 Active
+            Auto-Fix Care Active
           </span>
         </div>
 
@@ -165,7 +165,7 @@ export const AlertsTab: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Incident Remediation Verified: Gate 5 Generated</span>
+                <span>Incident Remediation Verified: Quick Fix Approval (Gate 5) Generated</span>
               </span>
               <span className={`text-[10px] font-mono font-bold ${sreResult.isLive ? 'text-emerald-500' : 'text-amber-500'}`}>
                 {sreResult.isLive ? '●  Live Fastify 8013' : '● ‹ In-Memory Fallback'}
@@ -186,7 +186,7 @@ export const AlertsTab: React.FC = () => {
                 </span>
               </div>
               <div className="p-2.5 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] text-slate-400 block">Gate 5 Approval ID</span>
+                <span className="text-[10px] text-slate-400 block">Quick Fix Approval ID (Gate 5)</span>
                 <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
                   {sreResult.data?.approval_gate_id}
                 </span>

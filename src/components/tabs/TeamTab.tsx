@@ -88,9 +88,9 @@ export const TeamTab: React.FC = () => {
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
       {/* Top Combined Analytics Section with Live Success/Error Rates */}
       <ScreenAnalyticsHeader
-        title="Team, Multi-Tenant RBAC & Governance Gates (MOD-10)"
+        title="Teams, Access & Business Approvals (Access & Approvals · MOD-10)"
         badge="Enterprise Gatekeeper Active"
-        description="Enforce strict M:N tenancy, FinOps token budgets, and cryptographic Human-in-the-Loop approval gates (Gates 1 through 5) before code, pitches, or deployments proceed."
+        description="Enforce client privacy, token budgets, and business approval gates (Proposal, Plan, Go-Live, Campaign, and Quick Fix) before code, pitches, or deployments proceed."
         metrics={[
           {
             label: 'Total Members',
@@ -179,11 +179,11 @@ export const TeamTab: React.FC = () => {
                 <ShieldCheck className="w-4 h-4" />
               </span>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Autonomous Governance Gates & Approvals Hub (MOD-10)
+                Business Approval Gates Hub (Access & Approvals · MOD-10)
               </h2>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Human-in-the-Loop decision gateway. AI agents generate Gates 1-5; only verified Client Approvers can unlock downstream stages.
+              Human decision checkpoints. Proposals, project plans, go-live deployments, campaigns, and quick fixes require client sign-off.
             </p>
           </div>
 
@@ -210,6 +210,14 @@ export const TeamTab: React.FC = () => {
             const isPending = gate.status === 'PENDING';
             const isApproved = gate.status === 'APPROVED';
 
+            const gateFriendlyLabels: Record<string, string> = {
+              OUTREACH_PITCH: 'Proposal Approval (Gate 1)',
+              SCOPE_LOCK: 'Project Plan Sign-Off (Gate 2)',
+              DEPLOY_STAGING: 'Go-Live Approval (Gate 3)',
+              MARKETING_PUBLISH: 'Campaign Approval (Gate 4)',
+              HOTFIX_MERGE: 'Quick Fix Approval (Gate 5)',
+            };
+
             const gateBadgeStyles = {
               OUTREACH_PITCH: 'bg-blue-50 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border-blue-200 dark:border-blue-800',
               SCOPE_LOCK: 'bg-purple-50 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border-purple-200 dark:border-purple-800',
@@ -230,7 +238,7 @@ export const TeamTab: React.FC = () => {
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${gateBadgeStyles}`}>
-                      {gate.gate_type.replace('_', ' ')}
+                      {gateFriendlyLabels[gate.gate_type] || gate.gate_type.replace('_', ' ')}
                     </span>
                     <span className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-200">
                       {gate.gate_id}

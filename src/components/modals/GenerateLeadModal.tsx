@@ -72,10 +72,10 @@ export const GenerateLeadModal: React.FC<GenerateLeadModalProps> = ({ isOpen, on
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                Generate Lead & Canva Pitch (MOD-01)
+                Generate Lead &amp; Canva Pitch (Lead Finder · MOD-01)
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Autonomous Lead Discovery & Pitch Engine (Port 8005)
+                Autonomous Lead Discovery &amp; Pitch Engine
               </p>
             </div>
           </div>
@@ -94,9 +94,9 @@ export const GenerateLeadModal: React.FC<GenerateLeadModalProps> = ({ isOpen, on
           {/* Brief Explanation Banner */}
           <div className="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/35 border border-indigo-200/60 dark:border-indigo-900/50 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
             Audit a prospective business website for missing mobile apps, responsive viewport gaps, and low Lighthouse scores.{' '}
-            <strong>MOD-01</strong> synthesizes a branded Canva Pro pitch deck and creates a human-gated{' '}
-            <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">Gate 1 (OUTREACH_PITCH)</span>{' '}
-            approval record.
+            <strong>Lead Finder (MOD-01)</strong> synthesizes a branded Canva Pro pitch deck and creates a client{' '}
+            <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">Proposal Approval (Gate 1 · OUTREACH_PITCH)</span>{' '}
+            record.
           </div>
 
           <form onSubmit={handleAuditLead} className="space-y-4">
@@ -205,7 +205,7 @@ export const GenerateLeadModal: React.FC<GenerateLeadModalProps> = ({ isOpen, on
                   </span>
                 </div>
                 <div className="bg-white dark:bg-slate-800 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                  <span className="text-[10px] text-slate-400 block">Gate 1 (PENDING)</span>
+                  <span className="text-[10px] text-slate-400 block">Proposal Approval (Gate 1 · PENDING)</span>
                   <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 break-all">
                     {leadResult.data?.approval_gate_id}
                   </span>
@@ -240,7 +240,7 @@ export const GenerateLeadModal: React.FC<GenerateLeadModalProps> = ({ isOpen, on
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Review Gate 1 in Team & Gates</span>
+                  <span>Review Proposal Approval in Teams</span>
                 </button>
               </div>
             </div>

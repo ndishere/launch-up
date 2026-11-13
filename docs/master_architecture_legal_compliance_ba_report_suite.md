@@ -114,10 +114,43 @@ To maintain executive clarity, reduce vertical visual noise, and provide an inst
    - The platform UI visual design is strictly locked to the original dark/light **Slate & Indigo Control Plane Theme** (commit `8c12cde`), providing high visual contrast, crisp typography, and native Tailwind CSS `@theme` design tokens.
    - All experimental prototype-scoped CSS variables (`:root[data-ui-style="prototype"]`) and non-standard `.chip` / `.btn-pri` utility classes have been completely removed.
    - Color modes support Dark (`#090B10` background, Slate-900 surfaces), Light (`slate-50/80` background, white surfaces), and System synchronization with 5 selectable primary accent palettes: Indigo (default), Cyan, Emerald, Amber, and Rose.
-   - The full 15-tab navigation sidebar is preserved with `<LaunchUpLogo size={34} />` and sleek active tab highlights.
+   - The full navigation sidebar is optimized with `<LaunchUpLogo size={34} />` and sleek active tab highlights.
 
 2. **Expandable / Collapsible Right-Side Detail Panel Standard (`src/components/common/ExpandableRightDetailPanel.tsx`)**:
    - Reusable `<ExpandableRightDetailPanel />` component styled in pure Slate & Indigo (`bg-white dark:bg-slate-900/95 border-l border-slate-200 dark:border-slate-800`), sliding in or collapsing without content jump.
    - Provides contextual drill-down inspection when any row, client, project, gate, alert, template, or service node is selected.
    - Features an integrated `[✕ / Collapse >]` header action, a collapsed vertical `Details` pill toggle for 1-click re-opening, and a companion toolbar toggle button `<ExpandableDetailToggleButton />`.
    - Integrated into `ThreeZoneScreenLayout.tsx` for consistent multi-zone desktop screen layouts across all tabs.
+
+---
+
+## 8. Consolidated 9-Tab Navigation Architecture & Plain-English Domain Labeling Standards
+
+1. **9-Tab Primary Navigation Standard (`src/components/layout/Sidebar.tsx` & `src/App.tsx`)**:
+   - The global left navigation sidebar is consolidated into exactly 9 primary business domains:
+     1. **`Dashboard` (`dashboard`)**: Real-time client pipeline, follow-ups, and executive approval inbox.
+     2. **`Clients` (`clients`)**: Lead prospecting, intake questionnaires, scope notes, and retainers.
+     3. **`Projects` (`projects`)**: Deliverable tracking, builder orchestration, Docker staging, and external project folder adapters.
+     4. **`Services` (`services`)**: Active microservices mesh, digital marketing campaigns, WhatsApp outreach, and website auto-fix care.
+     5. **`Tools/Apps` (`tools-apps`)**: Golden project templates, connected cloud accounts, visual drag-and-drop page editor, and multi-device previewer.
+     6. **`AI Workshop` (`ai-workshop`)**: Virtual executive/technical team helpers, local 6GB VRAM memory optimization, Ollama discovery, and automated flows.
+     7. **`Analytics` (`analytics`)**: Unit economics, LLM token costs, client profitability, and gross margin calculations.
+     8. **`Teams` (`team`)**: Business approval gates, client permission matrix, and co-owner sign-offs.
+     9. **`Settings` (`settings`)**: Control plane appearance, 5 color palettes, brand logos, and custom API verification gateway.
+
+2. **Zero-Feature-Loss Segmented Sub-View Architecture (`src/components/tabs/*.tsx`)**:
+   - Consolidated tabs embed a clean, compact segmented sub-tab control at the top, preserving 100% of functional screens with zero cognitive overload:
+     - **Projects (`ProjectsTabWrapper.tsx`)**: *All Projects* (`ProjectsTab`), *Project Builder* (`ProjectBuilderTab`), and *Deployments & Releases* (`DeploymentsTab`).
+     - **Services (`ServicesTab.tsx`)**: *Marketing & WhatsApp* (`MarketingEngineTab`), *Website Health & Auto-Fix* (`AlertsTab`), and *Live Uptime & Logs* (`TelemetryHubTab`).
+     - **Tools/Apps (`ToolsAppsTab.tsx`)**: *Project Templates* (`TemplatesTab`), *Connected Accounts* (`IntegrationsTab`), *Visual Page Editor* (`NoCodeEditorTab`), and *Device Previewer* (`PreviewStudioTab`).
+     - **AI Workshop (`AIWorkshopTab.tsx`)**: *AI Team Helpers* (`AgentCompanyTab`), *AI Models & Local PC* (`SLMLabTab`), and *Automation Flows* (`N8nWorkflowsTab`).
+
+3. **Plain-English Business Domain Labeling Standard**:
+   - User interfaces replace technical acronyms and numeric gates with domain-friendly business terminology:
+     - **Gate 1 (`OUTREACH_PITCH`)** → **`Proposal Approval`**
+     - **Gate 2 (`SCOPE_LOCK`)** → **`Project Plan Sign-Off`**
+     - **Gate 3 (`DEPLOY_STAGING`)** → **`Go-Live Approval`**
+     - **Gate 4 (`MARKETING_PUBLISH`)** → **`Campaign Approval`**
+     - **Gate 5 (`HOTFIX_MERGE`)** → **`Quick Fix Approval`**
+   - Microservices are surfaced with their human business function: *Lead Finder (MOD-01)*, *Scope Planner (MOD-02)*, *Web Builder (MOD-03)*, *Mobile App Builder (MOD-04)*, *Backend Engine (MOD-05)*, *Quality & Security Check (MOD-06)*, *Canva Marketing (MOD-07)*, *WhatsApp CRM (MOD-08)*, *Auto-Fix Care (MOD-09)*, and *Access & Approvals (MOD-10)*.
+   - Hardware and token compression settings are labeled with intuitive business descriptions: *Local PC Memory Saver (VRAM & KV-Cache)* and *Smart Token Cost Saver (/caveman)*.

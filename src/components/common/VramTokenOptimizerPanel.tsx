@@ -78,7 +78,7 @@ export const VramTokenOptimizerPanel: React.FC<VramTokenOptimizerPanelProps> = (
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <HardDrive className="w-4 h-4 text-purple-500" />
-              <span>RTX 3050 (6GB VRAM) Optimizer & 4-Layer Token Compression</span>
+              <span>Local PC Memory Saver (6GB VRAM) &amp; Smart Token Cost Saver</span>
             </h3>
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold inline-flex items-center gap-1 ${
@@ -199,26 +199,26 @@ export const VramTokenOptimizerPanel: React.FC<VramTokenOptimizerPanelProps> = (
         {[
           {
             key: 'turboQuantKvCacheQ4' as const,
-            title: 'TurboQuant / Q4_0 KV-Cache',
-            desc: '4-bit quantized KV-cache saves ~1.4 GB VRAM across 32k context windows.',
+            title: 'Memory Saver: Q4_0 KV-Cache',
+            desc: '4-bit quantized cache saves ~1.4 GB graphics memory on your local PC.',
             icon: HardDrive,
           },
           {
             key: 'sequentialSingleGpuQueue' as const,
-            title: 'Sequential Single-GPU Queue',
-            desc: 'Enforces MAX_CONCURRENT_LOCAL = 1 to avoid parallel OOM swaps.',
+            title: 'Memory Saver: Single GPU Queue',
+            desc: 'Enforces 1 task at a time to prevent local PC graphics memory overload.',
             icon: Layers,
           },
           {
             key: 'repomixAstSkeletonMode' as const,
-            title: 'Repomix AST Skeleton Mode',
-            desc: 'Packs signatures, interfaces & routes only (~70% context reduction).',
+            title: 'Cost Saver: Code Skeleton Mode',
+            desc: 'Packs signatures, interfaces & routes only (~70% token cost reduction).',
             icon: Terminal,
           },
           {
             key: 'goldenTemplateDeltaOnly' as const,
-            title: 'Golden Template Delta-Only',
-            desc: 'Clones 88% verified boilerplate free; sends 12% custom client delta to LLM.',
+            title: 'Cost Saver: Template Delta-Only',
+            desc: 'Reuses 88% verified boilerplate free; only sends 12% custom delta to save API spend.',
             icon: Sparkles,
           },
         ].map((toggle) => {
@@ -269,10 +269,10 @@ export const VramTokenOptimizerPanel: React.FC<VramTokenOptimizerPanelProps> = (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <div className="text-xs font-bold text-slate-900 dark:text-white">
-              Caveman Agent Output Mode (/caveman lite | full | ultra)
+              Smart Token Cost Saver: Caveman Output Mode (/caveman lite | full | ultra)
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400">
-              Injects terse output directive into Agent Swarm system prompt to cut response tokens 50%–65%.
+              Injects concise output directives into AI agents to cut response tokens by 50%–65% and reduce billable API costs.
             </div>
           </div>
 

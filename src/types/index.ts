@@ -30,7 +30,9 @@ export type TabId =
   | 'n8n-workflows'
   | 'project-builder'
   | 'nocode-editor'
-  | 'preview-studio';
+  | 'preview-studio'
+  | 'tools-apps'
+  | 'ai-workshop';
 
 // Stack Presets & Configuration
 export interface TechStackPreset {

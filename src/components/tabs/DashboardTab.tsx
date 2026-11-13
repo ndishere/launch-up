@@ -70,8 +70,8 @@ export const DashboardTab: React.FC = () => {
       contact: 'dr.sharma@smiledental.example',
       previewUrl: 'http://localhost:3000/#preview-smiledental',
       actionTitle: 'PRD synthesized & DPDP verified',
-      actionDesc: 'Requirements document signed by co-owner. Ready for Gate 2 final approval to trigger coding swarm.',
-      badge: 'Gate 2 Sign-off',
+      actionDesc: 'Requirements document signed by co-owner. Ready for Project Plan Sign-Off (Gate 2) to trigger coding swarm.',
+      badge: 'Plan Sign-Off',
       badgeTone: 'warn' as const,
     },
     {
@@ -91,7 +91,7 @@ export const DashboardTab: React.FC = () => {
   const approvalItems = [
     {
       id: 'gate-prd-smiledental',
-      title: 'Gate 2 (PRD & Schema Approval)',
+      title: 'Project Plan Sign-Off (Gate 2)',
       project: 'Smile Dental Clinic App',
       law: 'DPDP_INDIA & PostgreSQL RLS',
       status: 'Awaiting Decision',
@@ -99,7 +99,7 @@ export const DashboardTab: React.FC = () => {
     },
     {
       id: 'gate-deploy-freshbite',
-      title: 'Gate 3 (Production Deployment)',
+      title: 'Go-Live Approval (Gate 3)',
       project: 'Fresh Bite Food Ordering Engine',
       law: 'GDPR_EU & SSL Certificate Verified',
       status: 'Awaiting Decision',
@@ -107,9 +107,9 @@ export const DashboardTab: React.FC = () => {
     },
     {
       id: 'gate-sre-apex',
-      title: 'Gate 5 (SRE Autonomous Hotfix)',
+      title: 'Quick Fix Approval (Gate 5)',
       project: 'Apex Logistics Tracking System',
-      law: 'Self-Healing Engine (MOD-09)',
+      law: 'Auto-Fix Care (MOD-09)',
       status: 'Awaiting Decision',
       summary: 'Auto-detected 500 error in tracking webhook. Synthetic fix verified against Graphify AST call graph.',
     },
@@ -477,14 +477,14 @@ export const DashboardTab: React.FC = () => {
                 </span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Human-in-the-loop Governance Gates (MOD-10) guarding quality & security before production.
+                Business Approvals & Gatekeepers (Access & Approvals · MOD-10) guarding quality & security before production.
               </p>
             </div>
             <button
               onClick={() => setCurrentTab('team')}
               className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
             >
-              All Gates & RBAC
+              All Approvals & Teams
             </button>
           </div>
 
