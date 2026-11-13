@@ -81,3 +81,27 @@ As **Launch Up** builds projects and runs live campaigns, you can paste or uploa
 5. **`REP-05` — Autonomous SRE Incident & Hotfix Audit (`MOD-09` RCA):**
    - *When to share:* At Approval Gate 5 (`HOTFIX_MERGE`) when a production error occurs.
    - *What I will analyze:* Root-cause validity, regression safety across connected Graphify nodes, and permanent Golden Template improvements.
+
+---
+
+## 6. Global Top Header Architecture & Tab Metadata UI Standard
+
+To maintain executive clarity, reduce vertical visual noise, and provide an instant screen breadcrumb across both **Prototype Theme** and **Classic Theme**, the platform enforces the **Global Header Tab Title & Subtitle Standard**:
+
+1. **Top Global Header Breadcrumb Integration (`src/components/layout/Header.tsx`)**:
+   - Replaces the redundant `10/10 Services Live` pill (which is already displayed in the unified 5-cell summary bar) with the active tab's **Title** and **Subtitle**.
+   - Located immediately to the right of the sidebar toggle button within a flexible container (`flex flex-col justify-center min-w-0 flex-1 mr-4 overflow-hidden`).
+   - Title formatted with `text-sm sm:text-base font-bold tracking-tight leading-tight truncate`.
+   - Subtitle formatted with `text-[11px] sm:text-xs leading-tight truncate mt-0.5` with `title={tabMeta.subtitle}` for instant full-text hover tooltip.
+
+2. **Strict Height & Resize Truncation Rules**:
+   - **Zero Header Height Increase:** The global header height remains strictly pinned to `72px` (`h-[72px]`) under the Prototype Theme and `56px` (`h-14`) under the Classic Theme.
+   - **Single-Line Ellipsis Truncation:** Both title and subtitle use `truncate` (`text-overflow: ellipsis; overflow: hidden; white-space: nowrap`). Under responsive browser resizing or split-screen views, text gracefully truncates with `...` without wrapping to a second line or displacing the Command Palette search bar or action icons.
+
+3. **Centralized Tab Metadata Registry (`src/constants/tabHeaders.ts`)**:
+   - Governed by `TAB_HEADER_META: Record<string, { title: string; subtitle: string }>` mapping all 27 canonical tab IDs (`dashboard`, `clients`, `projects`, `services`, `tools`, `ai-workshop`, `analytics`, `team`, `settings`, `templates`, etc.).
+   - Includes a deterministic fallback generator `getTabHeaderMeta(tabId)` that auto-converts kebab-case identifiers into capitalized titles and descriptive subtitles for future or dynamically loaded plugins/tabs.
+
+4. **Screen Body Deduplication Contract**:
+   - All shared layout wrappers (`ThreeZoneScreenLayout.tsx`, `ScreenAnalyticsHeader.tsx`) and individual tab components (`AgentCompanyTab.tsx`, `AlertsTab.tsx`, `AnalyticsTab.tsx`, `BillingTab.tsx`, `IntegrationsTab.tsx`, `MarketingEngineTab.tsx`, `SystemDesignTab.tsx`, `TemplatesTab.tsx`) omit redundant top-level `<h1>` headings and description paragraphs.
+   - Action buttons (`+ Add Client`, `+ Intake Business`, `Scan *.launchup.json`, `Plans`, `Mark All as Read`, etc.) and status badges are rendered directly in compact top toolbars, preserving 100% of functional capabilities while saving vertical screen real estate.
